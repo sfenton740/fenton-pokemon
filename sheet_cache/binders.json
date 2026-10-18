@@ -1,0 +1,20 @@
+[
+ {
+  "name": "30th Binder 1",
+  "emoji": "📕",
+  "desc": "Our main 30th Celebration binder",
+  "pages": 23
+ },
+ {
+  "name": "30th Extras Binder",
+  "emoji": "📗",
+  "desc": "Our extra copies (duplicates)",
+  "pages": 23
+ },
+ {
+  "name": "Unsorted (new pulls)",
+  "emoji": "🆕",
+  "desc": "New pulls not in a binder yet",
+  "pages": null
+ }
+]

@@ -1,0 +1,41 @@
+{
+ "psa_tiers": [
+  [
+   0,
+   59.99,
+   "Standard"
+  ],
+  [
+   1000.01,
+   79.99,
+   "Priority"
+  ],
+  [
+   1500.01,
+   199,
+   "Express"
+  ],
+  [
+   2500.01,
+   349,
+   "Super Express"
+  ],
+  [
+   5000.01,
+   599,
+   "Premier"
+  ],
+  [
+   10000.01,
+   null,
+   "no listed price"
+  ]
+ ],
+ "return_ship_per_card": 4.9975,
+ "gem_min_gain": 25,
+ "gem_min_multiple": 2,
+ "gem_min_sales": 3,
+ "trend_pct": 0.05,
+ "trend_min_dollars": 0.25,
+ "trend_window_days": 30
+}

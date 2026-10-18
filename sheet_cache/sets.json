@@ -1,0 +1,83 @@
+[
+ {
+  "name": "30th Celebration",
+  "code": "30C",
+  "api": "me55",
+  "size": 158,
+  "wishlist": true,
+  "released": "2026-09-16"
+ },
+ {
+  "name": "Classic Collection",
+  "code": "30C-CC",
+  "api": "me55c",
+  "size": 30,
+  "wishlist": true,
+  "released": "2026-09-16",
+  "order": "binder"
+ },
+ {
+  "name": "30th Celebration RGB Mews",
+  "code": "30C-RGB",
+  "api": "me55",
+  "size": 3,
+  "wishlist": false,
+  "released": "2026-09-16"
+ },
+ {
+  "name": "Mega Evolution Energies",
+  "code": "MEE",
+  "api": "",
+  "size": null,
+  "wishlist": false,
+  "released": ""
+ },
+ {
+  "name": "MEP Black Star Promos",
+  "code": "MEP",
+  "api": "",
+  "size": null,
+  "wishlist": false,
+  "released": ""
+ },
+ {
+  "name": "Perfect Order",
+  "code": "POR",
+  "api": "me3",
+  "size": null,
+  "wishlist": false,
+  "released": "2026-03-27"
+ },
+ {
+  "name": "Pitch Black",
+  "code": "PBL",
+  "api": "me5",
+  "size": null,
+  "wishlist": false,
+  "released": "2026-07-17"
+ },
+ {
+  "name": "Chaos Rising",
+  "code": "CRI",
+  "api": "me4",
+  "size": null,
+  "wishlist": false,
+  "released": "2026-05-22"
+ },
+ {
+  "name": "Shrouded Fable",
+  "code": "SFA",
+  "api": "sv6pt5",
+  "size": null,
+  "wishlist": false,
+  "released": "2024-08-02"
+ },
+ {
+  "name": "Silver Tempest",
+  "code": "SIT",
+  "api": "swsh12",
+  "size": null,
+  "wishlist": false,
+  "released": "2022-11-11"
+ }
+]
