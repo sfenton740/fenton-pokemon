@@ -402,12 +402,25 @@ function search(q) {
 }
 
 /* ---------- card detail ---------- */
+let savedY = null;
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';   // we restore the page position ourselves
+function lockScroll() {   // freeze the page behind the popup (works on Android Chrome and iOS Safari)
+  if (savedY != null) return;
+  savedY = window.scrollY || 0;
+  document.body.style.top = `-${savedY}px`; document.body.classList.add('modal-open');
+}
+function unlockScroll() {
+  if (savedY == null) return;
+  const y = savedY; savedY = null;
+  document.body.classList.remove('modal-open'); document.body.style.top = '';
+  window.scrollTo(0, y);
+}
 function openCard(id) {
   const c = card(id); if (!c) return;
   const tr = c.trend === 'new' ? '🆕 New' : `${TR[c.trend]} <span class="${c.trend}">${pct(c.pct)}</span>`;
   const psa = c.psa != null ? money0(c.psa) : '—';
-  $modal.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(c.name)}">
-    <button class="hbtn close" aria-label="Close">✖️</button>
+  $modal.innerHTML = `<button class="hbtn mclose close" aria-label="Close">✖️</button>
+    <div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(c.name)}">
     <img class="pic${c.qty ? '' : ' miss'}" referrerpolicy="no-referrer" src="${esc(c.big || c.img)}" alt="${esc(c.name)}" onerror="if(this.src!=='${esc(c.img)}')this.src='${esc(c.img)}'">
     <h3>${esc(c.name)}</h3><div class="setl">${esc(c.set)} · #${esc(c.num)}${c.rarity ? ' · ' + esc(c.rarity) : ''}</div>
     <div class="mini-ticker">
@@ -425,14 +438,14 @@ function openCard(id) {
     </div>
     ${c.url ? `<a class="btn red block" href="${esc(c.url)}" target="_blank" rel="noopener">🛒 See on TCGplayer</a>` : ''}
     <button class="btn white block close2" style="margin-top:12px">👍 Done</button></div>`;
-  $modal.hidden = false; document.body.style.overflow = 'hidden';
+  lockScroll(); $modal.hidden = false; $modal.scrollTop = 0;
   $modal.querySelectorAll('.close,.close2').forEach(b => b.onclick = closeCard);
   history.pushState({modal: 1}, '');
   mountCardTicker(id);
 }
 function closeCard(fromPop) {
   if ($modal.hidden) return;
-  $modal.hidden = true; $modal.innerHTML = ''; document.body.style.overflow = '';
+  $modal.hidden = true; $modal.innerHTML = ''; unlockScroll();
   if (fromPop !== true && history.state && history.state.modal) history.back();
 }
 $modal.addEventListener('click', e => { if (e.target === $modal) closeCard(); });
