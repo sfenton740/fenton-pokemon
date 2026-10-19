@@ -128,6 +128,13 @@ def main():
     if not history or history[-1][1] != value:
         history.append([datetime.date.today().isoformat(), value])
 
+    # 30th Master Set = 30th Celebration main + Classic Collection (sizes from sets.json)
+    mparts = [s for s in sets if s['name'] in ('30th Celebration', 'Classic Collection')]
+    master = dict(name='30th Master Set', have=sum(s['have'] for s in mparts), size=sum(s['size'] for s in mparts),
+        to_finish=round(sum(s['to_finish'] for s in mparts), 2),
+        parts=[dict(name=s['name'], short='Main set' if s['name'] == '30th Celebration' else 'Classic Collection',
+                    have=s['have'], size=s['size'], to_finish=s['to_finish'], index=sets.index(s)) for s in mparts])
+
     wish_sets = {s['name'] for s in sets_cfg if s['wishlist']}
     wishlist = sorted([c['id'] for c in cl if c['qty'] == 0 and c['set'] in wish_sets], key=lambda k: cards[k]['price'] or 0)
 
@@ -145,7 +152,7 @@ def main():
         settings=dict(trend_pct=S['trend_pct'], trend_min=S['trend_min_dollars'], window=S['trend_window_days'],
             psa_tiers=S['psa_tiers'], ship=round(S['return_ship_per_card'], 2), gem_gain=S['gem_min_gain'],
             gem_mult=S['gem_min_multiple'], gem_sales=S['gem_min_sales']),
-        history=history, binders=binders, sets=sets, wishlist=wishlist,
+        history=history, master=master, binders=binders, sets=sets, wishlist=wishlist,
         opened=[dict(o, img=img(o.get('url'))) for o in opened],
         cards={c['id']: c for c in cl})
     with open(os.path.join(SITE, 'data.json'), 'w') as fh:
@@ -155,6 +162,7 @@ def main():
           f"30d ago ${t['value_30d']:,.2f}, up {t['up']} / down {t['down']} / same {t['same']} / new {t['new']}, "
           f"wishlist {t['wish_count']} ${t['wish_cost']:,.2f}, packs {t['packs']}, prices {out['prices_asof']}")
     for s in sets: print(f"  {s['name']}: {s['have']}/{s['size']}")
+    print(f"  {master['name']}: {master['have']}/{master['size']} ({master['have']/master['size']:.0%}), ${master['to_finish']:,.2f} to finish")
     if '--check' in sys.argv:
         assert t['cards'] == sum(r.get('owned_qty') or 0 for r in rows)
         print('check ok')

@@ -47,6 +47,7 @@ function home() {
     <div class="lbl">🃏 ${t.cards} cards · ⭐ ${t.different} different</div>
     <div class="pills"><span class="pill up">➕ ${t.up}</span><span class="pill down">➖ ${t.down}</span><span class="pill same">⏸️ ${t.same}</span></div>
   </a>
+  ${masterBox()}
   <div class="tiles">
     ${binTiles}
     <a class="tile" href="#/sets"><span class="em">✅</span>Checklists<span class="sub">${main ? `${main.have}/${main.size}` : ''}${cc ? ` · ${cc.have}/${cc.size}` : ''}</span></a>
@@ -58,6 +59,22 @@ function home() {
     <a class="tile yellow" href="#/search"><span class="em">🔍</span>Find a card<span class="sub">search by name</span></a>
   </div>
   <p class="foot">Prices: ${esc(D.prices_note)}, ${esc(fmtDate(D.prices_asof))}.<br>Tap any card to see it big!</p>`;
+}
+
+function masterBox() {
+  // 30th Master Set = main 30th Celebration + Classic Collection, computed from the set lists
+  const parts = ['30th Celebration', 'Classic Collection'].map(n => D.sets.findIndex(s => s.name === n)).filter(i => i >= 0)
+    .map(i => ({i, s: D.sets[i], short: D.sets[i].name === '30th Celebration' ? 'Main set' : 'Classic Collection'}));
+  if (!parts.length) return '';
+  const have = parts.reduce((a, p) => a + p.s.have, 0), size = parts.reduce((a, p) => a + p.s.size, 0);
+  const cost = parts.reduce((a, p) => a + (p.s.to_finish || 0), 0), pc = Math.round(100 * have / size);
+  const bar = (h, n) => `<div class="bar"><div style="width:${Math.max(2, Math.round(100 * h / n))}%"></div></div>`;
+  return `<a class="box master" href="#/sets">
+    <div class="mtop"><span>⭐ 30th Master Set</span><span>${have}/${size}</span></div>
+    <div class="bar big">${''}<div style="width:${Math.max(2, pc)}%"></div><span>${pc}%</span></div>
+    <div class="msub">${have >= size ? '🎉 We did it! Master Set complete!' : `Only ${size - have} to go! · about ${money0(cost)} to finish`}</div>
+    ${parts.map(p => `<div class="mpart"><div class="mrow"><span>${p.short}</span><span>${p.s.have}/${p.s.size} · ${Math.round(100 * p.s.have / p.s.size)}%</span></div>${bar(p.s.have, p.s.size)}</div>`).join('')}
+  </a>`;
 }
 
 function chart(hist) {
