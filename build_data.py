@@ -114,19 +114,36 @@ def main():
     tc = collections.Counter(c['trend'] for c in owned)
     base_dates = collections.Counter(c['base_date'] for c in owned if c['base_date'])
 
-    # value over time from snapshots (today's quantities x each day's prices)
+    # value over time + per-card price history from daily snapshots
+    # Collection value = today's owned quantities × each day's prices (forward-fill a card's last known price).
     qty = {c['id']: c['qty'] for c in owned}
-    history = []
+    day_prices = {}  # date -> {card_id: price}
     for f in sorted(glob.glob(os.path.join(HIST, '20??-??-??.csv'))):
         prices = {}
         with open(f) as fh:
             for r in csv.DictReader(fh):
                 p = num(r.get('market_price'))
                 if p is not None: prices[r['api_id']] = p
-        if not prices: continue
-        history.append([os.path.basename(f)[:10], round(sum(prices.get(k, cards[k]['price'] or 0) * q for k, q in qty.items()), 2)])
-    if not history or history[-1][1] != value:
-        history.append([datetime.date.today().isoformat(), value])
+        if prices: day_prices[os.path.basename(f)[:10]] = prices
+    dates = sorted(day_prices)
+    # ensure today is the last point with current market prices
+    today = datetime.date.today().isoformat()
+    if not dates or dates[-1] != today:
+        today_prices = {c['id']: c['price'] for c in cl if c['price'] is not None}
+        day_prices[today] = today_prices; dates = sorted(day_prices)
+    last = {}
+    history = []
+    ph = {c['id']: [] for c in cl}  # parallel to dates; None before a card's first price
+    for d in dates:
+        prices = day_prices[d]
+        for cid, p in prices.items(): last[cid] = p
+        # collection value for this day
+        history.append([d, round(sum(last.get(k, cards[k]['price'] or 0) * q for k, q in qty.items()), 2)])
+        for c in cl:
+            cid = c['id']
+            if cid in prices: ph[cid].append(round(prices[cid], 4))
+            elif cid in last: ph[cid].append(round(last[cid], 4))
+            else: ph[cid].append(None)
 
     # 30th Master Set = 30th Celebration main + Classic Collection (sizes from sets.json)
     mparts = [s for s in sets if s['name'] in ('30th Celebration', 'Classic Collection')]
@@ -152,7 +169,7 @@ def main():
         settings=dict(trend_pct=S['trend_pct'], trend_min=S['trend_min_dollars'], window=S['trend_window_days'],
             psa_tiers=S['psa_tiers'], ship=round(S['return_ship_per_card'], 2), gem_gain=S['gem_min_gain'],
             gem_mult=S['gem_min_multiple'], gem_sales=S['gem_min_sales']),
-        history=history, master=master, binders=binders, sets=sets, wishlist=wishlist,
+        dates=dates, history=history, ph=ph, master=master, binders=binders, sets=sets, wishlist=wishlist,
         opened=[dict(o, img=img(o.get('url'))) for o in opened],
         cards={c['id']: c for c in cl})
     with open(os.path.join(SITE, 'data.json'), 'w') as fh:
@@ -163,6 +180,7 @@ def main():
           f"wishlist {t['wish_count']} ${t['wish_cost']:,.2f}, packs {t['packs']}, prices {out['prices_asof']}")
     for s in sets: print(f"  {s['name']}: {s['have']}/{s['size']}")
     print(f"  {master['name']}: {master['have']}/{master['size']} ({master['have']/master['size']:.0%}), ${master['to_finish']:,.2f} to finish")
+    print(f"  history: {len(dates)} days ({dates[0]} → {dates[-1]}), {sum(1 for a in ph.values() if any(x is not None for x in a))} cards with prices")
     if '--check' in sys.argv:
         assert t['cards'] == sum(r.get('owned_qty') or 0 for r in rows)
         print('check ok')

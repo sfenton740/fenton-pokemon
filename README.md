@@ -19,7 +19,7 @@ It reads one file, `data.json`, which `build_data.py` generates from the box dat
 | data.json part | source |
 |---|---|
 | cards, qty, binder/page/pocket, prices, pictures, TCGplayer links, PSA 10, 30-day baseline | `/workspace/collection/collection.json` (the daily routine keeps it in sync with the sheet's All Cards tab; cards[i] = sheet row i+2) |
-| value-over-time chart | `/workspace/collection/price_history/YYYY-MM-DD.csv` snapshots × today's quantities |
+| value-over-time chart + per-card ticker history | `/workspace/collection/price_history/YYYY-MM-DD.csv` → `dates`, `history`, `ph` in data.json (today's qty × each day's prices, forward-filled). Home + card charts: **1M / 6M / Lifetime** range buttons. |
 | Opened Products | `sheet_cache/opened_products.json` (copy of the 📦 Opened Products tab) |
 | set sizes / wishlist flags / release dates | `sheet_cache/sets.json` (copy of Sets & Binders A1:N20) |
 | binder names/emoji | `sheet_cache/binders.json` |

@@ -11,7 +11,7 @@ with sync_playwright() as p:
     pg = ctx.new_page()
     pg.on('console', lambda m: m.type == 'error' and errors.append(m.text))
     pg.on('pageerror', lambda e: errors.append(str(e)))
-    def shot(hash_, name, full=False, wait='.tile, .cell, .row, .box'):
+    def shot(hash_, name, full=False, wait='.tile, .cell, .row, .box, .ticker-svg'):
         pg.goto(BASE + hash_); pg.wait_for_selector(wait, timeout=15000)
         pg.wait_for_load_state('networkidle'); pg.wait_for_timeout(800)
         pg.screenshot(path=f'{OUT}/{name}.png', full_page=full); print('saved', name)

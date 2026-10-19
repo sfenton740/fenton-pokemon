@@ -40,13 +40,18 @@ function home() {
   const t = D.totals, main = D.sets.find(s => s.name === '30th Celebration'), cc = D.sets.find(s => s.name === 'Classic Collection');
   const binTiles = D.binders.map((b, i) => `<a class="tile ${i === 0 ? 'red' : i === 1 ? 'blue' : 'yellow'}" href="#/binder/${i}/1">
       <span class="em">${b.emoji}</span>${esc(b.name.replace(' (new pulls)', ''))}<span class="sub">${b.cards} cards</span></a>`).join('');
+  const pts1m = sliceHist(D.history, 30);
   $app.innerHTML = `
-  <a class="hero" href="#/value" style="display:block">
+  <div class="ticker-hero">
     <div class="lbl">💰 Our cards are worth</div>
     <div class="big">${money(t.value)}</div>
-    <div class="lbl">🃏 ${t.cards} cards · ⭐ ${t.different} different</div>
+    <div id="homeChg">${chgHtml(pts1m, true)}</div>
+    <div class="lbl" style="margin-top:8px">🃏 ${t.cards} cards · ⭐ ${t.different} different</div>
     <div class="pills"><span class="pill up">➕ ${t.up}</span><span class="pill down">➖ ${t.down}</span><span class="pill same">⏸️ ${t.same}</span></div>
-  </a>
+  </div>
+  <div class="ticker-wrap" id="homeTicker"><div class="ticker-tip" hidden></div></div>
+  <div id="homeRanges">${rangeButtons('1M')}</div>
+  ${moversStrip()}
   ${masterBox()}
   <div class="tiles">
     ${binTiles}
@@ -58,7 +63,8 @@ function home() {
     <a class="tile red" href="#/opened"><span class="em">📦</span>Opened<span class="sub">${t.packs} packs</span></a>
     <a class="tile yellow" href="#/search"><span class="em">🔍</span>Find a card<span class="sub">search by name</span></a>
   </div>
-  <p class="foot">Prices: ${esc(D.prices_note)}, ${esc(fmtDate(D.prices_asof))}.<br>Tap any card to see it big!</p>`;
+  <p class="foot">Prices: ${esc(D.prices_note)}, ${esc(fmtDate(D.prices_asof))}.<br>Tap any card to see it big! Drag the chart to peek at a day.</p>`;
+  mountHomeTicker('1M');
 }
 
 function masterBox() {
@@ -77,20 +83,156 @@ function masterBox() {
   </a>`;
 }
 
-function chart(hist) {
-  if (!hist || hist.length < 2) return '';
-  const W = 340, H = 150, P = 8, vals = hist.map(h => h[1]), mn = Math.min(...vals), mx = Math.max(...vals), rg = (mx - mn) || 1;
-  const x = i => P + i * (W - 2 * P) / (hist.length - 1), y = v => P + (H - 2 * P) * (1 - (v - mn) / rg);
-  const pts = hist.map((h, i) => `${x(i).toFixed(1)},${y(h[1]).toFixed(1)}`).join(' ');
-  return `<svg class="chart" viewBox="0 0 ${W} ${H + 22}" role="img" aria-label="Value over time">
-    <polygon points="${P},${H - P} ${pts} ${W - P},${H - P}" fill="#ffcb05" opacity=".45"/>
-    <polyline points="${pts}" fill="none" stroke="#e3350d" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/>
-    <circle cx="${x(hist.length - 1)}" cy="${y(vals[vals.length - 1])}" r="7" fill="#e3350d" stroke="#1e1e1e" stroke-width="3"/>
-    <text x="${P}" y="${H + 18}" font-size="14" font-weight="800">${fmtDate(hist[0][0])}</text>
-    <text x="${W - P}" y="${H + 18}" font-size="14" font-weight="800" text-anchor="end">${fmtDate(hist[hist.length - 1][0])}</text>
-    <text x="${P + 4}" y="${P + 14}" font-size="14" font-weight="800">${money0(mx)}</text>
-    <text x="${P + 4}" y="${H - P - 4}" font-size="14" font-weight="800">${money0(mn)}</text></svg>`;
+/* ---------- stock ticker charts ---------- */
+const RANGES = [
+  {id: '1M', days: 30, label: '1M'},
+  {id: '6M', days: 182, label: '6M'},
+  {id: 'LT', days: 99999, label: 'Lifetime'}
+];
+function sliceHist(hist, days) {
+  if (!hist || hist.length < 2) return hist || [];
+  if (days >= 99999) return hist;
+  const end = hist[hist.length - 1][0];
+  const cut = new Date(end + 'T12:00:00'); cut.setDate(cut.getDate() - days);
+  const cutIso = cut.toISOString().slice(0, 10);
+  let pts = hist.filter(h => h[0] >= cutIso);
+  if (pts.length < 2) pts = hist.slice(-2);
+  return pts;
 }
+function cardHist(id) {
+  const arr = (D.ph && D.ph[id]) || [], dates = D.dates || [];
+  const out = [];
+  for (let i = 0; i < dates.length; i++) if (arr[i] != null) out.push([dates[i], arr[i]]);
+  return out;
+}
+function chgHtml(pts, big) {
+  if (!pts || pts.length < 2) return '';
+  const a = pts[0][1], b = pts[pts.length - 1][1], ch = b - a, p = a ? ch / a : 0;
+  const up = ch > 0, down = ch < 0, cls = up ? 'up' : down ? 'down' : 'flat';
+  const arrow = up ? '▲' : down ? '▼' : '●';
+  const sign = up ? '+' : down ? '−' : '';
+  return `<div class="ticker-chg ${cls}" ${big ? '' : ''}>${arrow} ${sign}${money(Math.abs(ch))} (${sign}${Math.abs(Math.round(p * 1000) / 10)}%)</div>`;
+}
+function tickerSvg(pts, opts = {}) {
+  if (!pts || pts.length < 2) return '<div class="muted" style="text-align:center;padding:20px;font-weight:800">Not enough history yet</div>';
+  const W = opts.w || 360, H = opts.h || 160, P = opts.pad || 12, bot = 22;
+  const vals = pts.map(h => h[1]), mn = Math.min(...vals), mx = Math.max(...vals), rg = (mx - mn) || 1;
+  const up = vals[vals.length - 1] >= vals[0];
+  const col = up ? '#22c55e' : '#ef4444';
+  const fill = up ? 'rgba(34,197,94,.28)' : 'rgba(239,68,68,.28)';
+  const x = i => P + i * (W - 2 * P) / Math.max(1, pts.length - 1);
+  const y = v => P + (H - 2 * P) * (1 - (v - mn) / rg);
+  const line = pts.map((h, i) => `${x(i).toFixed(1)},${y(h[1]).toFixed(1)}`).join(' ');
+  const area = `${P},${H - P} ${line} ${W - P},${H - P}`;
+  const lastX = x(pts.length - 1), lastY = y(vals[vals.length - 1]);
+  // hit circles (invisible) + vertical guide + tip handled by JS
+  const hits = pts.map((h, i) => `<circle class="hit" data-i="${i}" cx="${x(i).toFixed(1)}" cy="${y(h[1]).toFixed(1)}" r="14" fill="transparent"/>`).join('');
+  return `<svg class="ticker-svg" viewBox="0 0 ${W} ${H + bot}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Price chart">
+    <defs><linearGradient id="tg${opts.gid || 'g'}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${col}" stop-opacity=".45"/><stop offset="100%" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+    <polygon points="${area}" fill="url(#tg${opts.gid || 'g'})"/>
+    <polyline points="${line}" fill="none" stroke="${col}" stroke-width="${opts.thick || 3.5}" stroke-linejoin="round" stroke-linecap="round"/>
+    <line class="guide" x1="${lastX}" y1="${P}" x2="${lastX}" y2="${H - P}" stroke="${col}" stroke-width="1.5" stroke-dasharray="3 3" opacity=".5"/>
+    <circle class="dot" cx="${lastX}" cy="${lastY}" r="6" fill="${col}" stroke="#fff" stroke-width="2.5"/>
+    <text x="${P}" y="${H + 16}" font-size="12" font-weight="800" fill="#9ab">${fmtDate(pts[0][0])}</text>
+    <text x="${W - P}" y="${H + 16}" font-size="12" font-weight="800" fill="#9ab" text-anchor="end">${fmtDate(pts[pts.length - 1][0])}</text>
+    <text x="${P + 2}" y="${P + 12}" font-size="11" font-weight="800" fill="#9ab">${opts.money0 === false ? money(mx) : money0(mx)}</text>
+    <text x="${P + 2}" y="${H - P - 4}" font-size="11" font-weight="800" fill="#9ab">${opts.money0 === false ? money(mn) : money0(mn)}</text>
+    ${hits}</svg>`;
+}
+function bindTicker(root, getPts, opts = {}) {
+  if (!root) return;
+  const svg = root.querySelector('.ticker-svg');
+  const tip = root.querySelector('.ticker-tip');
+  const guide = svg && svg.querySelector('.guide');
+  const dot = svg && svg.querySelector('.dot');
+  if (!svg || !tip) return;
+  const pts = getPts();
+  const W = opts.w || 360, H = opts.h || 160, P = opts.pad || 12;
+  const vals = pts.map(h => h[1]), mn = Math.min(...vals), mx = Math.max(...vals), rg = (mx - mn) || 1;
+  const xAt = i => P + i * (W - 2 * P) / Math.max(1, pts.length - 1);
+  const yAt = v => P + (H - 2 * P) * (1 - (v - mn) / rg);
+  const show = i => {
+    if (i < 0 || i >= pts.length) return;
+    const [d, v] = pts[i], xx = xAt(i), yy = yAt(v);
+    if (guide) { guide.setAttribute('x1', xx); guide.setAttribute('x2', xx); guide.setAttribute('opacity', '1'); }
+    if (dot) { dot.setAttribute('cx', xx); dot.setAttribute('cy', yy); }
+    tip.hidden = false;
+    tip.textContent = `${fmtDate(d)} · ${money(v)}`;
+  };
+  const pick = (clientX) => {
+    const rect = svg.getBoundingClientRect();
+    const t = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+    // map through viewBox padding
+    const vx = t * W;
+    let best = 0, bd = 1e9;
+    for (let i = 0; i < pts.length; i++) { const dx = Math.abs(xAt(i) - vx); if (dx < bd) { bd = dx; best = i; } }
+    show(best);
+  };
+  const on = (e) => { e.preventDefault(); const t = e.touches ? e.touches[0] : e; pick(t.clientX); };
+  const off = () => { tip.hidden = true; };
+  svg.addEventListener('pointerdown', on);
+  svg.addEventListener('pointermove', e => { if (e.buttons || e.pressure) on(e); });
+  svg.addEventListener('pointerup', off);
+  svg.addEventListener('pointerleave', off);
+  svg.addEventListener('touchstart', on, {passive: false});
+  svg.addEventListener('touchmove', on, {passive: false});
+  svg.addEventListener('touchend', off);
+}
+function rangeButtons(active) {
+  return `<div class="range">${RANGES.map(r => `<button type="button" data-range="${r.id}" class="${r.id === active ? 'on' : ''}">${r.label}</button>`).join('')}</div>`;
+}
+function moversStrip() {
+  const own = Object.values(D.cards).filter(c => c.qty > 0 && c.pct != null);
+  const up = [...own].filter(c => c.trend === 'up').sort((a, b) => b.pct - a.pct).slice(0, 4);
+  const down = [...own].filter(c => c.trend === 'down').sort((a, b) => a.pct - b.pct).slice(0, 4);
+  const items = [];
+  up.forEach(c => items.push(`<span class="up">${esc(c.name)} ▲ ${Math.round(c.pct * 100)}%</span>`));
+  down.forEach(c => items.push(`<span class="down">${esc(c.name)} ▼ ${Math.abs(Math.round(c.pct * 100))}%</span>`));
+  if (!items.length) return '';
+  const track = items.join(' <span aria-hidden="true">·</span> ');
+  // duplicate for a seamless loop; animation duration scales with how many names we have
+  const sec = Math.max(28, items.length * 6);
+  return `<div class="ticker-strip" aria-label="Biggest movers"><div class="track" style="animation-duration:${sec}s">${track} <span aria-hidden="true">·</span> ${track}</div></div>`;
+}
+function mountHomeTicker(defaultRange) {
+  let range = defaultRange || '1M';
+  const render = () => {
+    const r = RANGES.find(x => x.id === range) || RANGES[0];
+    const pts = sliceHist(D.history, r.days);
+    const box = document.getElementById('homeTicker');
+    if (!box) return;
+    const chgEl = document.getElementById('homeChg');
+    if (chgEl) chgEl.innerHTML = chgHtml(pts, true);
+    box.innerHTML = `<div class="ticker-tip" hidden></div>${tickerSvg(pts, {gid: 'home', h: 150, w: 360})}`;
+    bindTicker(box, () => pts, {h: 150, w: 360});
+    document.querySelectorAll('#homeRanges [data-range]').forEach(b => {
+      b.classList.toggle('on', b.dataset.range === range);
+      b.onclick = () => { range = b.dataset.range; render(); };
+    });
+  };
+  render();
+}
+function mountCardTicker(id) {
+  let range = '1M';
+  const hist = cardHist(id);
+  const render = () => {
+    const r = RANGES.find(x => x.id === range) || RANGES[0];
+    const pts = sliceHist(hist, r.days);
+    const box = document.getElementById('cardTicker');
+    if (!box) return;
+    const chgEl = document.getElementById('cardChg');
+    if (chgEl) chgEl.innerHTML = pts.length >= 2 ? chgHtml(pts) : '<div class="muted" style="font-weight:800">No price history yet</div>';
+    box.innerHTML = `<div class="ticker-tip" hidden></div>${tickerSvg(pts, {gid: 'card', h: 110, w: 320, thick: 3, money0: false})}`;
+    if (pts.length >= 2) bindTicker(box, () => pts, {h: 110, w: 320});
+    document.querySelectorAll('#cardRanges [data-range]').forEach(b => {
+      b.classList.toggle('on', b.dataset.range === range);
+      b.onclick = () => { range = b.dataset.range; render(); };
+    });
+  };
+  render();
+}
+
 
 function value() {
   setTitle('💰 Our Value');
@@ -104,13 +246,23 @@ function value() {
     <div class="lbl">🕙 ${t.base_date ? fmtDate(t.base_date) : '30 days ago'}: ${money(t.value_30d)}</div>
     <div class="lbl ${''}" style="margin-top:4px">${ch >= 0 ? '⬆️' : '⬇️'} ${ch >= 0 ? '+' : '−'}${money(Math.abs(ch))} (${pct(p)})</div>
     <div class="pills"><span class="pill up">➕ ${t.up} up</span><span class="pill down">➖ ${t.down} down</span><span class="pill same">⏸️ ${t.same} same</span></div></div>
-  <h2>📈 Value over time</h2><div class="box">${chart(D.history)}</div>
+  <h2>📈 Value over time</h2>
+  <div id="valChg" style="text-align:center;margin-bottom:6px"></div>
+  <div class="ticker-wrap solo" id="valTicker"><div class="ticker-tip" hidden></div></div>
+  <div id="valRanges">${rangeButtons('1M')}</div>
   <div class="note">➕ up · ➖ down · ⏸️ about the same (within ${Math.round(D.settings.trend_pct * 100)}% or less than ${money(D.settings.trend_min)}) over ${D.settings.window} days.
    New sets usually drop after release, then settle. We're keeping our cards, so this is just for fun!</div>
   <h2>📒 Binders</h2><div class="list">${bins}</div>
   <h2>📚 Sets</h2><div class="list">${sets}</div>
   <div class="tiles"><div class="tile" style="cursor:default"><span class="em">🃏</span>${t.cards}<span class="sub">cards</span></div>
    <div class="tile" style="cursor:default"><span class="em">👯</span>${money(t.extras_value)}<span class="sub">extra copies</span></div></div>`;
+  (function(){ let range='1M'; const render=()=>{ const r=RANGES.find(x=>x.id===range)||RANGES[0]; const pts=sliceHist(D.history,r.days);
+    const box=document.getElementById('valTicker'), chg=document.getElementById('valChg');
+    if(chg) chg.innerHTML=chgHtml(pts); if(!box) return;
+    box.innerHTML=`<div class="ticker-tip" hidden></div>${tickerSvg(pts,{gid:'val',h:150,w:360})}`;
+    bindTicker(box,()=>pts,{h:150,w:360});
+    document.querySelectorAll('#valRanges [data-range]').forEach(b=>{ b.classList.toggle('on',b.dataset.range===range); b.onclick=()=>{range=b.dataset.range;render();}; });
+  }; render(); })();
 }
 
 function binder(bi, page) {
@@ -258,6 +410,11 @@ function openCard(id) {
     <button class="hbtn close" aria-label="Close">✖️</button>
     <img class="pic${c.qty ? '' : ' miss'}" referrerpolicy="no-referrer" src="${esc(c.big || c.img)}" alt="${esc(c.name)}" onerror="if(this.src!=='${esc(c.img)}')this.src='${esc(c.img)}'">
     <h3>${esc(c.name)}</h3><div class="setl">${esc(c.set)} · #${esc(c.num)}${c.rarity ? ' · ' + esc(c.rarity) : ''}</div>
+    <div class="mini-ticker">
+      <div id="cardChg" class="chgline"></div>
+      <div class="ticker-wrap solo" id="cardTicker"><div class="ticker-tip" hidden></div></div>
+      <div id="cardRanges">${rangeButtons('1M')}</div>
+    </div>
     <div class="stats">
       <div class="stat"><div class="k">💰 Price</div><div class="v">${money(c.price)}</div></div>
       <div class="stat"><div class="k">🃏 We have</div><div class="v">${c.qty ? c.qty : '❔ 0'}</div></div>
@@ -271,6 +428,7 @@ function openCard(id) {
   $modal.hidden = false; document.body.style.overflow = 'hidden';
   $modal.querySelectorAll('.close,.close2').forEach(b => b.onclick = closeCard);
   history.pushState({modal: 1}, '');
+  mountCardTicker(id);
 }
 function closeCard(fromPop) {
   if ($modal.hidden) return;
