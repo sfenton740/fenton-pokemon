@@ -1,20 +1,26 @@
 [
  {
   "name": "30th Binder 1",
-  "emoji": "📕",
+  "emoji": "\ud83d\udcd5",
   "desc": "Our main 30th Celebration binder",
   "pages": 23
  },
  {
   "name": "30th Extras Binder",
-  "emoji": "📗",
+  "emoji": "\ud83d\udcd7",
   "desc": "Our extra copies (duplicates)",
   "pages": 23
  },
  {
   "name": "Unsorted (new pulls)",
-  "emoji": "🆕",
+  "emoji": "\ud83c\udd95",
   "desc": "New pulls not in a binder yet",
+  "pages": null
+ },
+ {
+  "name": "30th Bulk",
+  "emoji": "\ud83d\udcd2",
+  "desc": "Top-loaded 30th Celebration extras / bulk (sorted by card number)",
   "pages": null
  }
 ]
