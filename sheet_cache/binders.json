@@ -21,6 +21,7 @@
   "name": "30th Bulk",
   "emoji": "\ud83d\udcd2",
   "desc": "Top-loaded 30th Celebration extras / bulk (sorted by card number)",
-  "pages": null
+  "pages": null,
+  "group_copies": true
  }
 ]

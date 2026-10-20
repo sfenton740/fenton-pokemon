@@ -86,13 +86,22 @@ def main():
             plist = [pages[p] if p in pages else [None] * 9 for p in range(1, npages + 1)]
         else:   # no pages (loose pulls): lay them out 9 per page in list order
             plist = []
-            for k in range(0, len(brows), 9):
-                chunk = [dict(id=r['card_id'], have=bool(r.get('owned_qty'))) for r in brows[k:k + 9]]
+            if b.get('group_copies'):   # one tile per card, with a copy count (e.g. 30th Bulk)
+                grp = collections.OrderedDict()
+                for r in brows:
+                    g = grp.setdefault(r['card_id'], dict(id=r['card_id'], have=False, n=0))
+                    g['n'] += r.get('owned_qty') or 0; g['have'] = g['have'] or bool(r.get('owned_qty'))
+                items = list(grp.values())
+            else:
+                items = [dict(id=r['card_id'], have=bool(r.get('owned_qty'))) for r in brows]
+            for k in range(0, len(items), 9):
+                chunk = items[k:k + 9]
                 plist.append(chunk + [None] * (9 - len(chunk)))
         owned = [r for r in brows if r.get('owned_qty')]
         binders.append(dict(name=b['name'], emoji=b['emoji'], desc=b['desc'], loose=not any(r.get('page') for r in brows),
             cards=sum(r['owned_qty'] for r in owned), missing=sum(1 for r in brows if not r.get('owned_qty')),
-            value=round(sum((num(r['market_price']) or 0) * r['owned_qty'] for r in owned), 2), pages=plist))
+            value=round(sum((num(r['market_price']) or 0) * r['owned_qty'] for r in owned), 2), pages=plist,
+            grouped=bool(b.get('group_copies')), distinct=len({r['card_id'] for r in owned})))
 
     # ---------- sets ----------
     sets = []

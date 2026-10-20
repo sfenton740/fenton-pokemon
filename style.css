@@ -154,3 +154,11 @@ body.modal-open{position:fixed;left:0;right:0;overflow:hidden;width:100%}
 .mini-ticker{margin:10px 0 4px}
 .mini-ticker .ticker-wrap{margin:0}
 .mini-ticker .chgline{text-align:center;font-weight:900;font-size:18px;margin-top:4px}
+
+/* grouped tiles (30th Bulk): one tile per card + copy count */
+.picwrap{position:relative}
+.count{position:absolute;right:4px;bottom:4px;min-width:44px;height:34px;padding:0 9px;border-radius:999px;background:var(--red);color:#fff;
+ border:3px solid #fff;box-shadow:0 0 0 3px var(--ink),0 3px 0 3px rgba(0,0,0,.25);font-weight:900;font-size:19px;line-height:1;display:grid;place-items:center;letter-spacing:.5px}
+.cell.grouped .pr .ea{font-size:11px;font-weight:800;color:#666}
+.cell .tot{font-size:12px;font-weight:800;color:#444;line-height:1.2}
+.cell.grouped .tot{background:#fff3c4;border-radius:999px;margin:2px 2px 0;padding:1px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}

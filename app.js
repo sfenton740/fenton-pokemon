@@ -21,10 +21,13 @@ function cell(id, opt = {}) {
   if (!id) return `<div class="cell empty" aria-hidden="true"></div>`;
   const c = card(id); if (!c) return `<div class="cell empty"></div>`;
   const miss = opt.have === false || (opt.have == null && c.qty === 0);
-  const badge = miss ? `<span class="badge need" title="We need this one">?</span>` : (opt.showQty && c.qty > 1 ? `<span class="badge">×${c.qty}</span>` : '');
+  const n = opt.count;   // copies in this spot (grouped views like 30th Bulk)
+  const badge = miss ? `<span class="badge need" title="We need this one">?</span>` : (n ? '' : (opt.showQty && c.qty > 1 ? `<span class="badge">×${c.qty}</span>` : ''));
   const tr = opt.trend && !miss && c.trend !== 'same' && c.trend !== 'new' ? `<span class="tr">${TR[c.trend]}</span>` : '';
-  return `<button class="cell${miss ? ' miss' : ''}" data-card="${esc(id)}" aria-label="${esc(c.name)}">${badge}${tr}${IMG(c)}
-    <div class="cap">${esc(c.name)}</div><div class="pr">${opt.price === false ? '' : money(c.price)}</div></button>`;
+  const pic = n ? `<div class="picwrap">${IMG(c)}${n > 1 ? `<span class="count" aria-label="${n} copies">×${n}</span>` : ''}</div>` : IMG(c);
+  const tot = n ? `<div class="tot">${n > 1 ? `all ${n}: ${money(c.price * n)}` : 'just 1'}</div>` : '';
+  return `<button class="cell${miss ? ' miss' : ''}${n ? ' grouped' : ''}" data-card="${esc(id)}" aria-label="${esc(c.name)}${n > 1 ? `, ${n} copies` : ''}">${badge}${tr}${pic}
+    <div class="cap">${esc(c.name)}</div><div class="pr">${opt.price === false ? '' : money(c.price)}${n > 1 ? '<span class="ea"> each</span>' : ''}</div>${tot}</button>`;
 }
 function row(id, right, extra = '', rank = '') {
   const c = card(id);
@@ -275,12 +278,15 @@ function binder(bi, page) {
     return `<a href="#/binder/${bi}/${i + 1}" class="${i + 1 === page ? 'on' : ''} ${full ? 'full' : ''}">${i + 1}</a>`;
   }).join('');
   const have = slots.filter(s => s && s.have).length, miss = slots.filter(s => s && !s.have).length;
+  const copies = slots.reduce((t, s) => t + (s ? (s.n || 0) : 0), 0), pageVal = slots.reduce((t, s) => t + (s ? (s.n || 0) * card(s.id).price : 0), 0);
   $app.innerHTML = `
   <div class="pager"><a class="btn white" ${page > 1 ? `href="#/binder/${bi}/${page - 1}"` : 'disabled'} aria-label="Previous page">◀</a>
     <div class="pg">${b.loose ? 'Group' : 'Page'} ${page}<div class="muted">of ${n}</div></div>
     <a class="btn white" ${page < n ? `href="#/binder/${bi}/${page + 1}"` : 'disabled'} aria-label="Next page">▶</a></div>
-  <div class="binder" id="binderPage"><div class="grid">${slots.map(s => s ? cell(s.id, {have: s.have, trend: true}) : cell(null)).join('')}</div></div>
-  <p class="muted" style="text-align:center;font-weight:800">✅ ${have} here${miss ? ` · ❔ ${miss} still needed` : ''}${b.loose ? ' · not in a binder yet' : ''}</p>
+  <div class="binder" id="binderPage"><div class="grid">${slots.map(s => s ? cell(s.id, {have: s.have, trend: true, count: b.grouped ? s.n : 0}) : cell(null)).join('')}</div></div>
+  <p class="muted" style="text-align:center;font-weight:800">${b.grouped
+    ? `✅ ${slots.filter(Boolean).length} different · ${copies} cards here · ${money(pageVal)}<br>📦 ${b.distinct} different · ${b.cards} cards in all · ${money(b.value)}`
+    : `✅ ${have} here${miss ? ` · ❔ ${miss} still needed` : ''}${b.loose ? ' · not in a binder yet' : ''}`}</p>
   <h2 style="text-align:center">📖 Pages</h2><div class="dots">${dots}</div>
   <p class="foot">Swipe left or right to turn pages. Grey cards = we still need them.</p>`;
   swipe(document.getElementById('binderPage'), dir => { const np = page + dir; if (np >= 1 && np <= n) location.hash = `#/binder/${bi}/${np}`; });
