@@ -1,5 +1,5 @@
 // Offline support: app shell cached, data.json network-first, card pictures cache-first.
-const VERSION = 'v5-bulkgroup-2026-10-20';
+const VERSION = 'v6-unsortedgroup-2026-10-21';
 const SHELL = 'shell-' + VERSION, DATA = 'data-' + VERSION, IMGS = 'imgs-v1';
 const FILES = ['./', 'index.html', 'style.css', 'app.js', 'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'icons/favicon.png'];

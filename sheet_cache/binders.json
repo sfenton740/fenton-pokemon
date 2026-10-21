@@ -15,7 +15,8 @@
   "name": "Unsorted (new pulls)",
   "emoji": "\ud83c\udd95",
   "desc": "New pulls not in a binder yet",
-  "pages": null
+  "pages": null,
+  "group_copies": true
  },
  {
   "name": "30th Bulk",
