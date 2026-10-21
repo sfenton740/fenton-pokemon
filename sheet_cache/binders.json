@@ -23,6 +23,7 @@
   "emoji": "📒",
   "desc": "Top-loaded 30th Celebration extras / bulk (sorted by card number)",
   "pages": null,
-  "group_copies": true
+  "group_copies": true,
+  "sort": "number"
  }
 ]

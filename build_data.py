@@ -92,6 +92,9 @@ def main():
                     g = grp.setdefault(r['card_id'], dict(id=r['card_id'], have=False, n=0))
                     g['n'] += r.get('owned_qty') or 0; g['have'] = g['have'] or bool(r.get('owned_qty'))
                 items = list(grp.values())
+                if b.get('sort') == 'number':   # main set by collector #, then Classic Collection etc.
+                    first = {r['card_id']: r for r in reversed(brows)}
+                    items.sort(key=lambda g: (first[g['id']].get('set_name') != '30th Celebration', numkey(first[g['id']].get('number'))))
             else:
                 items = [dict(id=r['card_id'], have=bool(r.get('owned_qty'))) for r in brows]
             for k in range(0, len(items), 9):
