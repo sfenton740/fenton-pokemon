@@ -36,6 +36,6 @@
  "gem_min_multiple": 2,
  "gem_min_sales": 3,
  "trend_pct": 0.05,
- "trend_min_dollars": 0.25,
+ "trend_min_dollars": 0.1,
  "trend_window_days": 30
 }

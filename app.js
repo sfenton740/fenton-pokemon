@@ -428,7 +428,7 @@ function openCard(id) {
   $modal.innerHTML = `<button class="hbtn mclose close" aria-label="Close">✖️</button>
     <div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(c.name)}">
     <img class="pic${c.qty ? '' : ' miss'}" referrerpolicy="no-referrer" src="${esc(c.big || c.img)}" alt="${esc(c.name)}" onerror="if(this.src!=='${esc(c.img)}')this.src='${esc(c.img)}'">
-    <h3>${esc(c.name)}</h3><div class="setl">${esc(c.set)} · #${esc(c.num)}${c.rarity ? ' · ' + esc(c.rarity) : ''}</div>
+    <h3>${esc(c.name)}</h3><div class="setl">${esc(c.set)} · #${esc(c.num)}${c.rarity && c.rarity !== c.set ? ' · ' + esc(c.rarity) : ''}</div>
     <div class="mini-ticker">
       <div id="cardChg" class="chgline"></div>
       <div class="ticker-wrap solo" id="cardTicker"><div class="ticker-tip" hidden></div></div>
