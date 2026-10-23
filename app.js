@@ -66,6 +66,7 @@ function home() {
     <a class="tile red" href="#/opened"><span class="em">📦</span>Opened<span class="sub">${t.packs} packs</span></a>
     <a class="tile yellow" href="#/search"><span class="em">🔍</span>Find a card<span class="sub">search by name</span></a>
   </div>
+  <a class="gamebtn" href="#/games" aria-label="Game Time! Play Pokémon games"><span class="ball"></span><span>Game Time!<small>🃏 Memory · 👀 Who's That?</small></span><span class="ball"></span></a>
   <p class="foot">Prices: ${esc(D.prices_note)}, ${esc(fmtDate(D.prices_asof))}.<br>Tap any card to see it big! Drag the chart to peek at a day.</p>`;
   mountHomeTicker('1M');
 }
@@ -467,7 +468,10 @@ function route() {
   if (!$modal.hidden) closeCard(true);
   const p = location.hash.replace(/^#\/?/, '').split('/');
   window.scrollTo(0, 0);
+  document.body.classList.toggle('game-mode', p[0] === 'games');
+  if (window.FentonGames) window.FentonGames.stop();
   switch (p[0]) {
+    case 'games': setTitle(p[1] === 'memory' ? 'Memory Match' : p[1] === 'who' ? "Who's That Pokémon?" : 'Game Time'); return window.FentonGames ? window.FentonGames.render($app, D, p[1]) : home();
     case 'value': return value();
     case 'binder': return binder(+p[1] || 0, +p[2] || 1);
     case 'sets': return sets();

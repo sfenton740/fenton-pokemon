@@ -1,0 +1,102 @@
+/* Game Time (games.js) */
+body.game-mode main{max-width:1100px;padding-top:10px}
+.fg,.fg *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation}
+.fg img{-webkit-user-drag:none;pointer-events:none}
+.fg button,.fg a{touch-action:manipulation}
+/* home button */
+.gamebtn{display:flex;align-items:center;justify-content:center;gap:14px;margin:22px 0 4px;min-height:120px;padding:14px 18px;border-radius:30px;
+ border:5px solid var(--ink);box-shadow:0 7px 0 rgba(0,0,0,.25);font-weight:900;font-size:34px;color:var(--ink);text-shadow:0 2px 0 #fff8;
+ background:linear-gradient(135deg,#ffcb05 0 30%,#ff9a3c 30% 50%,#ff6fb5 50% 70%,#6fd0ff 70%);touch-action:manipulation}
+.gamebtn:active{transform:translateY(4px);box-shadow:0 3px 0 rgba(0,0,0,.25)}
+.gamebtn .ball{width:66px;height:66px;flex:0 0 66px;animation:fgbob 1.4s ease-in-out infinite}
+.gamebtn small{display:block;font-size:17px;font-weight:800}
+/* top bar */
+.fg-bar{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.fg-icon{width:64px;height:64px;flex:0 0 64px;display:grid;place-items:center;font-size:32px;background:#fff;border:4px solid var(--ink);border-radius:50%;box-shadow:0 4px 0 rgba(0,0,0,.2)}
+.fg-icon:active,.fg-opt:active,.fg-pick:active{transform:translateY(3px)}
+.fg-seg{flex:1;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px;background:#fff;border:4px solid var(--ink);border-radius:999px;padding:5px;min-width:250px}
+.fg-seg button{min-height:58px;border-radius:999px;font-weight:900;font-size:20px;display:flex;align-items:center;justify-content:center;gap:8px}
+.fg-seg button.on{background:var(--red);color:#fff}
+.fg-balls{display:inline-flex;gap:2px}.fg-balls .mini-ball{width:30px;height:30px;flex-basis:30px;border-color:var(--ink);box-shadow:none}
+.fg-em{font-size:30px;line-height:1}
+.fg-moves,.fg-starbox{min-width:96px;height:64px;padding:0 14px;border-radius:999px;background:var(--yellow);border:4px solid var(--ink);display:flex;align-items:center;justify-content:center;gap:6px;font-weight:900;font-size:20px}
+.fg-moves b,.fg-starbox b{font-size:30px}.fg-starbox span{font-size:30px}
+.fg-starbox.pop{animation:fgpop .5s}
+/* menu */
+.fg-hello{text-align:center;font-weight:900;font-size:44px;margin:4px 0 14px;color:var(--red);text-shadow:0 3px 0 var(--ink),0 0 1px var(--ink)}
+.fg-menu{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.fg-pick{display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px 14px 22px;border-radius:32px;border:5px solid var(--ink);box-shadow:0 8px 0 rgba(0,0,0,.22);text-align:center;color:#fff}
+.fg-pick.red{background:linear-gradient(170deg,#ff5b3a,var(--red))}.fg-pick.blue{background:linear-gradient(170deg,#4b9be0,var(--blue))}
+.fg-pickname{font-weight:900;font-size:32px;line-height:1.1;text-shadow:0 3px 0 rgba(0,0,0,.3)}
+.fg-picksub{font-weight:800;font-size:20px;opacity:.95}
+.fg-pickart{display:flex;gap:10px;align-items:center;justify-content:center;min-height:210px}
+.fg-back.mini,.fg-face.mini{position:relative;display:block;width:92px;height:128px;border-radius:14px}
+.fg-face.mini{width:118px;height:164px;background:#fff;border:4px solid var(--ink);overflow:hidden;transform:rotate(-4deg)}
+.fg-face.mini img{width:100%;height:100%;object-fit:cover}
+.fg-silmini{position:relative;display:grid;place-items:center;width:230px;height:200px;border-radius:24px;background:radial-gradient(circle,#ffe66b 0 35%,#ffb703 70%);border:4px solid var(--ink)}
+.fg-silmini img{max-width:84%;max-height:84%}
+.fg-silmini b{position:absolute;right:10px;top:4px;font-size:64px;color:#fff;-webkit-text-stroke:3px var(--ink);font-weight:900}
+.fg-menu-foot{display:flex;align-items:center;gap:12px;justify-content:center;margin-top:20px;font-weight:800;color:#555}
+/* card back = Pokéball */
+.fg-back{background:radial-gradient(circle at 50% 50%,#fff 0 11%,var(--ink) 11.5% 16%,transparent 16.5%),
+ linear-gradient(var(--red) 0 46%,var(--ink) 46% 54%,#fff 54%);border:4px solid var(--ink)}
+.fg-back.mini{border-radius:14px}
+/* memory grid */
+.fg-grid{display:grid;gap:12px;justify-content:center;margin:0 auto}
+.fg-card{position:relative;aspect-ratio:5/7;padding:0;perspective:900px}
+.fg-in{position:absolute;inset:0;transition:transform .45s cubic-bezier(.3,1.4,.5,1);transform-style:preserve-3d;-webkit-transform-style:preserve-3d}
+.fg-card.up .fg-in{transform:rotateY(180deg)}
+.fg-back,.fg-face{position:absolute;inset:0;border-radius:18px;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:0 5px 0 rgba(0,0,0,.2)}
+.fg-card .fg-back{background-color:#fff}
+.fg-face{transform:rotateY(180deg);background:#fff;border:5px solid var(--ink);overflow:hidden;display:grid;place-items:center}
+.fg-face img{width:100%;height:100%;object-fit:cover}
+.fg-card.done .fg-face{border-color:var(--yellow);box-shadow:0 0 0 5px var(--ink),0 0 26px 8px #ffe066}
+.fg-card.done{animation:fgjump .7s .05s}
+/* win */
+.fg-win{position:fixed;inset:0;z-index:40;background:rgba(20,30,70,.55);display:grid;place-items:center;padding:20px;animation:fgfade .3s}
+.fg-winbox{background:#fff8dc;border:6px solid var(--ink);border-radius:34px;padding:22px 26px 26px;text-align:center;max-width:560px;width:100%;box-shadow:0 10px 0 rgba(0,0,0,.3);animation:fgpop .55s}
+.fg-pikas{display:flex;justify-content:center;align-items:flex-end;gap:12px;font-size:56px}
+.fg-pikas img{width:150px;height:110px;object-fit:cover;border-radius:22px;border:5px solid var(--ink)}
+.fg-big{font-size:60px;font-weight:900;color:var(--red);text-shadow:0 3px 0 var(--ink);line-height:1.1;margin-top:8px}
+.fg-stars{font-size:44px;letter-spacing:6px}.fg-sub{font-size:24px;font-weight:900;margin-top:4px}
+.fg-found{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:12px 0}
+.fg-found img{width:76px;height:56px;object-fit:cover;border-radius:12px;border:3px solid var(--ink)}
+.fg-again{font-size:30px;min-height:84px;padding:10px 36px;margin-top:4px}
+/* who's that */
+.fg-who{display:grid;gap:14px}
+.fg-q{position:relative;height:min(44vh,400px);border-radius:32px;border:6px solid var(--ink);overflow:hidden;background:#2a75bb;display:grid;place-items:center;box-shadow:0 7px 0 rgba(0,0,0,.25)}
+.fg-rays{position:absolute;inset:-60%;background:repeating-conic-gradient(from 0deg,#ffcb05 0 10deg,#ffe36b 10deg 20deg);animation:spin 30s linear infinite}
+.fg-q::after{content:"";position:absolute;inset:0;background:radial-gradient(circle,transparent 30%,rgba(42,117,187,.55) 100%);pointer-events:none}
+.fg-sil{position:relative;z-index:1;max-width:78%;max-height:80%;filter:drop-shadow(0 0 10px #fff) drop-shadow(0 0 4px #fff);transition:opacity .4s,transform .4s}
+.fg-reveal{position:absolute;z-index:2;max-width:82%;max-height:80%;border-radius:22px;border:6px solid #fff;box-shadow:0 0 0 5px var(--ink);opacity:0;transform:scale(.4) rotate(-8deg);transition:opacity .35s,transform .55s cubic-bezier(.3,1.6,.5,1)}
+.fg-q.solved .fg-sil{opacity:0;transform:scale(1.3)}
+.fg-q.solved .fg-reveal{opacity:1;transform:none}
+.fg-qtext{position:absolute;z-index:3;left:50%;bottom:12px;transform:translateX(-50%);white-space:nowrap;background:#fff;border:4px solid var(--ink);border-radius:999px;padding:6px 20px;font-weight:900;font-size:28px}
+.fg-qtext b{color:var(--red)}
+.fg-hear{position:absolute;z-index:3;top:10px;left:10px}
+.fg-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.fg-opt{background:#fff;border:5px solid var(--ink);border-radius:26px;box-shadow:0 6px 0 rgba(0,0,0,.2);min-height:110px;overflow:hidden;transition:opacity .3s,transform .3s}
+.fg-opts.pics .fg-opt{padding:0;aspect-ratio:4/3;min-height:0}
+.fg-opts.pics .fg-opt img{width:100%;height:100%;object-fit:cover;display:block}
+.fg-opts.names .fg-opt{font-weight:900;font-size:30px;padding:10px;background:var(--yellow)}
+.fg-opt.wiggle{animation:fgwiggle .45s}
+.fg-opt.gone{opacity:.28;transform:scale(.92)}
+.fg-opt.right{border-color:var(--green);box-shadow:0 0 0 5px var(--yellow),0 6px 0 rgba(0,0,0,.2);animation:fgjump .7s}
+.fg-next{font-size:32px;min-height:88px;justify-self:center;padding:10px 56px}
+/* confetti */
+.fg-confetti{position:fixed;inset:0;pointer-events:none;z-index:70;overflow:hidden}
+.fg-confetti i{position:absolute;width:13px;height:18px;border:2px solid rgba(0,0,0,.25);animation:fgfall 2s ease-out forwards}
+@keyframes fgfall{0%{transform:translate(0,0) rotate(0)}100%{transform:translate(var(--dx),var(--dy)) rotate(var(--rot));opacity:0}}
+.fg-bounce{display:inline-block;animation:fgbob 1s ease-in-out infinite}.fg-bounce.d1{animation-delay:.15s}.fg-bounce.d2{animation-delay:.3s}
+@keyframes fgbob{0%,100%{transform:translateY(0)}50%{transform:translateY(-16px)}}
+@keyframes fgjump{0%,100%{transform:none}30%{transform:translateY(-18px) scale(1.06)}60%{transform:translateY(0) scale(.97)}}
+@keyframes fgwiggle{0%,100%{transform:none}20%{transform:rotate(-6deg)}40%{transform:rotate(6deg)}60%{transform:rotate(-4deg)}80%{transform:rotate(3deg)}}
+@keyframes fgpop{0%{transform:scale(.5)}70%{transform:scale(1.08)}100%{transform:none}}
+@keyframes fgfade{from{opacity:0}}
+@media (max-width:700px){.fg-menu{grid-template-columns:1fr}.fg-hello{font-size:34px}.fg-pickart{min-height:170px}.fg-opts.names .fg-opt{font-size:22px}.fg-qtext{font-size:22px}}
+@media (orientation:landscape) and (min-width:900px){
+ .fg-who{grid-template-columns:1.25fr 1fr;align-items:center}
+ .fg-q{height:calc(100vh - 210px);max-height:560px;grid-row:span 2}
+ .fg-opts{grid-template-columns:1fr}.fg-opts.pics .fg-opt{aspect-ratio:auto;height:calc((100vh - 330px)/3);max-height:150px}
+ .fg-opts.pics .fg-opt img{object-fit:cover}
+ .fg-next{grid-column:2}}

@@ -1,0 +1,208 @@
+/* Game Time - kid games for the Fenton Pokémon site. No libraries, no network needed (pictures live in games/).
+   Memory Match + Who's That Pokémon?  Built for little fingers on an iPad: big buttons, no timers, no losing. */
+window.FentonGames = (() => {
+'use strict';
+// Owned cards with clear art (art crops made once by tools/make_game_art.py from our own card scans).
+const MEM = [['me55-9','Vulpix'],['me55-10','Ninetales'],['me55-11','Moltres'],['me55-16','Slowpoke'],['me55-17','Lapras'],
+  ['me55-19','Kyogre'],['me55-23','Pikachu'],['me55-55','Zapdos'],['me55-63','Mewtwo'],['me55-65','Mew'],['me55-67','Marill'],
+  ['me55-69','Espeon'],['me55-75','Chandelure'],['me55-81','Gimmighoul'],['me55-93','Murkrow'],['me55-95','Zorua'],
+  ['me55-113','Meowth'],['me55-116','Eevee'],['me55-119','Snorlax'],['me55-120','Igglybuff'],['me55-14','Reshiram']];
+const WHO = ['me55-9','me55-10','me55-17','me55-23','me55-55','me55-65','me55-67','me55-69','me55-75','me55-81',
+  'me55-93','me55-95','me55-113','me55-116','me55-119','me55-120'];
+const NAME = Object.fromEntries(MEM);
+const ART = id => 'games/art/' + id + '.jpg', SIL = id => 'games/sil/' + id + '.png';
+const FILES = [...MEM.map(m => ART(m[0])), ...WHO.map(SIL)];
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const store = (k, v) => { try { if (v === undefined) return localStorage.getItem('fg.' + k); localStorage.setItem('fg.' + k, v); } catch (e) { return null; } };
+let D = null, $app = null, timers = [];
+const later = (fn, ms) => { const t = setTimeout(fn, ms); timers.push(t); return t; };
+const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
+const owned = id => !D || !D.cards || !D.cards[id] || D.cards[id].qty > 0;
+
+/* ---------- sound (WebAudio beeps, no files) + speech ---------- */
+let muted = store('mute') === '1', ac = null;
+function audio() {
+  if (muted) return null;
+  try { if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); } catch (e) { return null; }
+  return ac;
+}
+function tone(f, at = 0, dur = .12, type = 'sine', vol = .14) {
+  const c = audio(); if (!c) return;
+  const t = c.currentTime + at, o = c.createOscillator(), g = c.createGain();
+  o.type = type; o.frequency.setValueAtTime(f, t);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .015); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g).connect(c.destination); o.start(t); o.stop(t + dur + .05);
+}
+const SFX = {
+  tap: () => tone(880, 0, .06, 'triangle', .07),
+  flip: () => { tone(520, 0, .06, 'triangle', .08); tone(780, .05, .07, 'triangle', .07); },
+  match: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, i * .08, .16, 'triangle', .13)),
+  nope: () => { tone(330, 0, .14, 'sine', .08); tone(262, .13, .2, 'sine', .07); },   // soft "boop boop", never harsh
+  win: () => [523, 659, 784, 659, 784, 1047, 1319].forEach((f, i) => tone(f, i * .11, i === 6 ? .5 : .18, 'square', .06))
+};
+function say(text) {
+  if (muted || !('speechSynthesis' in window)) return;
+  try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.rate = .95; u.pitch = 1.25; u.lang = 'en-US'; speechSynthesis.speak(u); } catch (e) {}
+}
+function muteBtn() { return `<button class="fg-icon" id="fgMute" aria-label="${muted ? 'Sound off' : 'Sound on'}">${muted ? '🔇' : '🔊'}</button>`; }
+function bindMute() {
+  const b = document.getElementById('fgMute'); if (!b) return;
+  b.onclick = () => { muted = !muted; store('mute', muted ? '1' : '0'); if (muted && 'speechSynthesis' in window) speechSynthesis.cancel();
+    b.textContent = muted ? '🔇' : '🔊'; b.setAttribute('aria-label', muted ? 'Sound off' : 'Sound on'); SFX.tap(); };
+}
+
+/* ---------- confetti ---------- */
+function confetti(n = 70, from = null) {
+  const box = document.createElement('div'); box.className = 'fg-confetti'; box.setAttribute('aria-hidden', 'true');
+  const cols = ['#e3350d', '#ffcb05', '#2a75bb', '#2e9e44', '#ff7ac6', '#fff'];
+  const r = from ? from.getBoundingClientRect() : null;
+  for (let i = 0; i < n; i++) {
+    const p = document.createElement('i');
+    const x = r ? r.left + r.width / 2 : Math.random() * innerWidth, y = r ? r.top + r.height / 2 : -20;
+    p.style.cssText = `left:${x}px;top:${y}px;background:${cols[i % cols.length]};--dx:${(Math.random() - .5) * (r ? 380 : 160)}px;` +
+      `--dy:${r ? (Math.random() * 260 - 200) : innerHeight + 60}px;--rot:${Math.random() * 900 - 450}deg;animation-delay:${Math.random() * (r ? .05 : .5)}s;` +
+      `animation-duration:${r ? .9 + Math.random() * .5 : 1.8 + Math.random() * 1.2}s;${i % 3 === 0 ? 'border-radius:50%;' : ''}`;
+    box.appendChild(p);
+  }
+  document.body.appendChild(box); setTimeout(() => box.remove(), 3400);
+}
+
+/* ---------- shared bits ---------- */
+const balls = n => `<span class="fg-balls">${'<span class="mini-ball"></span>'.repeat(n)}</span>`;
+function frame(title, inner, bar) {
+  $app.innerHTML = `<div class="fg" id="fg">
+    <div class="fg-bar"><a class="fg-icon" href="#/games" aria-label="All games">🎮</a>${bar}${muteBtn()}</div>${inner}</div>`;
+  bindMute();
+}
+
+/* ---------- menu ---------- */
+function menu() {
+  const pika = 'me55-23';
+  $app.innerHTML = `<div class="fg" id="fg">
+    <div class="fg-hello"><span class="fg-bounce">⭐</span> Game Time! <span class="fg-bounce d2">⭐</span></div>
+    <div class="fg-menu">
+      <a class="fg-pick red" href="#/games/memory" data-say="Memory Match!">
+        <span class="fg-pickart"><span class="fg-back mini"></span><span class="fg-face mini"><img src="${ART(pika)}" alt="" draggable="false"></span><span class="fg-back mini"></span></span>
+        <span class="fg-pickname">Memory Match</span><span class="fg-picksub">find the pairs 🃏🃏</span></a>
+      <a class="fg-pick blue" href="#/games/who" data-say="Who's that Pokémon?">
+        <span class="fg-pickart"><span class="fg-silmini"><img src="${SIL(pika)}" alt="" draggable="false"><b>?</b></span></span>
+        <span class="fg-pickname">Who's That Pokémon?</span><span class="fg-picksub">guess the shadow 👀</span></a>
+    </div>
+    <div class="fg-menu-foot">${muteBtn()}<span>Pictures are from our own cards!</span></div></div>`;
+  bindMute();
+  $app.querySelectorAll('[data-say]').forEach(a => a.addEventListener('click', () => { SFX.tap(); say(a.dataset.say); }));
+}
+
+/* ---------- Memory Match ---------- */
+let M = null;
+function memory() {
+  const hard = store('memHard') === '1', pairs = hard ? 6 : 3;
+  const pool = shuffle(MEM.filter(m => owned(m[0]))).slice(0, pairs);
+  M = {hard, pairs, deck: shuffle([...pool, ...pool]).map((m, i) => ({i, id: m[0], name: m[1], up: false, done: false})), open: [], moves: 0, found: 0, lock: false};
+  frame('Memory Match', `
+    <div class="fg-grid mem" id="memGrid">${M.deck.map(c => `<button class="fg-card" data-i="${c.i}" aria-label="Card ${c.i + 1}">
+      <span class="fg-in"><span class="fg-back"></span><span class="fg-face"><img src="${ART(c.id)}" alt="${c.name}" draggable="false"></span></span></button>`).join('')}</div>
+    <div class="fg-win" id="memWin" hidden></div>`,
+    `<div class="fg-seg" role="group" aria-label="How hard">
+      <button class="${hard ? '' : 'on'}" data-hard="0" aria-label="Easy, 6 cards">${balls(1)}<span>Easy</span></button>
+      <button class="${hard ? 'on' : ''}" data-hard="1" aria-label="Hard, 12 cards">${balls(3)}<span>Hard</span></button></div>
+     <div class="fg-moves" id="memMoves" ${hard ? '' : 'hidden'}>Moves <b>0</b></div>`);
+  document.querySelectorAll('[data-hard]').forEach(b => b.onclick = () => { SFX.tap(); store('memHard', b.dataset.hard); clearTimers(); memory(); });
+  document.getElementById('memGrid').addEventListener('click', e => { const b = e.target.closest('.fg-card'); if (b) flip(+b.dataset.i, b); });
+  sizeGrid();
+}
+function sizeGrid() {
+  const g = document.getElementById('memGrid'); if (!g) return;
+  const n = g.children.length, top = g.getBoundingClientRect().top + scrollY;
+  const W = g.clientWidth, H = Math.max(260, innerHeight - top - 18), gap = 12;
+  let best = {w: 0, cols: 3};
+  for (let cols = 2; cols <= 6; cols++) {
+    const rows = Math.ceil(n / cols); if (n % cols && cols > 3 && n % cols < cols / 2) continue;   // avoid lonely last rows
+    const w = Math.min((W - gap * (cols - 1)) / cols, ((H - gap * (rows - 1)) / rows) * 5 / 7, 240);
+    if (w > best.w + 1) best = {w, cols};
+  }
+  g.style.gridTemplateColumns = `repeat(${best.cols}, ${Math.floor(best.w)}px)`;
+}
+function flip(i, el) {
+  const c = M.deck[i]; if (M.lock || c.up || c.done) return;
+  c.up = true; el.classList.add('up'); SFX.flip(); M.open.push({c, el});
+  if (M.open.length < 2) return;
+  M.moves++; const mv = document.querySelector('#memMoves b'); if (mv) mv.textContent = M.moves;
+  const [a, b] = M.open; M.open = []; M.lock = true;
+  if (a.c.id === b.c.id) {
+    later(() => {
+      a.c.done = b.c.done = true; a.el.classList.add('done'); b.el.classList.add('done');
+      SFX.match(); say(a.c.name + '!'); confetti(26, b.el); M.found++; M.lock = false;
+      if (M.found === M.pairs) later(memWin, 900);
+    }, 380);
+  } else {
+    later(() => { a.c.up = b.c.up = false; a.el.classList.remove('up'); b.el.classList.remove('up'); M.lock = false; }, 1100);
+  }
+}
+function memWin() {
+  const w = document.getElementById('memWin'); if (!w) return;
+  const got = [...new Set(M.deck.map(c => c.id))];
+  w.innerHTML = `<div class="fg-winbox"><div class="fg-pikas"><span class="fg-bounce">⚡</span><img class="fg-bounce d1" src="${ART('me55-23')}" alt="Pikachu" draggable="false"><span class="fg-bounce d2">⚡</span></div>
+    <div class="fg-big">You did it!</div><div class="fg-stars">⭐⭐⭐</div>
+    ${M.hard ? `<div class="fg-sub">All 6 pairs in ${M.moves} moves!</div>` : ''}
+    <div class="fg-found">${got.map(id => `<img src="${ART(id)}" alt="${NAME[id]}" draggable="false">`).join('')}</div>
+    <button class="btn red fg-again" id="memAgain">🔁 Play again</button></div>`;
+  w.hidden = false; SFX.win(); say('You did it!'); confetti(110); later(() => confetti(70), 900);
+  document.getElementById('memAgain').onclick = () => { SFX.tap(); clearTimers(); memory(); };
+}
+
+/* ---------- Who's That Pokémon? ---------- */
+let W = {stars: 0, deck: []};
+function who() {
+  const names = store('whoNames') === '1';
+  if (!W.deck.length) W.deck = shuffle(WHO.filter(owned));
+  const ans = W.deck.pop(), others = shuffle(WHO.filter(id => id !== ans && owned(id))).slice(0, 2), opts = shuffle([ans, ...others]);
+  W.ans = ans; W.tries = 0; W.solved = false;
+  frame("Who's That Pokémon?", `
+    <div class="fg-who">
+      <div class="fg-q"><div class="fg-rays"></div>
+        <img class="fg-sil" id="whoSil" src="${SIL(ans)}" alt="Mystery Pokémon shadow" draggable="false">
+        <img class="fg-reveal" id="whoArt" src="${ART(ans)}" alt="${NAME[ans]}" draggable="false">
+        <button class="fg-icon fg-hear" id="whoHear" aria-label="Hear it again">🗣️</button>
+        <div class="fg-qtext" id="whoText">Who's that Pokémon?</div></div>
+      <div class="fg-opts ${names ? 'names' : 'pics'}" id="whoOpts">${opts.map(id => `<button class="fg-opt" data-id="${id}" aria-label="${NAME[id]}">
+        ${names ? `<span>${NAME[id]}</span>` : `<img src="${ART(id)}" alt="${NAME[id]}" draggable="false">`}</button>`).join('')}</div>
+      <button class="btn red fg-next" id="whoNext" hidden>Next ▶</button>
+    </div>`,
+    `<div class="fg-seg" role="group" aria-label="How to answer">
+      <button class="${names ? '' : 'on'}" data-names="0" aria-label="Pictures"><span class="fg-em">🖼️</span><span>Pictures</span></button>
+      <button class="${names ? 'on' : ''}" data-names="1" aria-label="Big kid, names"><span class="fg-em">🔤</span><span>Big kid</span></button></div>
+     <div class="fg-starbox" aria-label="${W.stars} stars"><span>⭐</span><b id="whoStars">${W.stars}</b></div>`);
+  document.querySelectorAll('[data-names]').forEach(b => b.onclick = () => { SFX.tap(); store('whoNames', b.dataset.names); W.deck.push(W.ans); clearTimers(); who(); });
+  document.getElementById('whoHear').onclick = () => say(W.solved ? "It's " + NAME[W.ans] + '!' : "Who's that Pokémon?");
+  document.getElementById('whoOpts').addEventListener('click', e => { const b = e.target.closest('.fg-opt'); if (b) answer(b); });
+  document.getElementById('whoNext').onclick = () => { SFX.tap(); clearTimers(); who(); scrollTo(0, 0); };
+  say("Who's that Pokémon?");
+}
+function answer(b) {
+  if (W.solved || b.disabled) return;
+  if (b.dataset.id !== W.ans) {      // gentle: wiggle, fade that one out, try again. Stars never go down.
+    W.tries++; SFX.nope(); b.classList.remove('wiggle'); void b.offsetWidth; b.classList.add('wiggle');
+    later(() => { b.disabled = true; b.classList.add('gone'); }, 450); return;
+  }
+  W.solved = true; W.stars++;
+  document.getElementById('fg').querySelector('.fg-q').classList.add('solved');
+  b.classList.add('right'); document.querySelectorAll('.fg-opt').forEach(o => { if (o !== b) o.classList.add('gone'); });
+  const s = document.getElementById('whoStars'); s.textContent = W.stars; s.parentElement.classList.add('pop');
+  document.getElementById('whoText').innerHTML = `It's <b>${NAME[W.ans]}</b>!`;
+  SFX.match(); say("It's " + NAME[W.ans] + '!'); confetti(W.stars % 5 === 0 ? 140 : 60);
+  if (W.stars % 5 === 0) later(() => { SFX.win(); document.getElementById('whoText').innerHTML = `It's <b>${NAME[W.ans]}</b>! ${W.stars} stars! 🎉`; }, 700);
+  document.getElementById('whoNext').hidden = false;
+}
+
+/* ---------- entry ---------- */
+function render(app, data, sub) {
+  $app = app; D = data; clearTimers();
+  if (sub === 'memory') return memory();
+  if (sub === 'who') return who();
+  return menu();
+}
+let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(sizeGrid, 120); });
+addEventListener('orientationchange', () => setTimeout(sizeGrid, 300));
+return {render, FILES, stop: clearTimers};
+})();
