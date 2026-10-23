@@ -1,5 +1,5 @@
 /* Game Time - kid games for the Fenton Pokémon site. No libraries, no network needed (pictures live in games/).
-   Memory Match + Who's That Pokémon?  Built for little fingers on an iPad: big buttons, no timers, no losing. */
+   Memory Match + Who's That Pokémon? (+ Card Battle School in tcg.js).  Built for little fingers on an iPad: big buttons, no timers, no losing. */
 window.FentonGames = (() => {
 'use strict';
 // Owned cards with clear art (art crops made once by tools/make_game_art.py from our own card scans).
@@ -38,6 +38,7 @@ const SOUNDS = {
   tap:   {gap: 90,  notes: [[N.A4, 0, .09, 'sine', 1]]},
   flip:  {gap: 120, notes: [[N.E4, 0, .09, 'sine', 2], [N.A4, .05, .11, 'sine', 2]]},
   match: {gap: 300, notes: [[N.C5, 0, .2, 'sine', 2], [N.E5, .1, .2, 'sine', 2], [N.G5, .2, .22, 'sine', 2], [N.C6, .3, .38, 'sine', 2]]},
+  hit:   {gap: 250, notes: [[N.E4, 0, .1, 'triangle', 1.5], [N.C4, .07, .22, 'sine', 1.5]]},                // soft "bonk" for an attack
   nope:  {gap: 300, notes: [[N.G4, 0, .2, 'sine', 1.4], [N.E4, .17, .28, 'sine', 1.4]]},       // soft "boop boop", never harsh
   win:   {gap: 900, notes: [[N.C5, 0, .2, 'triangle', 2], [N.E5, .14, .2, 'triangle', 2], [N.G5, .28, .2, 'triangle', 2],
           [N.E5, .42, .18, 'triangle', 2], [N.G5, .56, .2, 'triangle', 2],
@@ -148,6 +149,9 @@ function menu() {
       <a class="fg-pick blue" href="#/games/who" data-say="Who's that Pokémon?">
         <span class="fg-pickart"><span class="fg-silmini"><img src="${SIL(pika)}" alt="" draggable="false"><b>?</b></span></span>
         <span class="fg-pickname">Who's That Pokémon?</span><span class="fg-picksub">guess the shadow 👀</span></a>
+      <a class="fg-pick green wide" href="#/games/tcg" data-say="Card Battle School!">
+        <span class="fg-pickart tcgpick"><img class="l" src="games/tcg/me55-9.jpg" alt="" draggable="false"><span class="vs">VS</span><img class="r" src="games/tcg/me55-113.jpg" alt="" draggable="false"></span>
+        <span class="fg-pickname">Card Battle School</span><span class="fg-picksub">learn to play the card game ⚔️</span></a>
     </div>
     <div class="fg-menu-foot">${muteBtn()}<span>Pictures are from our own cards!</span></div></div>`;
   bindMute();
@@ -262,9 +266,12 @@ function render(app, data, sub) {
   $app = app; D = data; clearTimers();
   if (sub === 'memory') return memory();
   if (sub === 'who') return who();
+  if (sub === 'tcg' && window.FentonTCG) return window.FentonTCG.render(app, data);
   return menu();
 }
 let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(sizeGrid, 120); });
 addEventListener('orientationchange', () => setTimeout(sizeGrid, 300));
-return {render, FILES, stop: clearTimers, testSounds};
+// shared helpers for tcg.js (Card Battle School) so it uses the same sound engine, speech and look
+const kit = {say, SFX, confetti, frame, later, clearTimers, store, shuffle, owned, spoken, isMuted: () => muted};
+return {render, FILES, stop: clearTimers, testSounds, kit};
 })();

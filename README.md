@@ -5,8 +5,10 @@ It reads one file, `data.json`, which `build_data.py` generates from the box dat
 
 ```
 /workspace/site
-  games.js  games.css  games/          Game Time for the kids (#/games, #/games/memory, #/games/who); pictures are static files,
+  games.js  games.css  games/          Game Time for the kids (#/games, #/games/memory, #/games/who, #/games/tcg); pictures are static files,
                                        build_data.py never touches them. tools/make_game_art.py made them once.
+  tcg.js  games/tcg/                   Card Battle School: guided TCG lesson + Big kid game with our own cards (HP/attacks from the
+                                       real cards, simplified). screenshots/tcg_check.py plays it through at iPad sizes.
   index.html  style.css  app.js        the app (hash routes: #/ #/value #/binder/<i>/<page> #/sets #/set/<i>/<all|have|need>
                                         #/wish #/top #/movers/<up|down> #/grading #/opened #/search/<text> #/card/<cardId>)
   manifest.webmanifest  sw.js  icons/  "Add to Home Screen" (PWA) + offline cache
