@@ -8,8 +8,13 @@ const MEM = [['me55-9','Vulpix'],['me55-10','Ninetales'],['me55-11','Moltres'],[
   ['me55-69','Espeon'],['me55-75','Chandelure'],['me55-81','Gimmighoul'],['me55-93','Murkrow'],['me55-95','Zorua'],
   ['me55-113','Meowth'],['me55-116','Eevee'],['me55-119','Snorlax'],['me55-120','Igglybuff'],['me55-14','Reshiram']];
 // Who's That: shadows traced from official artwork (clean outlines); the reveal + picture choices are our own card art.
-const WHO = [["me55-23", "Pikachu"], ["me55-116", "Eevee"], ["tcg-714372", "Charizard"], ["me55-119", "Snorlax"], ["me55-65", "Mew"], ["me55-63", "Mewtwo"], ["me55-90", "Gengar"], ["me55-9", "Vulpix"], ["me55-10", "Ninetales"], ["me55-17", "Lapras"], ["me55-16", "Slowpoke"], ["me55-67", "Marill"], ["me55-69", "Espeon"], ["me55-91", "Umbreon"], ["me55-71", "Sylveon"], ["me55-83", "Lucario"], ["me55-113", "Meowth"], ["me55-95", "Zorua"], ["me55-121", "Lugia"], ["me55-12", "Ho-Oh"], ["me55-55", "Zapdos"], ["me55-18", "Articuno"], ["me55-11", "Moltres"], ["me55-19", "Kyogre"], ["me55-21", "Greninja"], ["me55-120", "Igglybuff"], ["me55-102", "Jirachi"], ["me55-15", "Fuecoco"], ["me55-68", "Azumarill"]];
+const WHO = [["me55-23", "Pikachu"], ["me55-116", "Eevee"], ["tcg-714372", "Charizard"], ["me55-119", "Snorlax"], ["me55-65", "Mew"], ["me55-63", "Mewtwo"], ["me55-90", "Gengar"], ["me55-9", "Vulpix"], ["me55-10", "Ninetales"], ["me55-17", "Lapras"], ["me55-16", "Slowpoke"], ["me55-67", "Marill"], ["me55-69", "Espeon"], ["me55-91", "Umbreon"], ["me55-71", "Sylveon"], ["me55-83", "Lucario"], ["me55-113", "Meowth"], ["me55-95", "Zorua"], ["me55-121", "Lugia"], ["me55-12", "Ho-Oh"], ["me55-55", "Zapdos"], ["me55-18", "Articuno"], ["me55-11", "Moltres"], ["me55-19", "Kyogre"], ["me55-21", "Greninja"], ["me55-120", "Igglybuff"], ["me55-102", "Jirachi"], ["me55-15", "Fuecoco"], ["me55-68", "Azumarill"],
+  // +50 more (Oct 2026), all from our own cards too
+  ["me55-129", "Alolan Exeggutor"], ["me55-3", "Volbeat"], ["me55-5", "Tropius"], ["me55-8", "Vivillon"], ["me55-13", "Victini"], ["me55-14", "Reshiram"], ["me55-20", "Palkia"], ["me55-56", "Zekrom"], ["me55-57", "Zeraora"], ["me55-59", "Toxtricity"], ["me55-61", "Morpeko"], ["me55-73", "Drifloon"], ["me55-74", "Cresselia"], ["me55-75", "Chandelure"], ["me55-76", "Xerneas"], ["me55-77", "Comfey"], ["me55-80", "Lunala"], ["me55-82", "Groudon"], ["me55-84", "Seismitoad"], ["me55-85", "Lycanroc"], ["me55-86", "Koraidon"], ["me55-87", "Nidoran"], ["me55-94", "Scraggy"], ["me55-96", "Zoroark"], ["me55-97", "Deino"], ["me55-99", "Hydreigon"], ["me55-100", "Yveltal"], ["me55-103", "Dialga"], ["me55-104", "Ferrothorn"], ["me55-105", "Solgaleo"], ["me55-106", "Zacian"], ["me55-107", "Zamazenta"], ["me55-108", "Gholdengo"], ["me55-109", "Salamence"], ["me55-112", "Kommo-o"], ["me55-114", "Kangaskhan"], ["me55-125", "Maushold"], ["tcg-716161", "Sneasel"], ["tcg-716160", "Tyranitar"], ["tcg-716206", "Scizor"], ["tcg-716191", "Crobat"], ["tcg-716158", "Genesect"], ["tcg-716208", "Arceus"], ["me4-7", "Chesnaught"], ["me55-58", "Toxel"], ["me55-78", "Cosmog"], ["me5-59", "Chi-Yu"], ["swsh12-14", "Virizion"], ["tcg-716156", "Delcatty"], ["me55-110", "Jangmo-o"]];
 const NAME = Object.fromEntries([...MEM, ...WHO]);
+// How speech should say the trickier names (spoken only; the screen shows the real name).
+const SAY = {"Alolan Exeggutor": "Uh-low-lun Egg-zeg-yoo-tor", "Tropius": "Troh-pee-us", "Vivillon": "Viv-ee-yon", "Victini": "Vic-tee-nee", "Reshiram": "Resh-ih-ram", "Palkia": "Pal-kee-uh", "Zeraora": "Zeh-rah-or-uh", "Toxtricity": "Tox-trih-city", "Morpeko": "Mor-peck-oh", "Cresselia": "Kress-ee-lee-uh", "Chandelure": "Shan-duh-loor", "Xerneas": "Zer-nee-us", "Comfey": "Comfy", "Lunala": "Loo-nah-luh", "Seismitoad": "Size-mih-toad", "Lycanroc": "Lie-can-rock", "Koraidon": "Kor-eye-don", "Nidoran": "Nee-doh-ran", "Zoroark": "Zor-oh-ark", "Deino": "Dye-no", "Hydreigon": "High-dry-gon", "Yveltal": "Ee-vel-tall", "Dialga": "Dee-al-guh", "Solgaleo": "Sol-gah-lay-oh", "Zacian": "Zah-see-an", "Zamazenta": "Zah-mah-zen-tuh", "Gholdengo": "Gold-en-go", "Kommo-o": "Koh-moh-oh", "Kangaskhan": "Kang-gas-kahn", "Maushold": "Mouse-hold", "Sneasel": "Snee-zul", "Scizor": "Sizz-or", "Genesect": "Jen-uh-sect", "Arceus": "Ark-ee-us", "Chesnaught": "Chess-nawt", "Toxel": "Tox-ell", "Cosmog": "Coz-mog", "Chi-Yu": "Chee-yoo", "Virizion": "Vih-rye-zee-on", "Jangmo-o": "Jahng-moh-oh"};
+const spoken = id => SAY[NAME[id]] || NAME[id];
 const WHO_IDS = WHO.map(w => w[0]);
 const ART = id => 'games/art/' + id + '.jpg', SIL = id => 'games/sil/' + id + '.png';
 const FILES = [...MEM.map(m => ART(m[0])), ...WHO_IDS.map(ART), ...WHO_IDS.map(SIL)];
@@ -230,7 +235,7 @@ function who() {
       <button class="${names ? 'on' : ''}" data-names="1" aria-label="Big kid, names"><span class="fg-em">🔤</span><span>Big kid</span></button></div>
      <div class="fg-starbox" aria-label="${W.stars} stars"><span>⭐</span><b id="whoStars">${W.stars}</b></div>`);
   document.querySelectorAll('[data-names]').forEach(b => b.onclick = () => { SFX.tap(); store('whoNames', b.dataset.names); W.deck.push(W.ans); clearTimers(); who(); });
-  document.getElementById('whoHear').onclick = () => say(W.solved ? "It's " + NAME[W.ans] + '!' : "Who's that Pokémon?");
+  document.getElementById('whoHear').onclick = () => say(W.solved ? "It's " + spoken(W.ans) + '!' : "Who's that Pokémon?");
   document.getElementById('whoOpts').addEventListener('click', e => { const b = e.target.closest('.fg-opt'); if (b) answer(b); });
   document.getElementById('whoNext').onclick = () => { SFX.tap(); clearTimers(); who(); scrollTo(0, 0); };
   say("Who's that Pokémon?");
@@ -248,7 +253,7 @@ function answer(b) {
   document.getElementById('whoText').innerHTML = `It's <b>${NAME[W.ans]}</b>!`;
   const big = W.stars % 5 === 0;                   // every 5 stars: fanfare instead of the jingle (speech waits for it)
   if (big) { SFX.win(); document.getElementById('whoText').innerHTML = `It's <b>${NAME[W.ans]}</b>! ${W.stars} stars! 🎉`; } else SFX.match();
-  say("It's " + NAME[W.ans] + '!'); confetti(big ? 140 : 60);
+  say("It's " + spoken(W.ans) + '!'); confetti(big ? 140 : 60);
   document.getElementById('whoNext').hidden = false;
 }
 
