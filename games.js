@@ -7,11 +7,12 @@ const MEM = [['me55-9','Vulpix'],['me55-10','Ninetales'],['me55-11','Moltres'],[
   ['me55-19','Kyogre'],['me55-23','Pikachu'],['me55-55','Zapdos'],['me55-63','Mewtwo'],['me55-65','Mew'],['me55-67','Marill'],
   ['me55-69','Espeon'],['me55-75','Chandelure'],['me55-81','Gimmighoul'],['me55-93','Murkrow'],['me55-95','Zorua'],
   ['me55-113','Meowth'],['me55-116','Eevee'],['me55-119','Snorlax'],['me55-120','Igglybuff'],['me55-14','Reshiram']];
-const WHO = ['me55-9','me55-10','me55-17','me55-23','me55-55','me55-65','me55-67','me55-69','me55-75','me55-81',
-  'me55-93','me55-95','me55-113','me55-116','me55-119','me55-120'];
-const NAME = Object.fromEntries(MEM);
+// Who's That: shadows traced from official artwork (clean outlines); the reveal + picture choices are our own card art.
+const WHO = [["me55-23", "Pikachu"], ["me55-116", "Eevee"], ["tcg-714372", "Charizard"], ["me55-119", "Snorlax"], ["me55-65", "Mew"], ["me55-63", "Mewtwo"], ["me55-90", "Gengar"], ["me55-9", "Vulpix"], ["me55-10", "Ninetales"], ["me55-17", "Lapras"], ["me55-16", "Slowpoke"], ["me55-67", "Marill"], ["me55-69", "Espeon"], ["me55-91", "Umbreon"], ["me55-71", "Sylveon"], ["me55-83", "Lucario"], ["me55-113", "Meowth"], ["me55-95", "Zorua"], ["me55-121", "Lugia"], ["me55-12", "Ho-Oh"], ["me55-55", "Zapdos"], ["me55-18", "Articuno"], ["me55-11", "Moltres"], ["me55-19", "Kyogre"], ["me55-21", "Greninja"], ["me55-120", "Igglybuff"], ["me55-102", "Jirachi"], ["me55-15", "Fuecoco"], ["me55-68", "Azumarill"]];
+const NAME = Object.fromEntries([...MEM, ...WHO]);
+const WHO_IDS = WHO.map(w => w[0]);
 const ART = id => 'games/art/' + id + '.jpg', SIL = id => 'games/sil/' + id + '.png';
-const FILES = [...MEM.map(m => ART(m[0])), ...WHO.map(SIL)];
+const FILES = [...MEM.map(m => ART(m[0])), ...WHO_IDS.map(ART), ...WHO_IDS.map(SIL)];
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const store = (k, v) => { try { if (v === undefined) return localStorage.getItem('fg.' + k); localStorage.setItem('fg.' + k, v); } catch (e) { return null; } };
 let D = null, $app = null, timers = [];
@@ -210,8 +211,8 @@ function memWin() {
 let W = {stars: 0, deck: []};
 function who() {
   const names = store('whoNames') === '1';
-  if (!W.deck.length) W.deck = shuffle(WHO.filter(owned));
-  const ans = W.deck.pop(), others = shuffle(WHO.filter(id => id !== ans && owned(id))).slice(0, 2), opts = shuffle([ans, ...others]);
+  if (!W.deck.length) W.deck = shuffle(WHO_IDS.filter(owned));
+  const ans = W.deck.pop(), others = shuffle(WHO_IDS.filter(id => id !== ans && owned(id))).slice(0, 2), opts = shuffle([ans, ...others]);
   W.ans = ans; W.tries = 0; W.solved = false;
   frame("Who's That Pokémon?", `
     <div class="fg-who">
