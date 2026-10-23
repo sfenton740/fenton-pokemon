@@ -16,38 +16,93 @@ const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { c
 const store = (k, v) => { try { if (v === undefined) return localStorage.getItem('fg.' + k); localStorage.setItem('fg.' + k, v); } catch (e) { return null; } };
 let D = null, $app = null, timers = [];
 const later = (fn, ms) => { const t = setTimeout(fn, ms); timers.push(t); return t; };
-const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
+const clearTimers = () => { timers.forEach(clearTimeout); timers = []; try { clearTimeout(sayTimer); } catch (e) {} };
 const owned = id => !D || !D.cards || !D.cards[id] || D.cards[id].qty > 0;
 
-/* ---------- sound (WebAudio beeps, no files) + speech ---------- */
-let muted = store('mute') === '1', ac = null;
+/* ---------- sound (WebAudio, no files) + speech ----------
+   Clean on iPad speakers: one shared AudioContext at the device's own sample rate, soft sine/triangle notes only (all < 1.1 kHz),
+   10 ms linear attack + exponential release (no clicks), master gain 0.45 into a gentle compressor, max 6 voices, taps debounced,
+   and speech waits until the jingle has finished. testSounds() renders every sound offline and reports its peak level. */
+let muted = store('mute') === '1', ac = null, master = null, sched = [], busyUntil = 0, sayTimer = null;
+const lastPlay = {};
+const PEAK = .18, MAX_VOICES = 6;
+const N = {C4: 262, E4: 330, G4: 392, A4: 440, C5: 523, D5: 587, E5: 659, G5: 784, C6: 1047};
+// [freq, start s, length s, wave, simultaneous voices at that moment] - per-note gain = PEAK / voices
+const SOUNDS = {
+  tap:   {gap: 90,  notes: [[N.A4, 0, .09, 'sine', 1]]},
+  flip:  {gap: 120, notes: [[N.E4, 0, .09, 'sine', 2], [N.A4, .05, .11, 'sine', 2]]},
+  match: {gap: 300, notes: [[N.C5, 0, .2, 'sine', 2], [N.E5, .1, .2, 'sine', 2], [N.G5, .2, .22, 'sine', 2], [N.C6, .3, .38, 'sine', 2]]},
+  nope:  {gap: 300, notes: [[N.G4, 0, .2, 'sine', 1.4], [N.E4, .17, .28, 'sine', 1.4]]},       // soft "boop boop", never harsh
+  win:   {gap: 900, notes: [[N.C5, 0, .2, 'triangle', 2], [N.E5, .14, .2, 'triangle', 2], [N.G5, .28, .2, 'triangle', 2],
+          [N.E5, .42, .18, 'triangle', 2], [N.G5, .56, .2, 'triangle', 2],
+          [N.C5, .72, .9, 'sine', 3], [N.E5, .72, .9, 'sine', 3], [N.G5, .72, .9, 'sine', 3], [N.C6, .74, .9, 'sine', 3]]}
+};
+function graph(c) {                               // master gain -> soft compressor -> speakers
+  const m = c.createGain(), comp = c.createDynamicsCompressor();
+  m.gain.value = .45;
+  comp.threshold.value = -14; comp.knee.value = 10; comp.ratio.value = 4; comp.attack.value = .005; comp.release.value = .25;
+  m.connect(comp); comp.connect(c.destination); return m;
+}
 function audio() {
   if (muted) return null;
-  try { if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)(); if (ac.state === 'suspended') ac.resume(); } catch (e) { return null; }
+  try {
+    if (!ac || ac.state === 'closed') { ac = new (window.AudioContext || window.webkitAudioContext)({latencyHint: 'interactive'}); master = graph(ac); }
+    if (ac.state !== 'running') ac.resume();
+  } catch (e) { return null; }
   return ac;
 }
-function tone(f, at = 0, dur = .12, type = 'sine', vol = .14) {
+function unlock() {                               // iOS: start the shared context on the first touch with a silent blip
   const c = audio(); if (!c) return;
-  const t = c.currentTime + at, o = c.createOscillator(), g = c.createGain();
-  o.type = type; o.frequency.setValueAtTime(f, t);
-  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .015); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-  o.connect(g).connect(c.destination); o.start(t); o.stop(t + dur + .05);
+  try { const b = c.createBuffer(1, 1, c.sampleRate), s = c.createBufferSource(); s.buffer = b; s.connect(c.destination); s.start(0); } catch (e) {}
 }
-const SFX = {
-  tap: () => tone(880, 0, .06, 'triangle', .07),
-  flip: () => { tone(520, 0, .06, 'triangle', .08); tone(780, .05, .07, 'triangle', .07); },
-  match: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, i * .08, .16, 'triangle', .13)),
-  nope: () => { tone(330, 0, .14, 'sine', .08); tone(262, .13, .2, 'sine', .07); },   // soft "boop boop", never harsh
-  win: () => [523, 659, 784, 659, 784, 1047, 1319].forEach((f, i) => tone(f, i * .11, i === 6 ? .5 : .18, 'square', .06))
-};
-function say(text) {
+['touchend', 'pointerdown', 'click'].forEach(ev => document.addEventListener(ev, unlock, {once: true, passive: true}));
+document.addEventListener('visibilitychange', () => { if (!document.hidden && ac && ac.state !== 'running' && !muted) ac.resume(); });
+function note(c, dest, t0, [f, at, dur, type, nv], live) {
+  const t = t0 + at, end = t + dur;
+  if (live) {                                     // cap voices that would actually sound at the same time
+    sched = sched.filter(v => v[1] > c.currentTime);
+    if (sched.filter(v => v[0] < end && v[1] > t).length >= MAX_VOICES) return;
+    sched.push([t, end + .03]);
+  }
+  const o = c.createOscillator(), g = c.createGain(), peak = PEAK / Math.max(1, nv);
+  o.type = type; o.frequency.value = f;
+  g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(peak, t + .01); g.gain.exponentialRampToValueAtTime(0.0001, end);
+  o.connect(g); g.connect(dest); o.start(t); o.stop(end + .03);
+  if (live) o.onended = () => { try { g.disconnect(); } catch (e) {} };
+}
+function play(name) {
+  const s = SOUNDS[name], c = audio(); if (!s || !c) return;
+  const now = performance.now(); if (now - (lastPlay[name] || 0) < s.gap) return; lastPlay[name] = now;   // debounce rapid taps
+  const t0 = c.currentTime + .02;
+  s.notes.forEach(n => note(c, master, t0, n, true));
+  const len = Math.max(...s.notes.map(n => n[1] + n[2]));
+  busyUntil = Math.max(busyUntil, now + (len + .05) * 1000);
+}
+const SFX = Object.fromEntries(Object.keys(SOUNDS).map(k => [k, () => play(k)]));
+function say(text) {                              // wait for any jingle to finish, then speak
   if (muted || !('speechSynthesis' in window)) return;
-  try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.rate = .95; u.pitch = 1.25; u.lang = 'en-US'; speechSynthesis.speak(u); } catch (e) {}
+  clearTimeout(sayTimer);
+  sayTimer = setTimeout(() => {
+    if (muted) return;
+    try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.rate = .9; u.pitch = 1.2; u.volume = .9; u.lang = 'en-US'; speechSynthesis.speak(u); } catch (e) {}
+  }, Math.max(0, busyUntil - performance.now()) + 120);
+}
+async function testSounds() {                     // render each sound offline through the same chain; report peak / clipped samples
+  const out = {};
+  for (const [k, s] of Object.entries(SOUNDS)) {
+    const len = Math.max(...s.notes.map(n => n[1] + n[2])) + .2, rate = 48000;
+    const c = new OfflineAudioContext(1, Math.ceil(len * rate), rate), m = graph(c);
+    s.notes.forEach(n => note(c, m, 0, n, false));
+    const d = (await c.startRendering()).getChannelData(0);
+    let peak = 0, clip = 0; for (let i = 0; i < d.length; i++) { const a = Math.abs(d[i]); if (a > peak) peak = a; if (a >= .999) clip++; }
+    out[k] = {peak: +peak.toFixed(4), clipped: clip, maxHz: Math.max(...s.notes.map(n => n[0])), waves: [...new Set(s.notes.map(n => n[3]))].join('/')};
+  }
+  return out;
 }
 function muteBtn() { return `<button class="fg-icon" id="fgMute" aria-label="${muted ? 'Sound off' : 'Sound on'}">${muted ? '🔇' : '🔊'}</button>`; }
 function bindMute() {
   const b = document.getElementById('fgMute'); if (!b) return;
-  b.onclick = () => { muted = !muted; store('mute', muted ? '1' : '0'); if (muted && 'speechSynthesis' in window) speechSynthesis.cancel();
+  b.onclick = () => { muted = !muted; store('mute', muted ? '1' : '0'); if (muted) { clearTimeout(sayTimer); if ('speechSynthesis' in window) speechSynthesis.cancel(); }
     b.textContent = muted ? '🔇' : '🔊'; b.setAttribute('aria-label', muted ? 'Sound off' : 'Sound on'); SFX.tap(); };
 }
 
@@ -190,8 +245,9 @@ function answer(b) {
   b.classList.add('right'); document.querySelectorAll('.fg-opt').forEach(o => { if (o !== b) o.classList.add('gone'); });
   const s = document.getElementById('whoStars'); s.textContent = W.stars; s.parentElement.classList.add('pop');
   document.getElementById('whoText').innerHTML = `It's <b>${NAME[W.ans]}</b>!`;
-  SFX.match(); say("It's " + NAME[W.ans] + '!'); confetti(W.stars % 5 === 0 ? 140 : 60);
-  if (W.stars % 5 === 0) later(() => { SFX.win(); document.getElementById('whoText').innerHTML = `It's <b>${NAME[W.ans]}</b>! ${W.stars} stars! 🎉`; }, 700);
+  const big = W.stars % 5 === 0;                   // every 5 stars: fanfare instead of the jingle (speech waits for it)
+  if (big) { SFX.win(); document.getElementById('whoText').innerHTML = `It's <b>${NAME[W.ans]}</b>! ${W.stars} stars! 🎉`; } else SFX.match();
+  say("It's " + NAME[W.ans] + '!'); confetti(big ? 140 : 60);
   document.getElementById('whoNext').hidden = false;
 }
 
@@ -204,5 +260,5 @@ function render(app, data, sub) {
 }
 let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(sizeGrid, 120); });
 addEventListener('orientationchange', () => setTimeout(sizeGrid, 300));
-return {render, FILES, stop: clearTimers};
+return {render, FILES, stop: clearTimers, testSounds};
 })();
