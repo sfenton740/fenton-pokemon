@@ -115,7 +115,7 @@ function newGame(mode, team) {
     S.prizesShown = true; S.fx = {};
   }
   shell(); paint();
-  if (mode === 'learn') runStep(); else coach("You're the " + S.team.name + "! Tap your deck to get a card.");
+  if (mode === 'learn') runStep(); else coach("Alright! You're the " + S.team.name + "! Tap your deck to get a card.");
 }
 
 /* ---------- screen ---------- */
@@ -142,7 +142,7 @@ function pickTeam() {
       <button data-mode="learn" aria-label="Learn"><span class="fg-em">🎓</span><span>Learn</span></button>
       <button class="on" data-mode="play" aria-label="Big kid, you play"><span class="fg-em">⭐</span><span>Big kid</span></button></div>`);
   document.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => { K().SFX.tap(); if (b.dataset.mode === 'learn') newGame('learn'); });
-  document.querySelectorAll('[data-team]').forEach(b => b.onclick = () => { K().SFX.match(); K().say(TEAMS[b.dataset.team].name + '! Let\'s play!'); newGame('play', b.dataset.team); });
+  document.querySelectorAll('[data-team]').forEach(b => b.onclick = () => { K().SFX.match(); K().say(TEAMS[b.dataset.team].name + '! Let\'s go!'); newGame('play', b.dataset.team); });
   K().say('Pick your team!');
 }
 const en = t => `<i class="tc-e ${t}">${TY[t][0]}</i>`;
@@ -189,7 +189,7 @@ function paint() {
   if (!$tc) return;
   const step = S.mode === 'learn' ? L[S.step] : null;
   $tc.innerHTML = `
-    <div class="tc-coach"><img src="games/art/me55-23.jpg" alt="Pikachu" draggable="false" class="tc-prof">
+    <div class="tc-coach"><div class="tc-prof tc-trainer" role="img" aria-label="Trainer">🧢</div>
       <div class="tc-bubble"><span id="tcMsg">${S.msg}</span></div>
       <button class="fg-icon tc-hear" data-act="hear" aria-label="Hear it again">🗣️</button>
       ${step && step.next && !S.busy ? '<button class="tc-next" data-act="next" aria-label="Next">▶</button>' : ''}</div>
@@ -222,10 +222,10 @@ const meA = () => 'mon:' + S.me.active.u;
 const pikaU = () => 'mon:' + S.me.bench.find(m => m.id === 'me55-23').u;
 const handE = () => 'hand:' + uidOf(S.me, c => isE(c.id));
 const L = [   // one idea per line, said right before the tap it asks for, and only about what is on screen now
-  {m: "Hi! I'm Pikachu! Let's play cards!", next: 1},
+  {m: "Alright! I'm your Trainer. Let's play cards!", next: 1},
   {m: "Your cards are down here. Your friend's cards are up top.", next: 1},
   {m: "This is Vulpix. Tap Vulpix!", want: () => 'hand:' + uidOf(S.me, c => c.id === 'me55-9')},
-  {m: "Vulpix is in the <b>Active</b> spot. The Active Pokémon battles!", next: 1},
+  {m: "I choose you, Vulpix! It's in the <b>Active</b> spot. The Active Pokémon battles!", next: 1},
   {m: "Now tap Pikachu!", want: () => 'hand:' + uidOf(S.me, c => c.id === 'me55-23')},
   {m: "Pikachu is on your <b>Bench</b>. Helpers wait here.", next: 1},
   {m: "These are <b>Prize cards</b>. Take all 3 to win!", next: 1, enter: () => { S.prizesShown = true; }},
@@ -233,29 +233,29 @@ const L = [   // one idea per line, said right before the tap it asks for, and o
   {m: "Your turn! Tap your deck to get a card.", want: 'deck'},
   {m: "You got <b>Energy</b>! Energy gives power. Tap the Energy!", want: handE},
   {m: "Give it to Vulpix. Tap Vulpix!", want: meA},
-  {m: "Vulpix has power! Tap Wild Kick!", want: 'atk:0'},
+  {m: "Vulpix has power! Let's go! Tap Wild Kick!", want: 'atk:0'},
   {m: "Bonk! Igglybuff got hurt. Red dots show the hurt.", next: 1},
   {m: "The heart shows health. It's called <b>HP</b>. Igglybuff's heart says 0!", next: 1},
   {m: "Igglybuff is <b>Knocked Out</b>. It leaves the game. Tap a Prize card!", want: 'prize:*', enter: () => { koFx(S.op); }},
-  {m: "You got Ninetales! Now it's your friend's turn.", next: 1},
+  {m: "Awesome! You got Ninetales! Now it's your friend's turn.", next: 1},
   {m: "", oppTurn: 1},
   {m: "Your turn! Tap your deck.", want: 'deck', enter: () => { S.whose = 'me'; S.turn++; S.attached = false; }},
   {m: "Vulpix can <b>evolve</b>. That means grow up! Tap Ninetales.", want: () => 'hand:' + uidOf(S.me, c => c.id === 'me55-10')},
   {m: "Now tap Vulpix!", want: meA},
-  {m: "Wow! Vulpix evolved into Ninetales!", next: 1},
+  {m: "Awesome! Vulpix evolved into Ninetales!", next: 1},
   {m: "Give Ninetales one Energy. Tap the Energy!", want: handE},
   {m: "Now tap Ninetales!", want: meA},
-  {m: "Tap Flame Tail!", want: 'atk:0'},
+  {m: "Let's go! Tap Flame Tail!", want: 'atk:0'},
   {m: "Bonk! Nidoran's heart says 0.", next: 1},
   {m: "Nidoran is Knocked Out! Tap a Prize card!", want: 'prize:*', enter: () => { koFx(S.op); }},
-  {m: "You got Energy! Now it's your friend's turn.", next: 1},
+  {m: "Alright! You got Energy! Now it's your friend's turn.", next: 1},
   {m: "", oppTurn: 2},
   {m: "Your turn! Tap your deck.", want: 'deck', enter: () => { S.whose = 'me'; S.turn++; S.attached = false; }},
   {m: "Lightning Energy! Pikachu loves it. Tap it!", want: () => 'hand:' + uidOf(S.me, c => c.id === 'E:lightning')},
   {m: "Helpers can get Energy too. Tap Pikachu!", want: pikaU},
-  {m: "Ninetales is ready. Tap Flame Tail!", want: 'atk:0'},
+  {m: "Ninetales is ready. Let's go! Tap Flame Tail!", want: 'atk:0'},
   {m: "Bonk! Meowth's heart says 0.", next: 1},
-  {m: "Meowth is Knocked Out! Tap your last Prize card!", want: 'prize:*', enter: () => { koFx(S.op); }}
+  {m: "Alright! Meowth is Knocked Out! Tap your last Prize card!", want: 'prize:*', enter: () => { koFx(S.op); }}
 ];
 function runStep() {
   const st = L[S.step]; if (!st) return;
@@ -360,7 +360,7 @@ function playTap(a, el) {
       if (basic(c.id)) {
         if (me.active && me.bench.length >= 3) return nudge('Your Bench is full!');
         const m = playBasic(me, u); K().SFX.flip(); S.sel = null;
-        coach(me.active === m ? `${n(m.id)} is in the Active spot!` : `${n(m.id)} waits on your Bench.`);
+        coach(me.active === m ? `I choose you, ${n(m.id)}! It's in the Active spot.` : `${n(m.id)} waits on your Bench.`);
         return paint();
       }
       const from = C[c.id].from, base = inPlay(me).filter(m => m.id === from);
@@ -379,7 +379,7 @@ function playTap(a, el) {
       if (C[c.id].from !== m.id) return nudge(`${n(c.id)} grows from ${n(C[c.id].from)}. Tap ${n(C[c.id].from)}!`);
       if (m.turnIn >= S.turn) return nudge(`${n(m.id)} just got here. Grow it next turn!`);
       const was = m.id; evolve(me, c.u, u); S.sel = null; K().SFX.match(); K().confetti(40, el);
-      coach(`Wow! ${n(was)} grew into ${n(m.id)}!`); return paint();
+      coach(`Awesome! ${n(was)} grew into ${n(m.id)}!`); return paint();
     }
     case 'retreat': {
       const ac = me.active; if (!ac) return;
@@ -396,7 +396,7 @@ function playTap(a, el) {
       const said = `${n(at.id)} used ${x[0]}! Bonk!`;
       hitFx(d, x[2], at); paint(); coach(said);
       K().later(() => {
-        if (d.dmg >= hp(d)) { S.fx[d.u] = 'ko'; paint(); coach(`${n(d.id)} is Knocked Out! Tap a Prize card!`);
+        if (d.dmg >= hp(d)) { S.fx[d.u] = 'ko'; paint(); coach(`Alright! ${n(d.id)} is Knocked Out! Tap a Prize card!`);
           K().later(() => { knockOut(S.op); S.need = 'prize'; S.busy = false; paint(); }, 1100); }
         else { S.busy = false; oppTurn(); }
       }, Math.max(1600, talkMs(said) - 400));
@@ -406,7 +406,7 @@ function playTap(a, el) {
       if (S.need !== 'prize') return nudge('Knock out a Pokémon to get a Prize card!');
       const c = me.prizes.splice(+v, 1)[0] || me.prizes.shift(); me.hand.push(c); S.fx[c.u] = 'in'; S.need = null; K().SFX.match(); K().confetti(30, el);
       if (!me.prizes.length || !inPlay(S.op).length) { paint(); return win(); }
-      const left3 = me.prizes.length, said = `You got a card! ${left3} more Prize${left3 > 1 ? 's' : ''} to go.`;
+      const left3 = me.prizes.length, said = `Awesome! You got a card! ${left3} more Prize${left3 > 1 ? 's' : ''} to go.`;
       coach(said); paint(); S.busy = true; K().later(() => { S.busy = false; oppTurn(); }, talkMs(said)); return;
     }
     case 'end': if (!me.active) return nudge('Send out a Pokémon first!'); S.sel = null; return oppTurn();
@@ -436,7 +436,7 @@ function oppTurn() {                                              // the gentle 
     if (r) { paint(); coach(r); }
     const wait = r ? talkMs(r) : 600;
     if (i < steps.length) K().later(tick, wait);
-    else K().later(() => { S.whose = 'me'; S.turn++; S.drew = S.attached = S.retreated = false; S.busy = false; paint(); coach('Your turn! Tap your deck.');
+    else K().later(() => { S.whose = 'me'; S.turn++; S.drew = S.attached = S.retreated = false; S.busy = false; paint(); coach("Let's go! Your turn! Tap your deck.");
       clearTimeout(idle); idle = setTimeout(() => showHint(false), 12000); }, wait);
   };
   K().later(tick, 700);
@@ -474,7 +474,7 @@ function win() {
       <div class="tc-wincards">${used.map(id => `<img src="${IMG(id)}" alt="${C[id].n}" draggable="false">`).join('')}</div>
       <div class="tc-winbtns"><button class="btn red fg-again" id="tcAgain">🔁 Play again</button>
       ${S.mode === 'learn' ? '<button class="btn blue fg-again" id="tcBig">⭐ Big kid game</button>' : '<button class="btn blue fg-again" id="tcLearn">🎓 Lesson</button>'}</div></div>`;
-    w.hidden = false; K().SFX.win(); K().say(S.mode === 'learn' ? 'You got all 3 Prize cards. You win!' : 'You got all the Prize cards. You win!');
+    w.hidden = false; K().SFX.win(); K().say(S.mode === 'learn' ? 'You did it! You got all 3 Prize cards. You win!' : 'You did it! You got all the Prize cards. You win!');
     K().confetti(120); K().later(() => K().confetti(80), 1000);
     document.getElementById('tcAgain').onclick = () => { K().SFX.tap(); S.mode === 'learn' ? newGame('learn') : pickTeam(); };
     const big = document.getElementById('tcBig'); if (big) big.onclick = () => { K().SFX.tap(); pickTeam(); };

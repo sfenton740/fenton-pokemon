@@ -98,6 +98,33 @@ const SFX = Object.fromEntries(Object.keys(SOUNDS).map(k => [k, () => play(k)]))
 // Speech never gets cut off mid-word (that clicks): the newest line waits until the current one ends, and older waiting lines
 // are dropped so the voice keeps up with the screen. It also still waits for any jingle to finish.
 let sayNext = null, sayWaitSince = 0;
+// Trainer voice: a young, upbeat built-in voice (we can't use a real character's voice). Pitch up so it sounds like a kid,
+// rate just under 1 so a 4-year-old can follow.
+const VOICE_PITCH = 1.35, VOICE_RATE = .97;
+const NOVELTY = /albert|bad news|bahh|bells|boing|bubbles|cellos|good news|jester|organ|superstar|trinoids|whisper|wobble|zarvox|junior|ralph|kathy|grandma|grandpa|rocko|shelley|eddy|flo\b|reed|sandy|deranged|hysterical|pipe organ/i;
+const VOICE_PREFS = [                               // first match wins
+  v => /enhanced|premium/i.test(v.name),            // iPad/Mac: a downloaded high-quality US voice
+  v => /^samantha\b/i.test(v.name),                // iPad default US voice
+  v => /^aaron\b/i.test(v.name),                   // iOS US male
+  v => /^nicky\b/i.test(v.name),                   // iOS US
+  v => /\bana\b.*(natural|online)/i.test(v.name),  // Edge/Windows: young US voice
+  v => /google us english/i.test(v.name),          // Chrome / Android
+  v => /^fred\b/i.test(v.name),                    // older Mac voice
+  v => v.default,
+  v => true                                        // any other US voice
+];
+const isUS = v => /^en[-_]US$/i.test(v.lang || '');
+function pickVoice(list) {
+  const ok = (list || []).filter(v => v && !NOVELTY.test(v.name));
+  const us = ok.filter(isUS);
+  for (const f of VOICE_PREFS) { const v = us.find(f); if (v) return v; }
+  return ok.find(v => /^en/i.test(v.lang || '')) || null;          // any English voice, else the browser default
+}
+let voice = null;
+function loadVoice() { try { voice = pickVoice(speechSynthesis.getVoices()); } catch (e) {} }
+if ('speechSynthesis' in window) { loadVoice(); try { speechSynthesis.addEventListener('voiceschanged', loadVoice); } catch (e) { speechSynthesis.onvoiceschanged = loadVoice; } }
+const CHEERS = ['Awesome!', 'Alright!', 'You got it!', 'Yes!'];
+let cheerN = 0; const cheer = () => CHEERS[cheerN++ % CHEERS.length];
 function say(text) {
   if (muted || !('speechSynthesis' in window)) return;
   sayNext = text; sayWaitSince = performance.now();
@@ -110,7 +137,10 @@ function sayTry() {
   let talking = false; try { talking = speechSynthesis.speaking || speechSynthesis.pending; } catch (e) {}
   if (talking && now - sayWaitSince < 15000) { sayTimer = setTimeout(sayTry, 150); return; }   // let the sentence finish
   const text = sayNext; sayNext = null;
-  try { const u = new SpeechSynthesisUtterance(text); u.rate = .9; u.pitch = 1.2; u.volume = .9; u.lang = 'en-US'; speechSynthesis.speak(u); } catch (e) {}
+  if (!voice) loadVoice();                        // iOS fills the list late
+  try { const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US';
+    if (voice) try { u.voice = voice; u.lang = voice.lang; } catch (e) {}      // a bad voice never blocks speech
+    u.rate = VOICE_RATE; u.pitch = VOICE_PITCH; u.volume = .9; speechSynthesis.speak(u); } catch (e) {}
 }
 async function testSounds() {                     // render each sound offline through the same chain; report peak / clipped samples
   const out = {};
@@ -204,7 +234,7 @@ function memory() {
      <div class="fg-moves" id="memMoves" ${hard ? '' : 'hidden'}>Moves <b>0</b></div>`);
   document.querySelectorAll('[data-hard]').forEach(b => b.onclick = () => { SFX.tap(); store('memHard', b.dataset.hard); clearTimers(); memory(); });
   document.getElementById('memGrid').addEventListener('click', e => { const b = e.target.closest('.fg-card'); if (b) flip(+b.dataset.i, b); });
-  sizeGrid();
+  sizeGrid(); say("Let's go! Find two the same!");
 }
 function sizeGrid() {
   const g = document.getElementById('memGrid'); if (!g) return;
@@ -227,7 +257,7 @@ function flip(i, el) {
   if (a.c.id === b.c.id) {
     later(() => {
       a.c.done = b.c.done = true; a.el.classList.add('done'); b.el.classList.add('done');
-      SFX.match(); say(a.c.name + '!'); confetti(26, b.el); M.found++; M.lock = false;
+      SFX.match(); say(cheer() + ' ' + (SAY[a.c.name] || a.c.name) + '!'); confetti(26, b.el); M.found++; M.lock = false;
       if (M.found === M.pairs) later(memWin, 900);
     }, 380);
   } else {
@@ -242,7 +272,7 @@ function memWin() {
     ${M.hard ? `<div class="fg-sub">All 6 pairs in ${M.moves} moves!</div>` : ''}
     <div class="fg-found">${got.map(id => `<img src="${ART(id)}" alt="${NAME[id]}" draggable="false">`).join('')}</div>
     <button class="btn red fg-again" id="memAgain">🔁 Play again</button></div>`;
-  w.hidden = false; SFX.win(); say('You did it!'); confetti(110); later(() => confetti(70), 900);
+  w.hidden = false; SFX.win(); say('You did it! You found them all!'); confetti(110); later(() => confetti(70), 900);
   document.getElementById('memAgain').onclick = () => { SFX.tap(); clearTimers(); memory(); };
 }
 
@@ -269,7 +299,7 @@ function who() {
       <button class="${names ? 'on' : ''}" data-names="1" aria-label="Big kid, names"><span class="fg-em">🔤</span><span>Big kid</span></button></div>
      <div class="fg-starbox" aria-label="${W.stars} stars"><span>⭐</span><b id="whoStars">${W.stars}</b></div>`);
   document.querySelectorAll('[data-names]').forEach(b => b.onclick = () => { SFX.tap(); store('whoNames', b.dataset.names); W.deck.push(W.ans); clearTimers(); who(); });
-  document.getElementById('whoHear').onclick = () => say(W.solved ? "It's " + spoken(W.ans) + '!' : "Who's that Pokémon?");
+  document.getElementById('whoHear').onclick = () => say(W.solved ? W.cheer + " It's " + spoken(W.ans) + '!' : "Who's that Pokémon?");
   document.getElementById('whoOpts').addEventListener('click', e => { const b = e.target.closest('.fg-opt'); if (b) answer(b); });
   document.getElementById('whoNext').onclick = () => { SFX.tap(); clearTimers(); who(); scrollTo(0, 0); };
   say("Who's that Pokémon?");
@@ -285,10 +315,11 @@ function answer(b) {
   document.getElementById('fg').querySelector('.fg-q').classList.add('solved');
   b.classList.add('right'); document.querySelectorAll('.fg-opt').forEach(o => { if (o !== b) o.classList.add('gone'); });
   const s = document.getElementById('whoStars'); s.textContent = W.stars; s.parentElement.classList.remove('lose', 'wobble'); void s.offsetWidth; s.parentElement.classList.add('pop');
-  document.getElementById('whoText').innerHTML = `It's <b>${NAME[W.ans]}</b>!`;
   const big = W.stars % 5 === 0;                   // every 5 stars: fanfare instead of the jingle (speech waits for it)
-  if (big) { SFX.win(); document.getElementById('whoText').innerHTML = `It's <b>${NAME[W.ans]}</b>! ${W.stars} stars! 🎉`; } else SFX.match();
-  say("It's " + spoken(W.ans) + '!'); confetti(big ? 140 : 60);
+  W.cheer = big ? 'You did it!' : cheer();
+  document.getElementById('whoText').innerHTML = `${W.cheer} It's <b>${NAME[W.ans]}</b>!${big ? ` ${W.stars} stars! 🎉` : ''}`;
+  if (big) SFX.win(); else SFX.match();
+  say(W.cheer + " It's " + spoken(W.ans) + '!' + (big ? ` ${W.stars} stars!` : '')); confetti(big ? 140 : 60);
   document.getElementById('whoNext').hidden = false;
 }
 
@@ -315,5 +346,5 @@ let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(siz
 addEventListener('orientationchange', () => setTimeout(sizeGrid, 300));
 // shared helpers for tcg.js (Card Battle School) so it uses the same sound engine, speech and look
 const kit = {say, SFX, confetti, frame, later, clearTimers, store, shuffle, owned, spoken, isMuted: () => muted};
-return {render, FILES, stop: clearTimers, testSounds, kit};
+return {render, FILES, stop: clearTimers, testSounds, kit, pickVoice, _voice: () => voice, _voicePrefs: () => ({pitch: VOICE_PITCH, rate: VOICE_RATE})};
 })();
