@@ -217,3 +217,15 @@ body.game-mode main{max-width:1100px;padding-top:10px}
  .tc-coach{flex-wrap:wrap}.tc-bubble{flex-basis:calc(100% - 100px)}
  .tc-hand{flex-wrap:wrap;overflow:visible;justify-content:center}
  .tc-side{padding-top:14px}}
+
+/* Who's That: wrong guess = -1 star (big "−1 ⭐" floats away, counter shakes and dims); at 0 stars just a gentle wobble */
+.fg-starbox.lose{animation:fglose .9s}
+.fg-starbox.wobble{animation:fgwobble .6s}
+.fg-minus{position:fixed;z-index:60;transform:translate(-50%,0);pointer-events:none;font-weight:900;font-size:64px;line-height:1;color:#e3350d;
+  -webkit-text-stroke:3px #fff;paint-order:stroke fill;text-shadow:0 4px 0 rgba(0,0,0,.18);white-space:nowrap;animation:fgminus 1.6s ease-out forwards}
+.fg-minus span{display:inline-block;animation:fgstarfly 1.6s ease-in forwards}
+@keyframes fglose{0%,100%{transform:none;filter:none}15%{transform:translateX(-8px) scale(.92);filter:grayscale(1) brightness(.85)}30%{transform:translateX(8px) scale(.92)}45%{transform:translateX(-6px)}60%{transform:translateX(4px);filter:grayscale(.6)}}
+@keyframes fgwobble{0%,100%{transform:none}25%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}75%{transform:rotate(-3deg)}}
+@keyframes fgminus{0%{opacity:0;transform:translate(-50%,0) scale(.3)}18%{opacity:1;transform:translate(-50%,10px) scale(1.25)}35%{transform:translate(-50%,10px) scale(1)}75%{opacity:1}100%{opacity:0;transform:translate(-50%,-30px) scale(.9)}}
+@keyframes fgstarfly{0%,35%{transform:none;opacity:1}100%{transform:translate(60px,-140px) rotate(160deg) scale(.4);opacity:0}}
+@media (prefers-reduced-motion:reduce){.fg-minus,.fg-minus span{animation-duration:2s}}

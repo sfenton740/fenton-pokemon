@@ -1,5 +1,5 @@
 // Offline support: app shell cached, data.json network-first, card pictures cache-first.
-const VERSION = 'v15-tcg-sound-words-2026-10-23';
+const VERSION = 'v16-who-minus-star-2026-10-24';
 const SHELL = 'shell-' + VERSION, DATA = 'data-' + VERSION, IMGS = 'imgs-v1', GAMES = 'games-v4';
 const FILES = ['./', 'index.html', 'style.css', 'app.js', 'games.js', 'tcg.js', 'games.css', 'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'icons/favicon.png'];

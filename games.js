@@ -1,5 +1,5 @@
 /* Game Time - kid games for the Fenton Pokémon site. No libraries, no network needed (pictures live in games/).
-   Memory Match + Who's That Pokémon? (+ Card Battle School in tcg.js).  Built for little fingers on an iPad: big buttons, no timers, no losing. */
+   Memory Match + Who's That Pokémon? (+ Card Battle School in tcg.js).  Built for little fingers on an iPad: big buttons, no timers. (Who's That: a wrong guess costs 1 star, never below 0.) */
 window.FentonGames = (() => {
 'use strict';
 // Owned cards with clear art (art crops made once by tools/make_game_art.py from our own card scans).
@@ -39,6 +39,7 @@ const SOUNDS = {
   flip:  {gap: 150, notes: [[N.E4, 0, .14, 'sine', 2], [N.A4, .07, .16, 'sine', 2]]},
   match: {gap: 300, notes: [[N.C5, 0, .2, 'sine', 2], [N.E5, .1, .2, 'sine', 2], [N.G5, .2, .22, 'sine', 2], [N.C6, .3, .38, 'sine', 2]]},
   hit:   {gap: 300, notes: [[N.E5, 0, .16, 'sine', 2.2], [N.C5, .1, .26, 'sine', 2.2]]},                     // gentle "boing" for an attack
+  aww:   {gap: 400, notes: [[N.E5, 0, .26, 'sine', 1.8], [N.C5, .2, .26, 'sine', 1.8], [N.A4, .4, .42, 'sine', 1.8]]},  // soft falling "aww" (wrong guess)
   nope:  {gap: 300, notes: [[N.G4, 0, .2, 'sine', 1.4], [N.E4, .17, .28, 'sine', 1.4]]},       // soft "boop boop", never harsh
   win:   {gap: 900, notes: [[N.C5, 0, .2, 'triangle', 2], [N.E5, .14, .2, 'triangle', 2], [N.G5, .28, .2, 'triangle', 2],
           [N.E5, .42, .18, 'triangle', 2], [N.G5, .56, .2, 'triangle', 2],
@@ -275,19 +276,31 @@ function who() {
 }
 function answer(b) {
   if (W.solved || b.disabled) return;
-  if (b.dataset.id !== W.ans) {      // gentle: wiggle, fade that one out, try again. Stars never go down.
-    W.tries++; SFX.nope(); b.classList.remove('wiggle'); void b.offsetWidth; b.classList.add('wiggle');
-    later(() => { b.disabled = true; b.classList.add('gone'); }, 450); return;
+  if (b.dataset.id !== W.ans) {      // wrong: wiggle + dim that choice (can't be tapped again), lose 1 star (never below 0), keep guessing
+    W.tries++; b.disabled = true; SFX.aww(); b.classList.remove('wiggle'); void b.offsetWidth; b.classList.add('wiggle');
+    later(() => b.classList.add('gone'), 450);
+    loseStar(); say('Oops! Try again!'); return;
   }
   W.solved = true; W.stars++;
   document.getElementById('fg').querySelector('.fg-q').classList.add('solved');
   b.classList.add('right'); document.querySelectorAll('.fg-opt').forEach(o => { if (o !== b) o.classList.add('gone'); });
-  const s = document.getElementById('whoStars'); s.textContent = W.stars; s.parentElement.classList.add('pop');
+  const s = document.getElementById('whoStars'); s.textContent = W.stars; s.parentElement.classList.remove('lose', 'wobble'); void s.offsetWidth; s.parentElement.classList.add('pop');
   document.getElementById('whoText').innerHTML = `It's <b>${NAME[W.ans]}</b>!`;
   const big = W.stars % 5 === 0;                   // every 5 stars: fanfare instead of the jingle (speech waits for it)
   if (big) { SFX.win(); document.getElementById('whoText').innerHTML = `It's <b>${NAME[W.ans]}</b>! ${W.stars} stars! 🎉`; } else SFX.match();
   say("It's " + spoken(W.ans) + '!'); confetti(big ? 140 : 60);
   document.getElementById('whoNext').hidden = false;
+}
+
+function loseStar() {
+  const s = document.getElementById('whoStars'); if (!s) return; const box = s.parentElement;
+  box.classList.remove('pop', 'lose', 'wobble'); void box.offsetWidth;
+  if (W.stars <= 0) { box.classList.add('wobble'); return; }      // at 0: just a gentle wobble, nothing taken away
+  W.stars--; s.textContent = W.stars; box.setAttribute('aria-label', W.stars + ' stars'); box.classList.add('lose');
+  const r = box.getBoundingClientRect(), f = document.createElement('div');   // big "−1 ⭐" that pops out and floats away
+  f.className = 'fg-minus'; f.innerHTML = '−1 <span>⭐</span>'; f.setAttribute('aria-hidden', 'true');
+  f.style.left = (r.left + r.width / 2) + 'px'; f.style.top = (r.bottom + 8) + 'px';
+  document.body.appendChild(f); setTimeout(() => f.remove(), 1700);
 }
 
 /* ---------- entry ---------- */
