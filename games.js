@@ -22,7 +22,7 @@ const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { c
 const store = (k, v) => { try { if (v === undefined) return localStorage.getItem('fg.' + k); localStorage.setItem('fg.' + k, v); } catch (e) { return null; } };
 let D = null, $app = null, timers = [];
 const later = (fn, ms) => { const t = setTimeout(fn, ms); timers.push(t); return t; };
-const clearTimers = () => { timers.forEach(clearTimeout); timers = []; try { clearTimeout(sayTimer); } catch (e) {} };
+const clearTimers = () => { timers.forEach(clearTimeout); timers = []; try { clearTimeout(sayTimer); sayNext = null; } catch (e) {} };
 const owned = id => !D || !D.cards || !D.cards[id] || D.cards[id].qty > 0;
 
 /* ---------- sound (WebAudio, no files) + speech ----------
@@ -31,14 +31,14 @@ const owned = id => !D || !D.cards || !D.cards[id] || D.cards[id].qty > 0;
    and speech waits until the jingle has finished. testSounds() renders every sound offline and reports its peak level. */
 let muted = store('mute') === '1', ac = null, master = null, sched = [], busyUntil = 0, sayTimer = null;
 const lastPlay = {};
-const PEAK = .18, MAX_VOICES = 6;
+const PEAK = .18, MAX_VOICES = 6, ATK = .018, TAIL = .025;
 const N = {C4: 262, E4: 330, G4: 392, A4: 440, C5: 523, D5: 587, E5: 659, G5: 784, C6: 1047};
 // [freq, start s, length s, wave, simultaneous voices at that moment] - per-note gain = PEAK / voices
 const SOUNDS = {
-  tap:   {gap: 90,  notes: [[N.A4, 0, .09, 'sine', 1]]},
-  flip:  {gap: 120, notes: [[N.E4, 0, .09, 'sine', 2], [N.A4, .05, .11, 'sine', 2]]},
+  tap:   {gap: 120, notes: [[N.A4, 0, .14, 'sine', 1.6]]},                                   // soft "tick", not a pop
+  flip:  {gap: 150, notes: [[N.E4, 0, .14, 'sine', 2], [N.A4, .07, .16, 'sine', 2]]},
   match: {gap: 300, notes: [[N.C5, 0, .2, 'sine', 2], [N.E5, .1, .2, 'sine', 2], [N.G5, .2, .22, 'sine', 2], [N.C6, .3, .38, 'sine', 2]]},
-  hit:   {gap: 250, notes: [[N.E4, 0, .1, 'triangle', 1.5], [N.C4, .07, .22, 'sine', 1.5]]},                // soft "bonk" for an attack
+  hit:   {gap: 300, notes: [[N.E5, 0, .16, 'sine', 2.2], [N.C5, .1, .26, 'sine', 2.2]]},                     // gentle "boing" for an attack
   nope:  {gap: 300, notes: [[N.G4, 0, .2, 'sine', 1.4], [N.E4, .17, .28, 'sine', 1.4]]},       // soft "boop boop", never harsh
   win:   {gap: 900, notes: [[N.C5, 0, .2, 'triangle', 2], [N.E5, .14, .2, 'triangle', 2], [N.G5, .28, .2, 'triangle', 2],
           [N.E5, .42, .18, 'triangle', 2], [N.G5, .56, .2, 'triangle', 2],
@@ -50,11 +50,16 @@ function graph(c) {                               // master gain -> soft compres
   comp.threshold.value = -14; comp.knee.value = 10; comp.ratio.value = 4; comp.attack.value = .005; comp.release.value = .25;
   m.connect(comp); comp.connect(c.destination); return m;
 }
+let resuming = false;
+function wake() {                                 // resume the ONE context only if iOS paused it (never recreated, never spammed)
+  if (!ac || ac.state === 'running' || resuming) return;
+  resuming = true; Promise.resolve(ac.resume()).catch(() => {}).then(() => { resuming = false; });
+}
 function audio() {
   if (muted) return null;
   try {
-    if (!ac || ac.state === 'closed') { ac = new (window.AudioContext || window.webkitAudioContext)({latencyHint: 'interactive'}); master = graph(ac); }
-    if (ac.state !== 'running') ac.resume();
+    if (!ac) { ac = new (window.AudioContext || window.webkitAudioContext)({latencyHint: 'interactive'}); master = graph(ac); }
+    wake();
   } catch (e) { return null; }
   return ac;
 }
@@ -63,18 +68,21 @@ function unlock() {                               // iOS: start the shared conte
   try { const b = c.createBuffer(1, 1, c.sampleRate), s = c.createBufferSource(); s.buffer = b; s.connect(c.destination); s.start(0); } catch (e) {}
 }
 ['touchend', 'pointerdown', 'click'].forEach(ev => document.addEventListener(ev, unlock, {once: true, passive: true}));
-document.addEventListener('visibilitychange', () => { if (!document.hidden && ac && ac.state !== 'running' && !muted) ac.resume(); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden && !muted) wake(); });   // after the iPad wakes up
 function note(c, dest, t0, [f, at, dur, type, nv], live) {
   const t = t0 + at, end = t + dur;
   if (live) {                                     // cap voices that would actually sound at the same time
     sched = sched.filter(v => v[1] > c.currentTime);
     if (sched.filter(v => v[0] < end && v[1] > t).length >= MAX_VOICES) return;
-    sched.push([t, end + .03]);
+    sched.push([t, end + TAIL + .03]);
   }
+  // Envelope, all scheduled ramps (no instant jumps): start at exactly 0, 18 ms linear rise, smooth exponential fall to 0.001,
+  // then a 25 ms linear fade to exactly 0. The oscillator stops 30 ms AFTER it is silent, so nothing is ever cut while loud.
   const o = c.createOscillator(), g = c.createGain(), peak = PEAK / Math.max(1, nv);
   o.type = type; o.frequency.value = f;
-  g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(peak, t + .01); g.gain.exponentialRampToValueAtTime(0.0001, end);
-  o.connect(g); g.connect(dest); o.start(t); o.stop(end + .03);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(peak, t + ATK);
+  g.gain.exponentialRampToValueAtTime(.001, end); g.gain.linearRampToValueAtTime(0, end + TAIL);
+  o.connect(g); g.connect(dest); o.start(t); o.stop(end + TAIL + .03);
   if (live) o.onended = () => { try { g.disconnect(); } catch (e) {} };
 }
 function play(name) {
@@ -86,13 +94,22 @@ function play(name) {
   busyUntil = Math.max(busyUntil, now + (len + .05) * 1000);
 }
 const SFX = Object.fromEntries(Object.keys(SOUNDS).map(k => [k, () => play(k)]));
-function say(text) {                              // wait for any jingle to finish, then speak
+// Speech never gets cut off mid-word (that clicks): the newest line waits until the current one ends, and older waiting lines
+// are dropped so the voice keeps up with the screen. It also still waits for any jingle to finish.
+let sayNext = null, sayWaitSince = 0;
+function say(text) {
   if (muted || !('speechSynthesis' in window)) return;
-  clearTimeout(sayTimer);
-  sayTimer = setTimeout(() => {
-    if (muted) return;
-    try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.rate = .9; u.pitch = 1.2; u.volume = .9; u.lang = 'en-US'; speechSynthesis.speak(u); } catch (e) {}
-  }, Math.max(0, busyUntil - performance.now()) + 120);
+  sayNext = text; sayWaitSince = performance.now();
+  clearTimeout(sayTimer); sayTimer = setTimeout(sayTry, Math.max(0, busyUntil - performance.now()) + 120);
+}
+function sayTry() {
+  if (muted || sayNext == null) return;
+  const now = performance.now();
+  if (busyUntil > now) { sayTimer = setTimeout(sayTry, busyUntil - now + 120); return; }
+  let talking = false; try { talking = speechSynthesis.speaking || speechSynthesis.pending; } catch (e) {}
+  if (talking && now - sayWaitSince < 15000) { sayTimer = setTimeout(sayTry, 150); return; }   // let the sentence finish
+  const text = sayNext; sayNext = null;
+  try { const u = new SpeechSynthesisUtterance(text); u.rate = .9; u.pitch = 1.2; u.volume = .9; u.lang = 'en-US'; speechSynthesis.speak(u); } catch (e) {}
 }
 async function testSounds() {                     // render each sound offline through the same chain; report peak / clipped samples
   const out = {};
@@ -101,15 +118,27 @@ async function testSounds() {                     // render each sound offline t
     const c = new OfflineAudioContext(1, Math.ceil(len * rate), rate), m = graph(c);
     s.notes.forEach(n => note(c, m, 0, n, false));
     const d = (await c.startRendering()).getChannelData(0);
-    let peak = 0, clip = 0; for (let i = 0; i < d.length; i++) { const a = Math.abs(d[i]); if (a > peak) peak = a; if (a >= .999) clip++; }
-    out[k] = {peak: +peak.toFixed(4), clipped: clip, maxHz: Math.max(...s.notes.map(n => n[0])), waves: [...new Set(s.notes.map(n => n[3]))].join('/')};
+    let peak = 0, clip = 0, jump = 0; for (let i = 0; i < d.length; i++) { const a = Math.abs(d[i]); if (a > peak) peak = a; if (a >= .999) clip++; if (i) jump = Math.max(jump, Math.abs(d[i] - d[i - 1])); }
+    // smooth limit: the steepest a sum of these sines/triangles can move per sample (anything above it = a click)
+    const slope = s.notes.reduce((t, [f, , , w, nv]) => t + .45 * (PEAK / Math.max(1, nv)) * f / rate * (w === 'triangle' ? 4 : 2 * Math.PI), 0);
+    // level in the first 1 ms of every note and the last 1 ms before each oscillator stops (should be ~0 = no pop)
+    // (each note rendered on its own, so neighbours don't hide a click)
+    let startEdge = 0, stopEdge = 0;
+    for (const n of s.notes) {
+      const c1 = new OfflineAudioContext(1, Math.ceil(len * rate), rate), m1 = graph(c1); note(c1, m1, 0, n, false);
+      const d1 = (await c1.startRendering()).getChannelData(0), pk = Math.max(...d1.map(Math.abs)) || 1;
+      const at = (t0, t1) => { let x = 0; for (let i = Math.max(0, Math.floor(t0 * rate)); i < Math.min(d1.length, Math.ceil(t1 * rate)); i++) x = Math.max(x, Math.abs(d1[i])); return x; };
+      startEdge = Math.max(startEdge, at(n[1], n[1] + .001) / pk); stopEdge = Math.max(stopEdge, at(n[1] + n[2] + TAIL + .029, n[1] + n[2] + TAIL + .04) / pk);   // around the moment the oscillator stops (+ the compressor's 6 ms look-ahead)
+    }
+    out[k] = {peak: +peak.toFixed(4), clipped: clip, maxJump: +jump.toFixed(5), smoothLimit: +slope.toFixed(5), clicks: jump > slope * 1.05 ? 'YES' : 'none',
+      startEdge: (100 * startEdge).toFixed(1) + '% of peak (1st ms)', stopEdge: (100 * stopEdge).toFixed(3) + '% of peak (at stop)', maxHz: Math.max(...s.notes.map(n => n[0])), waves: [...new Set(s.notes.map(n => n[3]))].join('/')};
   }
   return out;
 }
 function muteBtn() { return `<button class="fg-icon" id="fgMute" aria-label="${muted ? 'Sound off' : 'Sound on'}">${muted ? '🔇' : '🔊'}</button>`; }
 function bindMute() {
   const b = document.getElementById('fgMute'); if (!b) return;
-  b.onclick = () => { muted = !muted; store('mute', muted ? '1' : '0'); if (muted) { clearTimeout(sayTimer); if ('speechSynthesis' in window) speechSynthesis.cancel(); }
+  b.onclick = () => { muted = !muted; store('mute', muted ? '1' : '0'); if (muted) { clearTimeout(sayTimer); sayNext = null; if ('speechSynthesis' in window) speechSynthesis.cancel(); }   // only when you tap mute
     b.textContent = muted ? '🔇' : '🔊'; b.setAttribute('aria-label', muted ? 'Sound off' : 'Sound on'); SFX.tap(); };
 }
 
