@@ -43,7 +43,11 @@ const SOUNDS = {
   nope:  {gap: 300, notes: [[N.G4, 0, .2, 'sine', 1.4], [N.E4, .17, .28, 'sine', 1.4]]},       // soft "boop boop", never harsh
   win:   {gap: 900, notes: [[N.C5, 0, .2, 'triangle', 2], [N.E5, .14, .2, 'triangle', 2], [N.G5, .28, .2, 'triangle', 2],
           [N.E5, .42, .18, 'triangle', 2], [N.G5, .56, .2, 'triangle', 2],
-          [N.C5, .72, .9, 'sine', 3], [N.E5, .72, .9, 'sine', 3], [N.G5, .72, .9, 'sine', 3], [N.C6, .74, .9, 'sine', 3]]}
+          [N.C5, .72, .9, 'sine', 3], [N.E5, .72, .9, 'sine', 3], [N.G5, .72, .9, 'sine', 3], [N.C6, .74, .9, 'sine', 3]]},
+  // 🤫 secret found (Trivia's hidden Master Trainer mode): a sparkly rising run, then a shimmering chord
+  secret: {gap: 1500, notes: [[N.G4, 0, .16, 'sine', 2], [N.C5, .08, .16, 'sine', 2], [N.E5, .16, .16, 'sine', 2], [N.G5, .24, .16, 'sine', 2],
+          [N.C6, .32, .22, 'triangle', 2], [N.G5, .44, .14, 'sine', 2], [N.C6, .52, .14, 'sine', 2],
+          [N.C5, .66, 1.0, 'sine', 4], [N.E5, .66, 1.0, 'sine', 4], [N.G5, .68, 1.0, 'sine', 4], [N.C6, .70, 1.0, 'triangle', 4]]}
 };
 function graph(c) {                               // master gain -> soft compressor -> speakers
   const m = c.createGain(), comp = c.createDynamicsCompressor();

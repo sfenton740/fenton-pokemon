@@ -361,3 +361,64 @@ body.game-mode main{max-width:1100px;padding-top:10px}
  .tv-opts.labeled .tv-swatch{width:min(9vh,80px)}
  .tv-opts.labeled .tv-opt .tv-card{height:calc((100vh - 360px)/2)}
  .tv-nextrow{min-height:96px}}
+
+/* ===== 👑 Trivia: secret Master Trainer mode (dark + gold) ===== */
+.tv-title{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.tv-player.master{grid-column:1/-1;flex-direction:row;justify-content:center;gap:22px;color:#ffe9a8;
+ background:radial-gradient(circle at 20% 0%,#4a3480 0,#1a1230 55%,#0b0814 100%);border-color:#d4af37;box-shadow:0 0 0 3px var(--ink),0 8px 0 rgba(0,0,0,.3),0 0 26px #d4af3788;animation:tvmglow 2.6s ease-in-out infinite}
+.tv-player.master .tv-pava{position:relative;border-color:#d4af37;width:min(30vw,200px)}
+.tv-player.master .tv-pava i{position:absolute;top:-6px;left:6px;font-style:normal;font-size:44px;filter:drop-shadow(0 2px 0 #000)}
+.tv-mtext{display:flex;flex-direction:column;align-items:center;gap:6px}
+.tv-player.master .tv-pname{color:#ffd54a;text-shadow:0 3px 0 #000}
+.tv-player.master .tv-best{background:#14101f;color:#ffe9a8;border-color:#d4af37}
+@keyframes tvmglow{0%,100%{box-shadow:0 0 0 3px var(--ink),0 8px 0 rgba(0,0,0,.3),0 0 18px #d4af3766}50%{box-shadow:0 0 0 3px var(--ink),0 8px 0 rgba(0,0,0,.3),0 0 36px #ffd54acc}}
+.tv-mball{display:inline-grid;place-items:center;width:60%;max-width:200px;aspect-ratio:1;border-radius:50%;border:6px solid var(--ink);position:relative;
+ background:radial-gradient(circle at 50% 50%,#fff 0 13%,var(--ink) 13.5% 20%,transparent 20.5%),
+  radial-gradient(circle at 28% 28%,#ff6fb5 0 9%,transparent 9.5%),radial-gradient(circle at 72% 28%,#ff6fb5 0 9%,transparent 9.5%),
+  linear-gradient(#7a3fd6 0 45%,var(--ink) 45% 55%,#fff 55%);box-shadow:0 6px 0 rgba(0,0,0,.35),0 0 30px #d4af37aa}
+.tv-mball b{position:absolute;top:13%;left:50%;transform:translateX(-50%);font-size:clamp(18px,4vh,40px);font-weight:900;color:#fff;line-height:1}
+.tv-pic .tv-mball{width:auto;max-width:none;height:78%;animation:fgwiggle 2.4s ease-in-out infinite}
+.tv-mball.spin{width:150px;animation:tvspin 2.2s cubic-bezier(.2,.8,.2,1) 1}
+@keyframes tvspin{0%{transform:scale(0) rotate(-540deg)}70%{transform:scale(1.15) rotate(10deg)}100%{transform:scale(1) rotate(0)}}
+.tv-secret{position:fixed;inset:0;z-index:45;display:grid;place-items:center;padding:20px;background:radial-gradient(circle,#2a1a50cc,#05030ae6);animation:fgfade .3s}
+.tv-secretbox{position:relative;overflow:hidden;text-align:center;max-width:620px;width:100%;padding:28px 22px 26px;border-radius:36px;border:6px solid #d4af37;
+ background:radial-gradient(circle at 50% 0%,#4a3480,#140e24 70%);color:#ffe9a8;box-shadow:0 0 0 4px var(--ink),0 0 60px #ffd54a99;animation:fgpop .6s}
+.tv-rays{position:absolute;inset:-60%;background:repeating-conic-gradient(#ffd54a22 0 10deg,transparent 10deg 20deg);animation:tvrays 12s linear infinite;pointer-events:none}
+@keyframes tvrays{to{transform:rotate(360deg)}}
+.tv-secretbox>*{position:relative}
+.tv-crown{font-size:64px;line-height:1;animation:fgbob 1.4s ease-in-out infinite}
+.tv-secretkicker{margin-top:10px;font-weight:900;font-size:24px;letter-spacing:3px;color:#ff9fd8}
+.tv-secretname{font-weight:900;font-size:clamp(40px,8vw,64px);line-height:1.05;color:#ffd54a;text-shadow:0 4px 0 #000,0 0 24px #ffd54a}
+.tv-secretsub{font-weight:800;font-size:20px;margin:8px 0 16px;color:#f3e6ff}
+.btn.tv-goldbtn{background:linear-gradient(170deg,#ffe27a,#d4a017);color:#1a1230}
+/* master questions */
+.tv.master{background:radial-gradient(circle at 30% 0%,#3a2868,#120c20 70%);border:5px solid #d4af37;border-radius:34px;padding:14px;box-shadow:0 0 0 3px var(--ink),0 0 28px #d4af3755}
+.tv.master .tv-q{background:#1b1430;border-color:#d4af37;color:#fff3cf}
+.tv.master .tv-pic{height:min(22vh,230px);border-color:#d4af37;background:radial-gradient(circle,#4a3480 0 30%,#1a1230 80%)}
+.tv.master .tv-pic.k{background:radial-gradient(circle,#4a3480 0 30%,#1a1230 80%)}
+.tv.master .tv-pic.mqmark{background:radial-gradient(circle,#5b3fa0 0 25%,#1a1230 80%)}
+.tv.master .tv-text{font-size:clamp(21px,2.9vw,30px)}
+.tv.master .tv-tag{color:#ffd54a}
+.tv.master .tv-hear{background:#2a2046;border-color:#d4af37}
+.tv.master .tv-opts.mc.n4{grid-template-columns:1fr 1fr}
+.tv.master .tv-opts.labeled .tv-opt{background:linear-gradient(170deg,#2c2150,#160f28);border-color:#d4af37;color:#ffe9a8;min-height:110px;padding:10px 16px}
+.tv.master .tv-opts.labeled .tv-lab{font-size:clamp(20px,2.6vw,27px)}
+.tv.master .tv-opts.tf .tv-opt{border-color:#d4af37;min-height:130px}
+.tv.master .tv-opt.right{box-shadow:0 0 0 7px #ffd54a,0 0 0 11px var(--ink),0 0 34px 16px #ffd54a}
+.tv.master .tv-opt.right .tv-lab{color:#fff}
+.tv.master .tv-nextrow{min-height:90px}
+.tv-score.master{background:linear-gradient(170deg,#3a2868,#140e24);color:#ffd54a;border-color:#d4af37}
+.tv-winbox.master{background:radial-gradient(circle at 50% 0%,#4a3480,#140e24 70%);color:#ffe9a8;border-color:#d4af37}
+.tv-winbox.master .fg-big{color:#ffd54a}
+.tv-winbox.master .fg-sub{color:#f3e6ff}
+@media (orientation:portrait) and (min-width:700px){
+ .tv.master .tv-pic{height:min(22vh,260px)}
+ .tv.master .tv-opts.labeled .tv-opt{min-height:min(15vh,170px)}
+ .tv.master .tv-opts.tf .tv-opt{min-height:min(22vh,250px)}}
+@media (orientation:landscape) and (min-width:900px){
+ .tv.master .tv-pic{height:calc(100vh - 470px);min-height:150px;max-height:300px}
+ .tv.master .tv-opts.mc.n4,.tv.master .tv-opts.mc.n3{grid-template-columns:1fr}
+ .tv.master .tv-opts.labeled .tv-opt{min-height:0;justify-content:center}
+ .tv.master .tv-opts.mc{grid-auto-rows:1fr}
+ .tv-player.master .tv-pava{width:min(22vw,200px)}}
+@media (max-width:700px){.tv.master .tv-opts.mc.n4{grid-template-columns:1fr}.tv-player.master{flex-direction:column}}
