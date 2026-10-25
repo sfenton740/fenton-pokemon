@@ -1,5 +1,5 @@
 /* Game Time - kid games for the Fenton Pokémon site. No libraries, no network needed (pictures live in games/).
-   Memory Match + Who's That Pokémon? (+ Card Battle School in tcg.js).  Built for little fingers on an iPad: big buttons, no timers. (Who's That: a wrong guess costs 1 star, never below 0.) */
+   Memory Match + Who's That Pokémon? (+ Card Battle School in tcg.js, Pokémon Trivia in trivia.js).  Built for little fingers on an iPad: big buttons, no timers. (Who's That: a wrong guess costs 1 star, never below 0.) */
 window.FentonGames = (() => {
 'use strict';
 // Owned cards with clear art (art crops made once by tools/make_game_art.py from our own card scans).
@@ -209,9 +209,12 @@ function menu() {
       <a class="fg-pick blue" href="#/games/who" data-say="Who's that Pokémon?">
         <span class="fg-pickart"><span class="fg-silmini"><img src="${SIL(pika)}" alt="" draggable="false"><b>?</b></span></span>
         <span class="fg-pickname">Who's That Pokémon?</span><span class="fg-picksub">guess the shadow 👀</span></a>
-      <a class="fg-pick green wide" href="#/games/tcg" data-say="Card Battle School!">
+      <a class="fg-pick green" href="#/games/tcg" data-say="Card Battle School!">
         <span class="fg-pickart tcgpick"><img class="l" src="games/tcg/me55-9.jpg" alt="" draggable="false"><span class="vs">VS</span><img class="r" src="games/tcg/me55-113.jpg" alt="" draggable="false"></span>
         <span class="fg-pickname">Card Battle School</span><span class="fg-picksub">learn to play the card game ⚔️</span></a>
+      <a class="fg-pick purple" href="#/games/trivia" data-say="Pokémon Trivia!">
+        <span class="fg-pickart tvpick"><span class="tvpick-q"><img src="${ART(pika)}" alt="" draggable="false"><b>?</b></span><span class="tvpick-tf"><i>👍</i><i>👎</i></span></span>
+        <span class="fg-pickname">Pokémon Trivia</span><span class="fg-picksub">true or false? ⭐ quiz</span></a>
     </div>
     <div class="fg-menu-foot">${muteBtn()}<span>Pictures are from our own cards!</span></div></div>`;
   bindMute();
@@ -340,6 +343,7 @@ function render(app, data, sub) {
   if (sub === 'memory') return memory();
   if (sub === 'who') return who();
   if (sub === 'tcg' && window.FentonTCG) return window.FentonTCG.render(app, data);
+  if (sub === 'trivia' && window.FentonTrivia) return window.FentonTrivia.render(app, data);
   return menu();
 }
 let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(sizeGrid, 120); });
