@@ -38,6 +38,7 @@ The site does NOT read the Google Sheet live. That would need the sheet to be pu
 Only update these when those tabs change, e.g. a new opened product, a new set or binder, or new PSA fees. Use the Google Sheets connector
 (`user-Google-sheets` → `read_range`, spreadsheetId `1U-bajlW6HKeB_tzBhZfsQRhAcV8quHtBd99D8MZCfco`):
 - `'📦 Opened Products'!A4:J23`: B product, C set, D qty, E packs each, G notes, H price, J TCGplayer URL → `opened_products.json` keys
+  (L = list price each, US MSRP → `msrp`; build_data totals.spent_msrp = Σ qty × msrp)
   `product,set,qty,packs_each,note,price,url`
 - `'Sets & Binders'!A1:N20` → `sets.json` (`name,code,api,size,wishlist,released`; add `"order":"binder"` to keep photo/binder order instead of number order)
 - `'Sets & Binders'!A23:F40` → `binders.json` (`name,emoji,desc,pages`). A binder only appears on the site if it's listed here.

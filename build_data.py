@@ -176,6 +176,7 @@ def main():
             extras_value=round(value - sum(c['price'] or 0 for c in owned), 2),
             wish_cost=round(sum(cards[k]['price'] or 0 for k in wishlist), 2), wish_count=len(wishlist),
             packs=sum(o['qty'] * (o['packs_each'] or 0) for o in opened), products=sum(o['qty'] for o in opened),
+            spent_msrp=round(sum(o['qty'] * (o.get('msrp') or 0) for o in opened), 2),
             up=tc['up'], down=tc['down'], same=tc['same'], new=tc['new'],
             base_date=base_dates.most_common(1)[0][0] if base_dates else None),
         settings=dict(trend_pct=S['trend_pct'], trend_min=S['trend_min_dollars'], window=S['trend_window_days'],

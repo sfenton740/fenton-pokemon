@@ -6,7 +6,8 @@
   "packs_each": 9,
   "price": 127.91,
   "url": "https://www.tcgplayer.com/product/704143/pokemon-me-30th-celebration-30th-celebration-elite-trainer-box",
-  "note": "Each has 9 packs + Nidorina promo, sleeves, dice. ⚠️ Please confirm none were the Pokémon Center ETB (11 packs)."
+  "note": "Each has 9 packs + Nidorina promo, sleeves, dice. ⚠️ Please confirm none were the Pokémon Center ETB (11 packs).",
+  "msrp": 49.99
  },
  {
   "product": "30th Celebration Booster Bundle",
@@ -15,7 +16,8 @@
   "packs_each": 6,
   "price": 77.35,
   "url": "https://www.tcgplayer.com/product/704171/pokemon-me-30th-celebration-30th-celebration-booster-bundle",
-  "note": "6 packs. ⚠️ Please confirm these were 30th Celebration bundles."
+  "note": "6 packs. ⚠️ Please confirm these were 30th Celebration bundles.",
+  "msrp": 26.94
  },
  {
   "product": "30th Celebration Knock Out Collection",
@@ -24,7 +26,8 @@
   "packs_each": 2,
   "price": 23.06,
   "url": "https://www.tcgplayer.com/product/704152/pokemon-me-30th-celebration-30th-celebration-knock-out-collection",
-  "note": "Foil Eevee promo + coin + 2 packs."
+  "note": "Foil Eevee promo + coin + 2 packs.",
+  "msrp": 9.99
  },
  {
   "product": "30th Celebration Mini Tin (designs?)",
@@ -33,7 +36,8 @@
   "packs_each": 2,
   "price": null,
   "url": "",
-  "note": "⚠️ Assumed Mini Tins (2 packs each). 10 designs, $23.07–$33.05 each — tell us which ones."
+  "note": "⚠️ Assumed Mini Tins (2 packs each). 10 designs, $23.07–$33.05 each — tell us which ones.",
+  "msrp": 9.99
  },
  {
   "product": "30th Celebration Poster Collection",
@@ -42,7 +46,8 @@
   "packs_each": 3,
   "price": 35.76,
   "url": "https://www.tcgplayer.com/product/704153/pokemon-me-30th-celebration-30th-celebration-poster-collection",
-  "note": "3 packs + Articuno, Zapdos & Moltres promos + big poster."
+  "note": "3 packs + Articuno, Zapdos & Moltres promos + big poster.",
+  "msrp": 14.99
  },
  {
   "product": "30th Celebration Greninja ex Box",
@@ -51,7 +56,8 @@
   "packs_each": 4,
   "price": 56.95,
   "url": "https://www.tcgplayer.com/product/704168/pokemon-me-30th-celebration-30th-celebration-greninja-ex-box",
-  "note": "4 packs + Greninja ex promo + oversize card."
+  "note": "4 packs + Greninja ex promo + oversize card.",
+  "msrp": 21.99
  },
  {
   "product": "30th Celebration Sylveon ex Box",
@@ -60,7 +66,8 @@
   "packs_each": 4,
   "price": 59.57,
   "url": "https://www.tcgplayer.com/product/704155/pokemon-me-30th-celebration-30th-celebration-sylveon-ex-box",
-  "note": "4 packs + Sylveon ex promo + oversize card."
+  "note": "4 packs + Sylveon ex promo + oversize card.",
+  "msrp": 21.99
  },
  {
   "product": "30th Celebration Tech Sticker Collection (which?)",
@@ -69,7 +76,8 @@
   "packs_each": 3,
   "price": null,
   "url": "",
-  "note": "⚠️ Alolan Exeggutor ($35.46) or Lucario ($35.76)? 3 packs + promo + stickers."
+  "note": "⚠️ Alolan Exeggutor ($35.46) or Lucario ($35.76)? 3 packs + promo + stickers.",
+  "msrp": 14.99
  },
  {
   "product": "30th Celebration Mini Tin (designs?) — Oct 26, 2026",
@@ -78,6 +86,37 @@
   "packs_each": 2,
   "price": null,
   "url": "",
-  "note": "Opened Oct 26, 2026. ⚠️ Tin type not confirmed: assumed Mini Tins (2 packs each, list price $9.99). Hits: Jirachi ex 155 SIR, Metagross δ Classic, Chandelure 137 IR, Pikachu ex 054."
+  "note": "Opened Oct 26, 2026. ⚠️ Tin type not confirmed: assumed Mini Tins (2 packs each, list price $9.99). Hits: Jirachi ex 155 SIR, Metagross δ Classic, Chandelure 137 IR, Pikachu ex 054.",
+  "msrp": 9.99
+ },
+ {
+  "product": "30th Celebration Tech Sticker Collection [Lucario] — Oct 27, 2026",
+  "set": "30th Celebration",
+  "qty": 1,
+  "packs_each": 3,
+  "price": 35.17,
+  "msrp": 14.99,
+  "url": "https://www.tcgplayer.com/product/704146/pokemon-me-30th-celebration-30th-celebration-tech-sticker-collection-lucario",
+  "note": "Opened Oct 27, 2026. 3 packs + foil Lucario MEP 095 promo + sticker sheet. List price $14.99."
+ },
+ {
+  "product": "30th Celebration Tech Sticker Collection [Alolan Exeggutor] — Oct 27, 2026",
+  "set": "30th Celebration",
+  "qty": 1,
+  "packs_each": 3,
+  "price": 34.99,
+  "msrp": 14.99,
+  "url": "https://www.tcgplayer.com/product/704145/pokemon-me-30th-celebration-30th-celebration-tech-sticker-collection-alolan-exeggutor",
+  "note": "Opened Oct 27, 2026. 3 packs + foil Alolan Exeggutor MEP 094 promo (new!) + sticker sheet. List price $14.99."
+ },
+ {
+  "product": "30th Celebration Mini Tin (design?) — Oct 27, 2026",
+  "set": "30th Celebration",
+  "qty": 1,
+  "packs_each": 2,
+  "price": null,
+  "msrp": 9.99,
+  "url": "",
+  "note": "Opened Oct 27, 2026. ⚠️ Tin type not confirmed: assumed Mini Tin (2 packs, list price $9.99). Hits with the 2 Tech Stickers: Pikachu 58/102 Classic (new), Espeon ex 070, Greninja ex 021, Fuecoco ex 015."
  }
 ]
