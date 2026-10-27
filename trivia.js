@@ -63,29 +63,29 @@ const BANK = [
   {l: 'e', q: "Who is Ash's best buddy?", o: ['a:me55-23', 'a:me55-90', 'a:me55-119'], f: "It's Pikachu! I choose you!"},
   {l: 'e', q: "Ash's Pikachu likes to stay inside its Poké Ball.", a: false, p: 'ball', f: "Ash's Pikachu doesn't like its Poké Ball. It rides on Ash's shoulder!"},
   {l: 'e', q: 'What color is the top of a Poké Ball?', o: ['c:#e3350d:Red', 'c:#8a4fd8:Purple', 'c:#2e9e44:Green'], p: 'ball', f: 'A Poké Ball is red on top and white on the bottom!'},
-  {l: 'e', q: 'Trainers catch Pokémon with a Poké Ball.', a: true, p: 'ball', f: 'Yes! You catch Pokémon with a Poké Ball!'},
+  {l: 'e', q: 'Trainers catch Pokémon with a bucket.', a: false, p: 'ball', f: 'Trainers catch Pokémon with a Poké Ball!'},
   {l: 'e', q: 'Which one is Meowth?', o: ['a:me55-113', 'a:me55-116', 'a:me55-9'], f: "That's Meowth!"},
   {l: 'e', q: "Team Rocket's Meowth can talk like a person.", a: true, p: 'a:me55-113', f: "Team Rocket's Meowth can talk!"},
   {l: 'e', q: 'What animal does Meowth look like?', o: ['e:🐱:Cat', 'e:🐶:Dog', 'e:🐟:Fish'], p: 'a:me55-113', f: 'Meowth is a cat Pokémon. Meow!'},
   {l: 'e', q: 'Team Rocket always wins.', a: false, p: 'e:🚀:Team Rocket', f: "Team Rocket doesn't win. They go blasting off again!"},
   {l: 'e', q: 'What color is Gengar?', o: ['c:#7b4fc4:Purple', 'c:#ffd21f:Yellow', 'c:#2e9e44:Green'], p: 'a:me55-90', f: 'Gengar is purple!'},
-  {l: 'e', q: 'Gengar is a Ghost type.', a: true, p: 'a:me55-90', f: 'Gengar is a spooky Ghost type. Boo!'},
+  {l: 'e', q: 'Gengar is a Fire type.', a: false, p: 'a:me55-90', f: 'Gengar is a spooky Ghost type, not Fire. Boo!'},
   {l: 'e', q: 'Which one is a ghost?', o: ['a:me55-90', 'a:me55-23', 'a:me55-116'], f: 'Gengar is a ghost. Boo!'},
   {l: 'e', q: 'Lapras can carry people across the water.', a: true, p: 'a:me55-17', f: 'Lapras gives people rides across the water!'},
   {l: 'e', q: 'Which one is a bird?', o: ['a:me55-55', 'a:me55-119', 'a:me55-16'], f: 'Zapdos is a bird. It can fly!'},
   {l: 'e', q: 'Eevee can grow into lots of different Pokémon.', a: true, p: 'a:me55-116', f: 'Eevee can evolve into lots of different Pokémon!'},
   {l: 'e', q: 'Which one is Eevee?', o: ['a:me55-116', 'a:me55-9', 'a:me55-113'], f: "That's Eevee!"},
-  {l: 'e', q: 'Ninetales has nine tails.', a: true, p: 'a:me55-10', f: 'Ninetales has nine tails!'},
+  {l: 'e', q: 'Ninetales has two tails.', a: false, p: 'a:me55-10', f: 'Ninetales has nine tails! Count them!'},
   {l: 'e', q: 'Slowpoke is super fast.', a: false, p: 'a:me55-16', f: 'Slowpoke is very, very slow!'},
   {l: 'e', q: "What is on the tip of Charizard's tail?", o: ['e:🔥:A fire', 'e:🌸:A flower', 'e:❄️:A snowflake'], p: 'a:tcg-714372', f: "Charizard's tail has a fire on the tip!"},
   {l: 'e', q: 'Water Pokémon are strong against Fire Pokémon.', a: true, p: 'e:💧:Water', f: 'Water beats Fire. Splash!'},
   {l: 'e', q: 'Which one beats Fire?', o: ['e:💧:Water', 'e:🍃:Grass', 'e:❄️:Ice'], p: 'e:🔥:Fire', f: 'Water beats Fire!'},
   {l: 'e', q: "Pikachu's tail looks like a lightning bolt.", a: true, p: 'a:me55-23', f: "Pikachu's tail looks like a lightning bolt!"},
   {l: 'e', q: "What color are Pikachu's cheeks?", o: ['c:#e3350d:Red', 'c:#2a75bb:Blue', 'c:#2e9e44:Green'], p: 'a:me55-23', f: "Pikachu's cheeks are red!"},
-  {l: 'e', q: 'Mew is pink.', a: true, p: 'a:me55-65', f: 'Mew is pink!'},
+  {l: 'e', q: 'Mew is green.', a: false, p: 'a:me55-65', f: 'Mew is pink!'},
   {l: 'e', q: 'Which one is Mew?', o: ['a:me55-65', 'a:me55-90', 'a:me55-17'], f: "That's Mew!"},
   {l: 'e', q: 'Which Pokémon is pink?', o: ['a:me55-120', 'a:me55-17', 'a:me55-90'], f: 'Igglybuff is pink!'},
-  {l: 'e', q: 'Marill is blue.', a: true, p: 'a:me55-67', f: 'Marill is blue!'},
+  {l: 'e', q: 'Marill is red.', a: false, p: 'a:me55-67', f: 'Marill is blue, like water!'},
   {l: 'e', q: 'In the card game, Energy cards help your Pokémon attack.', a: true, p: 'k:me55-9', f: 'Energy cards help your Pokémon attack!'},
   {l: 'e', q: 'What do you play the Pokémon card game with?', o: ['e:🃏:Cards', 'e:⚽:A ball', 'e:🎨:Paint'], f: 'You play with cards!'},
   {l: 'e', q: 'Which Energy matches Pikachu?', o: ['e:⚡:Lightning', 'e:🔥:Fire', 'e:💧:Water'], p: 'k:me55-23', f: 'Pikachu matches Lightning Energy!'},
@@ -94,119 +94,119 @@ const BANK = [
   {l: 'e', q: 'What does Ash wear on his head?', o: ['e:🧢:A cap', 'e:👑:A crown', 'e:🎩:A top hat'], f: 'Ash wears a cap!'},
   {l: 'e', q: 'Some Pokémon hatch from eggs.', a: true, p: 'e:🥚:Egg', f: 'Some Pokémon hatch from eggs!'},
   {l: 'e', q: 'Which Pokémon is big and sleepy?', o: ['a:me55-119', 'a:me55-23', 'a:me55-120'], f: 'Snorlax is big and sleepy!'},
-  {l: 'e', q: "Jigglypuff's song makes everyone fall asleep.", a: true, p: 'e:🎤:Song', f: "Jigglypuff's song makes everyone sleepy!"},
-  {l: 'e', q: 'Igglybuff is a baby Pokémon.', a: true, p: 'a:me55-120', f: 'Igglybuff is a baby Pokémon!'},
+  {l: 'e', q: 'Jigglypuff\'s song makes everyone dance.', a: false, p: 'e:🎤:Song', f: 'Jigglypuff\'s song makes everyone fall asleep!'},
+  {l: 'e', q: 'Igglybuff is a giant Pokémon.', a: false, p: 'a:me55-120', f: 'Igglybuff is a tiny baby Pokémon!'},
   {l: 'e', q: 'What color is Charizard?', o: ['c:#ff8a1f:Orange', 'c:#7b4fc4:Purple', 'c:#2e9e44:Green'], p: 'a:tcg-714372', f: 'Charizard is orange!'},
   {l: 'e', q: 'Ash wants to be a Pokémon Master.', a: true, p: 'e:🏆:Trophy', f: 'Ash wants to be a Pokémon Master!'},
-  {l: 'e', q: 'Nurse Joy takes care of Pokémon at the Pokémon Center.', a: true, p: 'e:🏥:Pokémon Center', f: 'Nurse Joy helps Pokémon feel better!'},
+  {l: 'e', q: 'Team Rocket takes care of Pokémon at the Pokémon Center.', a: false, p: 'e:🏥:Pokémon Center', f: 'Nurse Joy takes care of Pokémon at the Pokémon Center!'},
   {l: 'e', q: 'Where does Lapras love to swim?', o: ['e:🌊:The water', 'e:🌋:A volcano', 'e:🏜️:The desert'], p: 'a:me55-17', f: 'Lapras swims in the water!'},
 
   // ===== HARDER: Big Trainer =====
-  {l: 'h', q: "Ash's last name is Ketchum.", a: true, p: 'e:🧢:Ash', f: 'His name is Ash Ketchum!'},
-  {l: 'h', q: 'Pikachu evolves into Raichu.', a: true, p: 'a:me55-23', f: 'Pikachu evolves into Raichu!'},
-  {l: 'h', q: 'Professor Oak gave Ash his first Pokémon, Pikachu.', a: true, p: 'a:me55-23', f: 'Professor Oak gave Ash his Pikachu!'},
-  {l: 'h', q: 'Ash comes from Pallet Town.', a: true, p: 'e:🏡:Home', f: 'Ash comes from Pallet Town!'},
-  {l: 'h', q: 'Misty is a Gym Leader who loves Water types.', a: true, p: 'e:💧:Water', f: 'Misty loves Water Pokémon!'},
-  {l: 'h', q: 'Brock is a Gym Leader who loves Rock types.', a: true, p: 'e:🪨:Rock', f: 'Brock loves Rock Pokémon!'},
+  {l: 'h', q: 'Ash\'s last name is Mustard.', a: false, p: 'e:🧢:Ash', f: 'His name is Ash Ketchum!'},
+  {l: 'h', q: 'Pikachu evolves into Pichu.', a: false, p: 'a:me55-23', f: 'Pichu evolves into Pikachu, and Pikachu evolves into Raichu!'},
+  {l: 'h', q: 'Nurse Joy gave Ash his first Pokémon, Pikachu.', a: false, p: 'a:me55-23', f: 'Professor Oak gave Ash his Pikachu!'},
+  {l: 'h', q: 'Ash comes from Cerulean City.', a: false, p: 'e:🏡:Home', f: 'Ash comes from Pallet Town! Misty is from Cerulean City.'},
+  {l: 'h', q: 'Misty is a Gym Leader who loves Fire types.', a: false, p: 'e:💧:Water', f: 'Misty loves Water Pokémon!'},
+  {l: 'h', q: 'Brock is a Gym Leader who loves Bug types.', a: false, p: 'e:🪨:Rock', f: 'Brock loves Rock Pokémon!'},
   {l: 'h', q: 'What type of Pokémon does Misty love?', o: ['e:💧:Water', 'e:🔥:Fire', 'e:👻:Ghost'], f: 'Misty loves Water types!'},
   {l: 'h', q: 'What type of Pokémon does Brock love?', o: ['e:🪨:Rock', 'e:💧:Water', 'e:⚡:Electric'], f: 'Brock loves Rock types!'},
-  {l: 'h', q: 'Team Rocket is Jessie, James, and Meowth.', a: true, p: 'a:me55-113', f: 'Jessie, James, and Meowth are Team Rocket!'},
+  {l: 'h', q: 'Team Rocket is Jessie, James, and Pikachu.', a: false, p: 'a:me55-113', f: 'Jessie, James, and Meowth are Team Rocket! Pikachu is on Ash\'s team.'},
   {l: 'h', q: 'Which Pokémon is in Team Rocket?', o: ['a:me55-113', 'a:me55-23', 'a:me55-116'], f: 'Meowth is in Team Rocket! Meowth, that\'s right!'},
-  {l: 'h', q: 'Scientists made Mewtwo from Mew.', a: true, p: 'a:me55-63', f: 'Mewtwo was made from Mew!'},
+  {l: 'h', q: 'Scientists made Mew from Mewtwo.', a: false, p: 'a:me55-63', f: 'It\'s the other way around. Mewtwo was made from Mew!'},
   {l: 'h', q: 'Electric attacks are super strong against Water Pokémon.', a: true, p: 'e:⚡:Electric', f: 'Electric beats Water. Zap!'},
   {l: 'h', q: 'Which type beats Water?', o: ['e:⚡:Electric', 'e:🔥:Fire', 'e:🪨:Rock'], p: 'e:💧:Water', f: 'Electric beats Water!'},
   {l: 'h', q: 'Which type beats Grass?', o: ['e:🔥:Fire', 'e:💧:Water', 'e:🪨:Rock'], p: 'e:🍃:Grass', f: 'Fire beats Grass!'},
   {l: 'h', q: 'Fire attacks are super strong against Water Pokémon.', a: false, p: 'e:🔥:Fire', f: "Water beats Fire. Fire attacks don't do much to Water Pokémon."},
   {l: 'h', q: "Ground attacks can't hit Flying Pokémon.", a: true, p: 'a:me55-55', f: 'Flying Pokémon are up in the air, so Ground attacks miss!'},
-  {l: 'h', q: 'Charmander evolves into Charmeleon, and then into Charizard.', a: true, p: 'a:tcg-714372', f: 'Charmander, Charmeleon, Charizard!'},
-  {l: 'h', q: 'Eevee can evolve into Umbreon.', a: true, p: 'a:me55-91', f: 'Eevee can evolve into Umbreon!'},
+  {l: 'h', q: 'Charmander evolves into Charmeleon, and then into Blastoise.', a: false, p: 'a:tcg-714372', f: 'Charmander, Charmeleon, Charizard! Blastoise comes from Squirtle.'},
+  {l: 'h', q: 'Eevee can evolve into Pikachu.', a: false, p: 'a:me55-91', f: 'Eevee can evolve into Umbreon, Espeon, Sylveon, and more. But not Pikachu!'},
   {l: 'h', q: 'Which one is an Eevee evolution?', o: ['a:me55-69', 'a:me55-9', 'a:me55-113'], f: 'Espeon is an Eevee evolution!'},
   {l: 'h', q: 'Which one is also an Eevee evolution?', o: ['a:me55-71', 'a:me55-120', 'a:me55-67'], f: 'Sylveon is an Eevee evolution!'},
-  {l: 'h', q: 'Eevee has 8 different evolutions.', a: true, p: 'a:me55-116', f: 'Eevee has 8 evolutions!'},
+  {l: 'h', q: 'Eevee has 20 different evolutions.', a: false, p: 'a:me55-116', f: 'Eevee has 8 evolutions!'},
   {l: 'h', q: 'What does Vulpix evolve into?', o: ['a:me55-10', 'a:me55-17', 'a:me55-90'], p: 'a:me55-9', f: 'Vulpix evolves into Ninetales!'},
   {l: 'h', q: 'What does Marill evolve into?', o: ['a:me55-68', 'a:me55-16', 'a:me55-116'], p: 'a:me55-67', f: 'Marill evolves into Azumarill!'},
   {l: 'h', q: 'What does Zorua evolve into?', o: ['a:me55-96', 'a:me55-93', 'a:me55-91'], p: 'a:me55-95', f: 'Zorua evolves into Zoroark!'},
   {l: 'h', q: 'Igglybuff evolves into Jigglypuff.', a: true, p: 'a:me55-120', f: 'Igglybuff evolves into Jigglypuff!'},
   {l: 'h', q: 'Toxel evolves into Toxtricity.', a: true, p: 'a:me55-58', f: 'Toxel evolves into Toxtricity!'},
-  {l: 'h', q: 'Magikarp evolves into Gyarados.', a: true, p: 'e:🐟:Magikarp', f: 'Little Magikarp evolves into big Gyarados!'},
+  {l: 'h', q: 'Magikarp evolves into Goldeen.', a: false, p: 'e:🐟:Magikarp', f: 'Little Magikarp evolves into big Gyarados!'},
   {l: 'h', q: 'Which legendary bird is the Fire bird?', o: ['a:me55-11', 'a:me55-18', 'a:me55-55'], f: 'Moltres is the Fire bird!'},
   {l: 'h', q: 'Which legendary bird is the Ice bird?', o: ['a:me55-18', 'a:me55-11', 'a:me55-55'], f: 'Articuno is the Ice bird!'},
   {l: 'h', q: 'Which legendary bird is the Electric bird?', o: ['a:me55-55', 'a:me55-18', 'a:me55-11'], f: 'Zapdos is the Electric bird!'},
   {l: 'h', q: 'Which legendary Pokémon is a Water type?', o: ['a:me55-19', 'a:me55-82', 'a:me55-11'], f: 'Kyogre is a Water type!'},
   {l: 'h', q: 'Which one is a Dragon type?', o: ['a:me55-109', 'a:me55-23', 'a:me55-116'], f: 'Salamence is a Dragon type!'},
   {l: 'h', q: 'Which type is Gengar?', o: ['e:👻:Ghost', 'e:🔥:Fire', 'e:💧:Water'], p: 'a:me55-90', f: 'Gengar is a Ghost type!'},
-  {l: 'h', q: 'Snorlax is a Normal type.', a: true, p: 'a:me55-119', f: 'Snorlax is a Normal type!'},
+  {l: 'h', q: 'Snorlax is a Grass type.', a: false, p: 'a:me55-119', f: 'Snorlax is a Normal type!'},
   {l: 'h', q: 'Sylveon is a Fairy type.', a: true, p: 'a:me55-71', f: 'Sylveon is a Fairy type!'},
   {l: 'h', q: "Umbreon's rings glow in the dark.", a: true, p: 'a:me55-91', f: "Umbreon's rings glow in the dark!"},
-  {l: 'h', q: 'Zacian holds a sword in its mouth.', a: true, p: 'a:me55-106', f: 'Zacian holds a sword in its mouth!'},
+  {l: 'h', q: 'Zacian holds a magic wand in its mouth.', a: false, p: 'a:me55-106', f: 'Zacian holds a sword in its mouth! Zamazenta has the shield.'},
   {l: 'h', q: 'Lucario can feel aura, the energy around people and Pokémon.', a: true, p: 'a:me55-83', f: 'Lucario can sense aura!'},
-  {l: 'h', q: 'Jirachi sleeps for 1,000 years.', a: true, p: 'a:me55-102', f: 'Jirachi sleeps for 1,000 years!'},
-  {l: 'h', q: 'Greninja is a ninja frog, and Ash had one.', a: true, p: 'a:me55-21', f: 'Greninja is a ninja frog. Ash had one!'},
+  {l: 'h', q: 'Jirachi sleeps for only 5 minutes.', a: false, p: 'a:me55-102', f: 'Jirachi sleeps for 1,000 years! Then it wakes up for 7 days.'},
+  {l: 'h', q: 'Greninja is a ninja frog, and it is a Fire type.', a: false, p: 'a:me55-21', f: 'Greninja is a Water type ninja frog. Ash had one!'},
   {l: 'h', q: 'Misty traveled with Ash because Pikachu zapped her bike.', a: true, p: 'e:🚲:Bike', f: 'Pikachu zapped Misty\'s bike, so she followed Ash!'},
-  {l: 'h', q: 'Gary is Professor Oak\'s grandson.', a: true, p: 'e:👴:Professor Oak', f: "Gary is Professor Oak's grandson!"},
+  {l: 'h', q: 'Gary is Ash\'s brother.', a: false, p: 'e:👴:Professor Oak', f: 'Gary is Professor Oak\'s grandson, and Ash\'s rival!'},
   {l: 'h', q: 'After many adventures, Ash became the Pokémon World Champion.', a: true, p: 'e:🏆:Trophy', f: 'Ash became the World Champion!'},
   {l: 'h', q: "What does Team Rocket's Meowth love?", o: ['e:🪙:Shiny coins', 'e:🥦:Broccoli', 'e:🧦:Socks'], p: 'a:me55-113', f: 'Meowth loves shiny coins!'},
   {l: 'h', q: 'Pikachu is number 25 in the Pokédex.', a: true, p: 'a:me55-23', f: 'Pikachu is number 25!'},
-  {l: 'h', q: 'Mew is number 151 in the Pokédex.', a: true, p: 'a:me55-65', f: 'Mew is number 151!'},
+  {l: 'h', q: 'Mew is number 1 in the Pokédex.', a: false, p: 'a:me55-65', f: 'Mew is number 151! Bulbasaur is number 1.'},
   {l: 'h', q: 'Bulbasaur is number 1 in the Pokédex.', a: true, p: 'e:🌱:Bulbasaur', f: 'Bulbasaur is number 1!'},
-  {l: 'h', q: 'In Pokémon Red and Blue, your first Pokémon can be Bulbasaur, Charmander, or Squirtle.', a: true, p: 'e:🎮:Game', f: 'You pick Bulbasaur, Charmander, or Squirtle!'},
+  {l: 'h', q: 'In Pokémon Red and Blue, your first Pokémon can be Pikachu, Eevee, or Snorlax.', a: false, p: 'e:🎮:Game', f: 'You pick Bulbasaur, Charmander, or Squirtle!'},
   {l: 'h', q: 'In the games, a sleeping Snorlax blocks the road until you wake it with a Poké Flute.', a: true, p: 'a:me55-119', f: 'A Poké Flute wakes up Snorlax!'},
-  {l: 'h', q: 'In the games, you battle Gym Leaders to win badges.', a: true, p: 'e:🏅:Badge', f: 'Beat a Gym Leader to win a badge!'},
+  {l: 'h', q: 'In the games, you battle Gym Leaders to win cookies.', a: false, p: 'e:🏅:Badge', f: 'Beat a Gym Leader to win a badge!'},
   {l: 'h', q: 'How many Gym badges do you need for the Pokémon League?', o: ['t:8:8', 't:3:3', 't:50:50'], p: 'e:🏅:Badge', f: 'You need 8 badges!'},
-  {l: 'h', q: 'Pokémon turns 30 years old in 2026.', a: true, p: 'e:🎂:Birthday', f: 'Happy 30th birthday, Pokémon!'},
+  {l: 'h', q: 'Pokémon turns 100 years old in 2026.', a: false, p: 'e:🎂:Birthday', f: 'Pokémon turns 30 in 2026. Happy birthday, Pokémon!'},
   {l: 'h', q: 'How old is Pokémon turning in 2026?', o: ['t:30:30', 't:5:5', 't:100:100'], p: 'e:🎂:Birthday', f: 'Pokémon is turning 30!'},
   {l: 'h', q: 'Our 30th Celebration cards are a party for Pokémon\'s 30th birthday.', a: true, p: 'k:me55-23', f: '30th Celebration is for Pokémon\'s 30th birthday!'},
   {l: 'h', q: 'The 30th Celebration set has old-style cards called the Classic Collection.', a: true, p: 'a:tcg-714372', f: 'Our Classic Charizard is a Classic Collection card!'},
-  {l: 'h', q: 'HP means Hit Points. It shows how much damage a Pokémon can take.', a: true, p: 'k:me55-10', f: 'HP means Hit Points!'},
+  {l: 'h', q: 'HP means Happy Points.', a: false, p: 'k:me55-10', f: 'HP means Hit Points! It shows how much damage a Pokémon can take.'},
   {l: 'h', q: 'Which card has more HP?', o: ['k:me55-10:Ninetales', 'k:me55-9:Vulpix'], ro: true, f: 'Ninetales has 110 HP. Vulpix has 70 HP.'},
-  {l: 'h', q: 'You can attach one Energy card from your hand each turn.', a: true, p: 'e:🔥:Energy', f: 'One Energy card each turn!'},
-  {l: 'h', q: 'A Stage 1 Pokémon evolves from a Basic Pokémon.', a: true, p: 'k:me55-10', f: 'Ninetales is Stage 1. It evolves from Basic Vulpix!'},
+  {l: 'h', q: 'You can attach 5 Energy cards from your hand each turn.', a: false, p: 'e:🔥:Energy', f: 'Only one Energy card each turn!'},
+  {l: 'h', q: 'A Basic Pokémon evolves from a Stage 1 Pokémon.', a: false, p: 'k:me55-10', f: 'It\'s the other way around. Ninetales is Stage 1. It evolves from Basic Vulpix!'},
   {l: 'h', q: 'Knocking out a Pokémon ex gets you extra Prize cards.', a: true, p: 'a:me55-90', f: 'Pokémon ex are strong, so they give extra Prize cards!'},
   {l: 'h', q: 'In the real card game, each player sets out 10 Prize cards.', a: false, p: 'e:🎁:Prize cards', f: 'Each player sets out 6 Prize cards.'},
   {l: 'h', q: 'How many cards are in a Pokémon card game deck?', o: ['t:60:60', 't:10:10', 't:100:100'], p: 'e:🃏:Deck', f: 'A deck has 60 cards!'},
-  {l: 'h', q: 'Your Bench can hold up to 5 Pokémon.', a: true, p: 'e:🪑:Bench', f: 'The Bench holds up to 5 Pokémon!'},
+  {l: 'h', q: 'Your Bench can hold up to 20 Pokémon.', a: false, p: 'e:🪑:Bench', f: 'The Bench holds up to 5 Pokémon!'},
   {l: 'h', q: 'You win when you take all of your Prize cards.', a: true, p: 'e:🎁:Prize cards', f: 'Take all your Prize cards to win!'},
   {l: 'h', q: 'You can flip a coin to see who goes first.', a: true, p: 'e:🪙:Coin', f: 'Flip a coin to see who goes first!'},
   {l: 'h', q: 'Fire Pokémon like Vulpix are weak to Water.', a: true, p: 'k:me55-9', f: 'Look at the bottom of the card. Vulpix is weak to Water!'},
   // ===== EASY: more for Little Trainer =====
-  {l: 'e', q: 'Drifloon looks like a balloon.', a: true, p: 'a:me55-73', f: 'Drifloon looks like a purple balloon. Float away!'},
+  {l: 'e', q: 'Drifloon looks like a big rock.', a: false, p: 'a:me55-73', f: 'Drifloon looks like a purple balloon. Float away!'},
   {l: 'e', q: 'Which one looks like a balloon?', o: ['a:me55-73', 'a:me55-119', 'a:me55-17'], f: 'Drifloon looks like a balloon!'},
-  {l: 'e', q: 'Vivillon is a butterfly Pokémon.', a: true, p: 'a:me55-8', f: 'Vivillon is a pretty butterfly!'},
+  {l: 'e', q: 'Vivillon is a fish Pokémon.', a: false, p: 'a:me55-8', f: 'Vivillon is a pretty butterfly, not a fish!'},
   {l: 'e', q: 'Which one is a butterfly?', o: ['a:me55-8', 'a:me55-114', 'a:me55-16'], f: 'Vivillon is a butterfly!'},
-  {l: 'e', q: 'Fuecoco is a little fire crocodile.', a: true, p: 'a:me55-15', f: 'Fuecoco is a little fire crocodile. Chomp!'},
+  {l: 'e', q: 'Fuecoco is a little ice penguin.', a: false, p: 'a:me55-15', f: 'Fuecoco is a little fire crocodile. Chomp!'},
   {l: 'e', q: 'Which one is Fuecoco?', o: ['a:me55-15', 'a:me55-67', 'a:me55-116'], f: "That's Fuecoco!"},
   {l: 'e', q: 'Tropius has big leaves on its back, like wings.', a: true, p: 'a:me55-5', f: 'Tropius flies with its big leaves!'},
-  {l: 'e', q: 'Alolan Exeggutor is super tall, with a long, long neck.', a: true, p: 'a:me55-129', f: 'Alolan Exeggutor is as tall as a palm tree!'},
+  {l: 'e', q: 'Alolan Exeggutor is super short, with a tiny neck.', a: false, p: 'a:me55-129', f: 'Alolan Exeggutor is super tall, with a long, long neck!'},
   {l: 'e', q: 'Kangaskhan carries its baby in a pouch on its belly.', a: true, p: 'a:me55-114', f: 'Kangaskhan keeps its baby safe in its pouch!'},
   {l: 'e', q: 'What animal does Kangaskhan look like?', o: ['e:🦘:Kangaroo', 'e:🐘:Elephant', 'e:🐧:Penguin'], p: 'a:me55-114', f: 'Kangaskhan looks like a kangaroo!'},
-  {l: 'e', q: 'Maushold is a family of little mice.', a: true, p: 'a:me55-125', f: 'Maushold is a mouse family. Squeak!'},
+  {l: 'e', q: 'Maushold is a family of little cats.', a: false, p: 'a:me55-125', f: 'Maushold is a family of little mice. Squeak!'},
   {l: 'e', q: 'What animal is Maushold?', o: ['e:🐭:Mouse', 'e:🐸:Frog', 'e:🐻:Bear'], p: 'a:me55-125', f: 'Maushold is a family of mice!'},
   {l: 'e', q: 'Gimmighoul loves to collect coins.', a: true, p: 'a:me55-81', f: 'Gimmighoul loves coins!'},
-  {l: 'e', q: 'Gholdengo is made of gold coins.', a: true, p: 'a:me55-108', f: 'Gholdengo is made of shiny gold coins!'},
+  {l: 'e', q: 'Gholdengo is made of ice cubes.', a: false, p: 'a:me55-108', f: 'Gholdengo is made of shiny gold coins!'},
   {l: 'e', q: 'What color is Gholdengo?', o: ['c:#e9b824:Gold', 'c:#7b4fc4:Purple', 'c:#2e9e44:Green'], p: 'a:me55-108', f: 'Gholdengo is gold!'},
   {l: 'e', q: 'Cosmog looks like a little cloud from outer space.', a: true, p: 'a:me55-78', f: 'Cosmog is a tiny space cloud!'},
   {l: 'e', q: 'What does Comfey carry?', o: ['e:🌸:Flowers', 'e:🍕:Pizza', 'e:⚽:A ball'], p: 'a:me55-77', f: 'Comfey carries flowers!'},
   {l: 'e', q: 'Which one has flowers?', o: ['a:me55-77', 'a:me55-97', 'a:me55-56'], f: 'Comfey has flowers!'},
   {l: 'e', q: 'What animal does Seismitoad look like?', o: ['e:🐸:Frog', 'e:🐱:Cat', 'e:🐦:Bird'], p: 'a:me55-84', f: 'Seismitoad is a big toad. Ribbit!'},
-  {l: 'e', q: 'Lycanroc looks like a wolf.', a: true, p: 'a:me55-85', f: 'Lycanroc is a wolf Pokémon. Awoo!'},
+  {l: 'e', q: 'Lycanroc looks like a bunny.', a: false, p: 'a:me55-85', f: 'Lycanroc looks like a wolf. Awoo!'},
   {l: 'e', q: 'What animal does Lycanroc look like?', o: ['e:🐺:Wolf', 'e:🐰:Bunny', 'e:🐢:Turtle'], p: 'a:me55-85', f: 'Lycanroc looks like a wolf!'},
   {l: 'e', q: 'Scraggy pulls up its skin like baggy pants.', a: true, p: 'a:me55-94', f: 'Scraggy wears its skin like baggy pants. Silly!'},
   {l: 'e', q: 'How many heads does Hydreigon have?', o: ['t:3:3', 't:1:1', 't:10:10'], p: 'a:me55-99', f: 'Hydreigon has 3 heads!'},
-  {l: 'e', q: 'Reshiram is white.', a: true, p: 'a:me55-14', f: 'Reshiram is white!'},
+  {l: 'e', q: 'Reshiram is black.', a: false, p: 'a:me55-14', f: 'Reshiram is white! Zekrom is the black one.'},
   {l: 'e', q: 'What color is Zekrom?', o: ['c:#26262e:Black', 'c:#ff9fc8:Pink', 'c:#ffd21f:Yellow'], p: 'a:me55-56', f: 'Zekrom is black!'},
   {l: 'e', q: "Which letter do Victini's ears make?", o: ['t:V:V', 't:O:O', 't:X:X'], p: 'a:me55-13', f: "Victini's ears make a V. V is for victory!"},
   {l: 'e', q: 'Pikachu is a mouse Pokémon.', a: true, p: 'a:me55-23', f: 'Pikachu is an electric mouse!'},
   {l: 'e', q: 'What animal is Squirtle?', o: ['e:🐢:Turtle', 'e:🐙:Octopus', 'e:🐟:Fish'], p: 'e:💧:Squirtle', f: 'Squirtle is a little turtle!'},
-  {l: 'e', q: 'Bulbasaur has a plant bulb on its back.', a: true, p: 'e:🌱:Bulbasaur', f: 'Bulbasaur has a plant on its back!'},
+  {l: 'e', q: 'Bulbasaur has a shell on its back.', a: false, p: 'e:🌱:Bulbasaur', f: 'Bulbasaur has a plant bulb on its back! Squirtle has the shell.'},
   {l: 'e', q: 'Psyduck often has a headache.', a: true, p: 'e:🦆:Psyduck', f: 'Poor Psyduck always has a headache!'},
   {l: 'e', q: 'Magikarp is a very strong fighter.', a: false, p: 'e:🐟:Magikarp', f: 'Magikarp just flops and splashes. But it grows up into big Gyarados!'},
-  {l: 'e', q: 'Eevee is brown and fluffy.', a: true, p: 'a:me55-116', f: 'Eevee is brown and fluffy!'},
+  {l: 'e', q: 'Eevee is green and slimy.', a: false, p: 'a:me55-116', f: 'Eevee is brown and fluffy!'},
   {l: 'e', q: 'What color is Umbreon?', o: ['c:#26262e:Black', 'c:#ff9fc8:Pink', 'c:#ff8a1f:Orange'], p: 'a:me55-91', f: 'Umbreon is black, with yellow rings!'},
   {l: 'e', q: 'Ditto can change into other Pokémon.', a: true, p: 'e:🫠:Ditto', f: 'Ditto can copy other Pokémon!'},
   {l: 'e', q: 'What color is Ditto?', o: ['c:#b48ae0:Purple', 'c:#2e9e44:Green', 'c:#ff8a1f:Orange'], p: 'e:🫠:Ditto', f: 'Ditto is purple!'},
   {l: 'e', q: 'Zapdos is yellow.', a: true, p: 'a:me55-55', f: 'Zapdos is yellow, like lightning!'},
   {l: 'e', q: 'Articuno is red.', a: false, p: 'a:me55-18', f: 'Articuno is icy blue!'},
-  {l: 'e', q: 'Kyogre lives in the sea.', a: true, p: 'a:me55-19', f: 'Kyogre lives deep in the sea!'},
+  {l: 'e', q: 'Kyogre lives in a volcano.', a: false, p: 'a:me55-19', f: 'Kyogre lives deep in the sea!'},
   {l: 'e', q: 'Which one is red?', o: ['a:me55-82', 'a:me55-19', 'a:me55-17'], f: 'Groudon is red!'},
   {l: 'e', q: 'Chandelure has purple flames.', a: true, p: 'a:me55-75', f: 'Chandelure has spooky purple flames!'},
   {l: 'e', q: 'Morpeko loves to eat.', a: true, p: 'a:me55-61', f: 'Morpeko is always hungry!'},
@@ -216,7 +216,7 @@ const BANK = [
   {l: 'e', q: 'Which one is Victini?', o: ['a:me55-13', 'a:me55-77', 'a:me55-15'], f: "That's Victini! V is for victory!"},
 
   // ===== HARDER: more for Big Trainer =====
-  {l: 'h', q: 'Gengar evolves from Haunter.', a: true, p: 'a:me55-90', f: 'Gastly, Haunter, Gengar!'},
+  {l: 'h', q: 'Gengar evolves into Haunter.', a: false, p: 'a:me55-90', f: 'Haunter evolves into Gengar! Gastly, Haunter, Gengar!'},
   {l: 'h', q: 'What does Deino grow up to be?', o: ['a:me55-99', 'a:me55-17', 'a:me55-77'], p: 'a:me55-97', f: 'Deino evolves into Zweilous, and then Hydreigon!'},
   {l: 'h', q: 'What does Jangmo-o grow up to be?', o: ['a:me55-112', 'a:me55-61', 'a:me55-13'], p: 'a:me55-110', f: 'Jangmo-o evolves into Hakamo-o, and then Kommo-o!'},
   {l: 'h', q: 'Little Cosmog can grow up into Solgaleo or Lunala.', a: true, p: 'a:me55-78', f: 'Cosmog grows into Cosmoem, then Solgaleo or Lunala!'},
@@ -227,43 +227,43 @@ const BANK = [
   {l: 'h', q: 'Scraggy evolves into Scrafty.', a: true, p: 'a:me55-94', f: 'Scraggy evolves into Scrafty!'},
   {l: 'h', q: 'Which type is Lucario?', o: ['e:🥊:Fighting', 'e:🔥:Fire', 'e:💧:Water'], p: 'a:me55-83', f: 'Lucario is a Fighting and Steel type!'},
   {l: 'h', q: 'Which type is Yveltal?', o: ['e:🌙:Dark', 'e:🍃:Grass', 'e:💧:Water'], p: 'a:me55-100', f: 'Yveltal is a Dark and Flying type!'},
-  {l: 'h', q: 'Xerneas is a Fairy type.', a: true, p: 'a:me55-76', f: 'Xerneas is a Fairy type!'},
+  {l: 'h', q: 'Xerneas is a Fire type.', a: false, p: 'a:me55-76', f: 'Xerneas is a Fairy type!'},
   {l: 'h', q: 'Reshiram is a Dragon and Fire type.', a: true, p: 'a:me55-14', f: 'Reshiram is a Dragon and Fire type!'},
   {l: 'h', q: 'Zekrom is a Water type.', a: false, p: 'a:me55-56', f: 'Zekrom is a Dragon and Electric type!'},
   {l: 'h', q: 'Ice attacks are super strong against Dragon Pokémon.', a: true, p: 'e:❄️:Ice', f: 'Ice beats Dragon! Brrr!'},
-  {l: 'h', q: 'Grass attacks are super strong against Water Pokémon.', a: true, p: 'e:🍃:Grass', f: 'Grass beats Water!'},
+  {l: 'h', q: 'Grass attacks are super strong against Fire Pokémon.', a: false, p: 'e:🍃:Grass', f: 'Fire beats Grass! Grass is strong against Water.'},
   {l: 'h', q: 'Which type beats Rock?', o: ['e:💧:Water', 'e:🔥:Fire', 'e:⚡:Electric'], p: 'e:🪨:Rock', f: 'Water beats Rock! Grass does too.'},
   {l: 'h', q: "Electric attacks can't hurt Ground Pokémon.", a: true, p: 'a:me55-82', f: 'Ground Pokémon like Groudon are safe from Electric attacks!'},
   {l: 'h', q: "Normal attacks can't hit Ghost Pokémon.", a: true, p: 'a:me55-90', f: 'Normal attacks go right through Ghost Pokémon. Spooky!'},
-  {l: 'h', q: 'Fairy attacks are super strong against Dragon Pokémon.', a: true, p: 'a:me55-71', f: 'Fairy beats Dragon!'},
+  {l: 'h', q: 'Dragon attacks are super strong against Fairy Pokémon.', a: false, p: 'a:me55-71', f: 'Dragon attacks can\'t hurt Fairy Pokémon at all. Fairy beats Dragon!'},
   {l: 'h', q: 'Which type beats Ghost?', o: ['e:🌙:Dark', 'e:🥊:Fighting', 'e:🍃:Grass'], p: 'a:me55-90', f: 'Dark beats Ghost! Ghost beats Ghost too.'},
   {l: 'h', q: 'Which one holds a shield?', o: ['a:me55-107', 'a:me55-106', 'a:me55-17'], f: 'Zamazenta holds a shield! Zacian has the sword.'},
   {l: 'h', q: 'Which one is linked to time?', o: ['a:me55-103', 'a:me55-20', 'a:me55-119'], f: 'Dialga is linked to time. Palkia is linked to space!'},
-  {l: 'h', q: 'Groudon is linked to the land, and Kyogre is linked to the sea.', a: true, p: 'a:me55-82', f: 'Groudon made the land, and Kyogre made the sea!'},
-  {l: 'h', q: 'Lugia sleeps deep under the sea.', a: true, p: 'a:me55-121', f: 'Lugia rests deep under the sea!'},
+  {l: 'h', q: 'Groudon is linked to the sea, and Kyogre is linked to the land.', a: false, p: 'a:me55-82', f: 'It\'s the other way around. Groudon is the land, and Kyogre is the sea!'},
+  {l: 'h', q: 'Lugia sleeps inside a volcano.', a: false, p: 'a:me55-121', f: 'Lugia rests deep under the sea!'},
   {l: 'h', q: "Ho-Oh's wings shine with rainbow colors.", a: true, p: 'a:me55-12', f: "Ho-Oh's feathers shine like a rainbow!"},
   {l: 'h', q: 'In Scarlet and Violet, you can ride Koraidon or Miraidon.', a: true, p: 'a:me55-86', f: 'You can ride Koraidon or Miraidon!'},
-  {l: 'h', q: "Ash's Caterpie evolved into Butterfree.", a: true, p: 'e:🦋:Butterfree', f: 'Caterpie became Metapod, and then Butterfree!'},
+  {l: 'h', q: 'Ash\'s Caterpie evolved into Beedrill.', a: false, p: 'e:🦋:Butterfree', f: 'Ash\'s Caterpie became Metapod, and then Butterfree!'},
   {l: 'h', q: "Ash's Pikachu wanted to evolve into Raichu.", a: false, p: 'a:me55-23', f: 'Pikachu said no to the Thunder Stone. It likes being Pikachu!'},
   {l: 'h', q: 'Brock loves to cook for his friends.', a: true, p: 'e:🍳:Cooking', f: 'Brock is a great cook!'},
   {l: 'h', q: 'Misty has a Psyduck that often gets confused.', a: true, p: 'e:🦆:Psyduck', f: "Misty's Psyduck is always confused. Psy-yi-yi!"},
   {l: 'h', q: 'Togepi hatched from an egg, and Misty took care of it.', a: true, p: 'e:🥚:Egg', f: 'Togepi thought Misty was its mom!'},
   {l: 'h', q: 'Wobbuffet is on Team Rocket with Jessie.', a: true, p: 'e:🚀:Team Rocket', f: 'Wobbuffet! Jessie\'s Wobbuffet is always popping out!'},
-  {l: 'h', q: 'Officer Jenny is a police officer.', a: true, p: 'e:👮:Officer Jenny', f: 'Officer Jenny keeps everyone safe!'},
+  {l: 'h', q: 'Officer Jenny is a doctor.', a: false, p: 'e:👮:Officer Jenny', f: 'Officer Jenny is a police officer! Nurse Joy helps sick Pokémon.'},
   {l: 'h', q: "Ash's Squirtle was the leader of the Squirtle Squad.", a: true, p: 'e:🕶️:Squirtle Squad', f: 'Squirtle led the Squirtle Squad, with cool sunglasses!'},
   {l: 'h', q: "Ash's Charmander evolved all the way into Charizard.", a: true, p: 'a:tcg-714372', f: "Ash's Charmander became Charmeleon, and then Charizard!"},
-  {l: 'h', q: 'In the games, you can bring 6 Pokémon with you.', a: true, p: 'ball', f: 'Your team can have 6 Pokémon!'},
+  {l: 'h', q: 'In the games, you can bring 12 Pokémon with you.', a: false, p: 'ball', f: 'Your team can have 6 Pokémon!'},
   {l: 'h', q: 'How many Pokémon can be on your team in the games?', o: ['t:6:6', 't:2:2', 't:20:20'], p: 'ball', f: 'You can bring 6 Pokémon!'},
   {l: 'h', q: 'A Shiny Pokémon has different colors than normal.', a: true, p: 'e:✨:Shiny', f: 'Shiny Pokémon have special colors. They sparkle!'},
-  {l: 'h', q: 'In the games, a Rare Candy makes a Pokémon go up a level.', a: true, p: 'e:🍬:Rare Candy', f: 'Rare Candy gives one level up!'},
+  {l: 'h', q: 'In the games, a Rare Candy makes a Pokémon go down a level.', a: false, p: 'e:🍬:Rare Candy', f: 'Rare Candy makes a Pokémon go up a level!'},
   {l: 'h', q: 'In the games, Pokémon Centers heal your Pokémon.', a: true, p: 'e:🏥:Pokémon Center', f: 'Pokémon Centers make your Pokémon all better!'},
   {l: 'h', q: 'In Pokémon GO, you catch Pokémon by walking around outside with a phone.', a: true, p: 'e:📱:Phone', f: 'Pokémon GO gets you walking outside!'},
-  {l: 'h', q: 'Pokémon is short for Pocket Monsters.', a: true, p: 'ball', f: 'Pokémon means Pocket Monsters!'},
-  {l: 'h', q: 'Pokémon started in Japan.', a: true, p: 'e:🗾:Japan', f: 'Pokémon started in Japan!'},
-  {l: 'h', q: 'In the card game, you start with 7 cards in your hand.', a: true, p: 'e:🃏:Cards', f: 'Draw 7 cards to start!'},
+  {l: 'h', q: 'Pokémon is short for Pocket Mountains.', a: false, p: 'ball', f: 'Pokémon is short for Pocket Monsters!'},
+  {l: 'h', q: 'Pokémon started in Australia.', a: false, p: 'e:🗾:Japan', f: 'Pokémon started in Japan!'},
+  {l: 'h', q: 'In the card game, you start with 20 cards in your hand.', a: false, p: 'e:🃏:Cards', f: 'Draw 7 cards to start!'},
   {l: 'h', q: 'How many cards do you draw to start a card game?', o: ['t:7:7', 't:2:2', 't:20:20'], p: 'e:🃏:Cards', f: 'You draw 7 cards!'},
   {l: 'h', q: 'You draw a card at the start of every turn.', a: true, p: 'e:🃏:Cards', f: 'Draw a card each turn!'},
-  {l: 'h', q: 'In the card game, Weakness makes an attack do double damage.', a: true, p: 'k:me55-9', f: 'Weakness means times 2 damage!'},
+  {l: 'h', q: 'In the card game, Weakness makes an attack do half damage.', a: false, p: 'k:me55-9', f: 'Weakness makes an attack do double damage!'},
   {l: 'h', q: 'Retreat means you switch your Active Pokémon with one on your Bench.', a: true, p: 'e:🪑:Bench', f: 'Retreat to swap with a Pokémon on your Bench!'},
   {l: 'h', q: 'You can have 10 copies of the same card in your deck.', a: false, p: 'e:🃏:Deck', f: 'You can have up to 4 of the same card. Basic Energy is the exception!'},
   {l: 'h', q: 'Every 30th Celebration booster pack has a special Pikachu card.', a: true, p: 'k:me55-23', f: 'One Pikachu in every pack!'},
@@ -280,7 +280,7 @@ const BANK = [
   {l: 'm', q: 'Which Pokémon is National Pokédex #143?', o: ['x:Snorlax', 'x:Aerodactyl', 'x:Articuno', 'x:Lapras'], f: 'Snorlax is 143, right between Aerodactyl and Articuno.'},
   {l: 'm', q: 'Which Pokémon is National Pokédex #493?', o: ['x:Arceus', 'x:Darkrai', 'x:Shaymin', 'x:Victini'], f: 'Arceus is 493, the last Pokémon of the Sinnoh generation.'},
   {l: 'm', q: 'Which Pokémon is National Pokédex #1025?', o: ['x:Pecharunt', 'x:Terapagos', 'x:Ogerpon', 'x:Koraidon'], f: 'Pecharunt is 1025. Terapagos is 1024.'},
-  {l: 'm', q: 'Gimmighoul is National Pokédex #999.', a: true, p: 'a:me55-81', f: 'Gimmighoul is 999, and it needs 999 Gimmighoul Coins to evolve!'},
+  {l: 'm', q: 'Gimmighoul is National Pokédex #1000.', a: false, p: 'a:me55-81', f: 'Gimmighoul is #999, and Gholdengo is #1000. It takes 999 Gimmighoul Coins to evolve!'},
   {l: 'm', q: 'After Gold and Silver, how many Pokémon were in the National Pokédex?', o: ['x:251', 'x:250', 'x:386', 'x:300'], f: 'Gold and Silver brought the total to 251, ending with Celebi.'},
   // the anime
   {l: 'm', q: 'In the very first episode, what Pokémon does Ash see flying over a rainbow?', o: ['x:Ho-Oh', 'x:Lugia', 'x:Moltres', 'x:Pidgeot'], p: 'a:me55-12', f: 'Ash sees Ho-Oh at the end of "Pokémon, I Choose You!"'},
@@ -302,8 +302,8 @@ const BANK = [
   {l: 'm', q: "Ash's Charizard went to train at the Charicific Valley.", a: true, p: 'a:tcg-714372', f: 'Charizard trained at the Charicific Valley with Liza.'},
   // the video games
   {l: 'm', q: 'In what year did Pokémon Red and Green come out in Japan?', o: ['x:1996', 'x:1995', 'x:1998', 'x:1999'], f: 'February 27, 1996. That date is now Pokémon Day!'},
-  {l: 'm', q: 'Pokémon Day is celebrated every year on February 27.', a: true, f: 'It marks the day Red and Green came out in Japan.'},
-  {l: 'm', q: 'Pokémon Red and Blue came out in North America in 1998.', a: true, f: 'They came out in North America in September 1998.'},
+  {l: 'm', q: 'Pokémon Day is celebrated every year on October 20.', a: false, f: 'Pokémon Day is February 27, the day Red and Green came out in Japan in 1996.'},
+  {l: 'm', q: 'Pokémon Red and Blue came out in North America in 1996.', a: false, f: 'They came out in North America in September 1998. Japan got Red and Green in 1996.'},
   {l: 'm', q: 'Who created Pokémon and founded Game Freak?', o: ['x:Satoshi Tajiri', 'x:Ken Sugimori', 'x:Junichi Masuda', 'x:Shigeru Miyamoto'], f: 'Satoshi Tajiri created Pokémon. He loved collecting bugs as a kid!'},
   {l: 'm', q: 'What is the most Effort Values (EVs) a Pokémon can have in total?', o: ['x:510', 'x:252', 'x:255', 'x:600'], f: '510 in total, with 252 usually used to max one stat.'},
   {l: 'm', q: 'Since Generation 3, what is the highest an Individual Value (IV) can be?', o: ['x:31', 'x:15', 'x:63', 'x:100'], f: 'IVs go from 0 to 31.'},
@@ -319,7 +319,7 @@ const BANK = [
   {l: 'm', q: 'In Red and Blue, who is the Champion?', o: ['x:Your rival', 'x:Lance', 'x:Professor Oak', 'x:Giovanni'], f: 'Your rival beats the Elite Four just before you do!'},
   {l: 'm', q: 'Who is the Gym Leader of Viridian City in Red and Blue?', o: ['x:Giovanni', 'x:Koga', 'x:Sabrina', 'x:Blaine'], f: 'Giovanni, the boss of Team Rocket, is the last Gym Leader.'},
   {l: 'm', q: 'Which company first made Pokémon GO in 2016?', o: ['x:Niantic', 'x:Game Freak', 'x:Creatures', 'x:HAL Laboratory'], f: 'Niantic made Pokémon GO.'},
-  {l: 'm', q: 'Pokémon Legends: Arceus takes place in the Hisui region.', a: true, f: 'Hisui is what Sinnoh was called long ago.'},
+  {l: 'm', q: 'Pokémon Legends: Arceus takes place in the Galar region.', a: false, f: 'It takes place in Hisui, what Sinnoh was called long ago. Galar is from Sword and Shield.'},
   // the card game: history and rules
   {l: 'm', q: 'In what year did the English Base Set come out?', o: ['x:1999', 'x:1996', 'x:1998', 'x:2000'], p: 'a:tcg-714372', f: 'The English Base Set came out on January 9, 1999.'},
   {l: 'm', q: 'The Pokémon card game came out in Japan in 1996.', a: true, f: 'The first Japanese Expansion Pack came out on October 20, 1996.'},
@@ -335,7 +335,7 @@ const BANK = [
   {l: 'm', q: 'Which set introduced the first Pokémon-ex cards?', o: ['x:EX Ruby & Sapphire', 'x:EX Dragon', 'x:Expedition Base Set', 'x:Diamond & Pearl'], f: 'EX Ruby & Sapphire, in 2003. Each one gave up 2 Prize cards.'},
   {l: 'm', q: 'Abilities first appeared on cards in the Black & White era.', a: true, f: 'Black & White renamed Poké-Powers and Poké-Bodies as Abilities.'},
   {l: 'm', q: 'Knocking out a Pokémon VMAX gives you how many Prize cards?', o: ['x:3', 'x:2', 'x:1', 'x:4'], f: 'A Pokémon VMAX gives up 3 Prize cards.'},
-  {l: 'm', q: 'Under today\'s rules, the player who goes first cannot attack on their first turn.', a: true, f: 'Going first means no attack that turn.'},
+  {l: 'm', q: 'Under today\'s rules, the player who goes first can attack on their first turn.', a: false, f: 'The player who goes first can\'t attack on their first turn.'},
   // 30th Celebration
   {l: 'm', q: 'How many cards are in the 30th Celebration Classic Collection?', o: ['x:30', 'x:25', 'x:20', 'x:50'], p: 'a:tcg-714372', f: '30 reprints, from Base Set to the modern day.'},
   {l: 'm', q: 'When did the 30th Celebration set come out?', o: ['x:September 16, 2026', 'x:February 27, 2026', 'x:October 20, 2026', 'x:January 9, 2026'], p: 'k:me55-23', f: 'September 16, 2026, on the same day worldwide.'},
@@ -348,7 +348,8 @@ const BANK = [
   {l: 'm', q: 'Not counting the bonus Energy, how many cards are in a 30th Celebration booster pack?', o: ['x:5', 'x:10', 'x:3', 'x:11'], f: 'Five cards, including one Pikachu rare, plus a Basic Energy.'},
   {l: 'm', q: 'Which original set is the Classic Collection Shining Celebi from?', o: ['x:Neo Destiny', 'x:Neo Revelation', 'x:Aquapolis', 'x:Skyridge'], f: 'Shining Celebi is from Neo Destiny.'},
   {l: 'm', q: 'Which original set is the Classic Collection Palkia LV.X from?', o: ['x:Great Encounters', 'x:Diamond & Pearl', 'x:Legends Awakened', 'x:Platinum'], p: 'a:me55-20', f: 'Palkia LV.X is from Great Encounters.'},
-  {l: 'm', q: 'The 30th Celebration Classic Collection includes a Darkrai & Cresselia LEGEND card.', a: true, p: 'a:me55-74', f: 'It is from Triumphant, and it takes 2 cards to make the full LEGEND.'}
+  {l: 'm', q: 'The 30th Celebration Classic Collection includes a Darkrai & Cresselia LEGEND card.', a: true, p: 'a:me55-74', f: 'It is from Triumphant, and it takes 2 cards to make the full LEGEND.'},
+  {l: 'm', q: "Ash's Pikachu finally evolved into Raichu at the end of the anime.", a: false, p: 'a:me55-23', f: "Ash's Pikachu never evolved. It stayed a Pikachu the whole way!"},
 ];
 const TIER = {little: 'e', big: 'h', master: 'm'};
 const P = {little: {name: 'Little Trainer', art: 'me55-23', em: '⚡'}, big: {name: 'Big Trainer', art: 'tcg-714372', em: '🔥'},
@@ -437,25 +438,43 @@ function picker(quiet) {
 
 /* ---------- a round ---------- */
 function draw(tier, n) {                       // n questions, about half true/false, no repeats until the tier runs out
-  const out = [];
-  const want = {tf: Math.ceil(n / 2), mc: Math.floor(n / 2)};
-  for (let pass = 0; pass < 2 && out.length < n; pass++) {
-    if (decks[tier].length < n) decks[tier] = K().shuffle(BANK.filter(q => q.l === tier)).concat(decks[tier]);
+  const out = [], tfN = Math.ceil(n / 2), half = Math.ceil(tfN / 2), got = {T: 0, F: 0};
+  const want = {tf: tfN, mc: Math.floor(n / 2), T: half, F: half};   // true/false ones split evenly between true and false answers
+  for (let p = 0; p < 4 && out.length < n; p++) {   // 0: exact mix · 1 (twice, with a fresh deck): any kind, but keep trues and falses even · 2: anything
+    const pass = [0, 1, 1, 2][p];
+    if (decks[tier].length < n || p === 2) decks[tier] = K().shuffle(BANK.filter(q => q.l === tier && !out.includes(q) && !decks[tier].includes(q))).concat(decks[tier]);
     const keep = [];
     while (decks[tier].length && out.length < n) {
-      const q = decks[tier].pop(), t = 'a' in q ? 'tf' : 'mc';
-      if (pass === 0 && want[t] <= 0) { keep.push(q); continue; }
-      want[t]--; out.push(q);
+      const q = decks[tier].pop(), t = 'a' in q ? 'tf' : 'mc', ans = t === 'tf' ? (q.a ? 'T' : 'F') : '';
+      const skip = pass === 0 ? want[t] <= 0 || (ans && want[ans] <= 0) : pass === 1 ? ans && got[ans] > got[ans === 'T' ? 'F' : 'T'] : false;
+      if (skip) { keep.push(q); continue; }
+      want[t]--; if (ans) { want[ans]--; got[ans]++; } out.push(q);
     }
     decks[tier].push(...keep);
   }
-  return K().shuffle(out);
+  return out;                                  // play order is set by mix()
+}
+/* Not predictable: never more than MAX_RUN true/false questions in a row with the same answer
+   (picture questions in between don't break a run). Reshuffle until it fits. */
+const MAX_RUN = 3;
+const longestRun = list => { let best = 0, run = 0, last = null;
+  list.forEach(q => { if (!('a' in q)) return; run = q.a === last ? run + 1 : 1; last = q.a; best = Math.max(best, run); }); return best; };
+function mix(list) {
+  let s = K().shuffle(list);
+  for (let i = 0; i < 300 && longestRun(s) > MAX_RUN; i++) s = K().shuffle(list);
+  return s;
+}
+function turnsOrder(a, b) {                     // Little and Big take turns; the run rule counts both players' questions in play order
+  const build = () => { const x = K().shuffle(a), y = K().shuffle(b); return x.flatMap((q, i) => [{q, who: 'little'}, {q: y[i], who: 'big'}]); };
+  let r = build();
+  for (let i = 0; i < 300 && longestRun(r.map(o => o.q)) > MAX_RUN; i++) r = build();
+  return r;
 }
 function begin(mode) {
   K().clearTimers(); K().SFX.match();
   const qs = mode === 'turns'
-    ? (() => { const a = draw('e', 5), b = draw('h', 5); return a.flatMap((q, i) => [{q, who: 'little'}, {q: b[i], who: 'big'}]); })()
-    : draw(TIER[mode], 10).map(q => ({q, who: mode}));
+    ? turnsOrder(draw('e', 5), draw('h', 5))
+    : mix(draw(TIER[mode], 10)).map(q => ({q, who: mode}));
   T = {mode, qs, i: 0, stars: {little: 0, big: 0, master: 0}, res: [], tfTold: false, mcTold: false};
   const hi = mode === 'turns' ? "Alright, let's go! Little Trainer, I choose you!"
     : mode === 'master' ? "Alright, let's go! Master Trainer, I choose you! These are the hardest questions of all." : `Alright, let's go! ${P[mode].name}, I choose you!`;
@@ -577,6 +596,6 @@ function finish() {
 
 function render() { picker(); }
 // test hooks for headless checks
-return {render, BANK, forEar, _state: () => T, _count: () => ({easy: BANK.filter(q => q.l === 'e').length, harder: BANK.filter(q => q.l === 'h').length,
+return {render, BANK, forEar, _longestRun: longestRun, _draw: (t, n) => mix(draw(t, n)), _turns: () => turnsOrder(draw('e', 5), draw('h', 5)), _state: () => T, _count: () => ({easy: BANK.filter(q => q.l === 'e').length, harder: BANK.filter(q => q.l === 'h').length,
   master: BANK.filter(q => q.l === 'm').length})};
 })();
