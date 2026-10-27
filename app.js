@@ -188,8 +188,9 @@ function rangeButtons(active) {
 }
 function moversStrip() {
   const own = Object.values(D.cards).filter(c => c.qty > 0 && c.pct != null);
-  const up = [...own].filter(c => c.trend === 'up').sort((a, b) => b.pct - a.pct).slice(0, 4);
-  const down = [...own].filter(c => c.trend === 'down').sort((a, b) => a.pct - b.pct).slice(0, 4);
+  const m = moveMode();
+  const up = sortMovers(own.filter(c => c.trend === 'up'), 'up', m).slice(0, 4);
+  const down = sortMovers(own.filter(c => c.trend === 'down'), 'down', m).slice(0, 4);
   const items = [];
   up.forEach(c => items.push(`<span class="up">${esc(c.name)} ▲ ${Math.round(c.pct * 100)}%</span>`));
   down.forEach(c => items.push(`<span class="down">${esc(c.name)} ▼ ${Math.abs(Math.round(c.pct * 100))}%</span>`));
@@ -344,18 +345,47 @@ function topCards() {
   <div class="list">${ids.map((id, i) => row(id, money(card(id).price) + `<div class="sm">${TR[card(id).trend]}</div>`, card(id).qty > 1 ? `<div class="sm">We have ${card(id).qty}</div>` : '', medal(i))).join('')}</div>`;
 }
 
+/* Up & Down sort: "$" = dollar change, "%" = percent change (cheap cards under $1 go last in % mode) */
+const MOVE_CHEAP = 1;
+function moveMode() { try { return localStorage.getItem('moversSort') === 'pct' ? 'pct' : 'usd'; } catch (e) { return 'usd'; } }
+function setMoveMode(m) { try { localStorage.setItem('moversSort', m); } catch (e) {} }
+const moveCheap = c => Math.max(c.base || 0, c.price || 0) < MOVE_CHEAP;
+function sortMovers(list, tab, mode) {
+  const key = c => mode === 'pct' ? c.pct : c.chg;
+  const cmp = tab === 'up' ? (a, b) => key(b) - key(a) : (a, b) => key(a) - key(b);   // up: biggest gain first; down: biggest drop first
+  return [...list].sort((a, b) => (mode === 'pct' ? moveCheap(a) - moveCheap(b) : 0) || cmp(a, b) || (b.price - a.price));
+}
+function chgMoney(v) { return v == null ? '' : (v > 0 ? '+' : v < 0 ? '−' : '') + money(Math.abs(v)); }
+
 function movers(tab) {
   setTitle('📈 Up & Down');
-  tab = tab || 'up';
-  const own = Object.values(D.cards).filter(c => c.qty > 0 && c.pct != null);
-  const list = tab === 'up' ? own.filter(c => c.trend === 'up').sort((a, b) => b.pct - a.pct)
-    : own.filter(c => c.trend === 'down').sort((a, b) => a.chg - b.chg);
+  tab = tab === 'down' ? 'down' : 'up';
+  const mode = moveMode();
+  const own = Object.values(D.cards).filter(c => c.qty > 0 && c.pct != null && c.trend === tab);
+  const list = sortMovers(own, tab, mode);
+  const cheapN = mode === 'pct' ? list.filter(moveCheap).length : 0;
+  const right = c => {
+    const big = mode === 'pct' ? pct(c.pct) : chgMoney(c.chg), small = mode === 'pct' ? chgMoney(c.chg) : pct(c.pct);
+    return `<div class="mv ${tab}"><span class="mv-big">${big}</span><span class="mv-sm">${small}</span></div>`;
+  };
+  let cheapShown = false;
+  const rows = list.slice(0, 40).map(c => {
+    let pre = '';
+    if (mode === 'pct' && moveCheap(c) && !cheapShown) { cheapShown = true; pre = `<div class="mv-split">🪙 Cards under $${MOVE_CHEAP} (big % but tiny $)</div>`; }
+    return pre + row(c.id, right(c), `<div class="sm">${money(c.base)} → <b>${money(c.price)}</b></div>`);
+  }).join('');
   $app.innerHTML = `
   <div class="seg"><button data-t="up" class="${tab === 'up' ? 'on' : ''}">➕ Going up</button><button data-t="down" class="${tab === 'down' ? 'on' : ''}">➖ Going down</button></div>
-  <p class="muted" style="font-weight:800;margin:0 4px 12px">Our cards, last ${D.settings.window} days (since ${fmtDate(D.totals.base_date)}).</p>
-  ${list.length ? `<div class="list">${list.slice(0, 40).map(id => row(id.id, `<span class="${tab}">${pct(id.pct)}</span>`,
-    `<div class="sm">${money(id.base)} → <b>${money(id.price)}</b></div>`)).join('')}</div>` : '<div class="empty-msg">Nothing yet</div>'}`;
+  <div class="mv-sort" role="group" aria-label="Sort by">
+    <button type="button" data-m="usd" class="${mode === 'usd' ? 'on' : ''}" aria-pressed="${mode === 'usd'}">💵 $ Gain</button>
+    <button type="button" data-m="pct" class="${mode === 'pct' ? 'on' : ''}" aria-pressed="${mode === 'pct'}">📊 % Gain</button>
+  </div>
+  <p class="muted" style="font-weight:800;margin:0 4px 6px">Our cards, last ${D.settings.window} days (since ${fmtDate(D.totals.base_date)}).
+    Sorted by ${mode === 'pct' ? 'percent' : 'dollar'} change${tab === 'down' ? ' (biggest drop first)' : ''}.</p>
+  ${mode === 'pct' ? `<p class="mv-cap">In % mode, cards under $${MOVE_CHEAP} (then and now) go to the bottom, so penny cards don't win just by going from 10¢ to 20¢.${cheapN ? ` (${cheapN} here)` : ''}</p>` : ''}
+  ${list.length ? `<div class="list">${rows}</div>` : '<div class="empty-msg">Nothing yet</div>'}`;
   $app.querySelectorAll('.seg button').forEach(b => b.onclick = () => { location.hash = `#/movers/${b.dataset.t}`; });
+  $app.querySelectorAll('.mv-sort button').forEach(b => b.onclick = () => { setMoveMode(b.dataset.m); movers(tab); });
 }
 
 function grading() {

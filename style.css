@@ -167,3 +167,13 @@ body.modal-open{position:fixed;left:0;right:0;overflow:hidden;width:100%}
    and squeeze the others; minmax(0,1fr) + min-width:0 stops that.) Empty pockets match the row height, never overflow. */
 .binder .grid{align-items:stretch}
 .cell.empty{aspect-ratio:auto;min-height:150px}
+
+/* Up & Down: $ Gain / % Gain sort toggle */
+.mv-sort{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 10px}
+.mv-sort button{min-height:58px;border:4px solid var(--ink);border-radius:var(--r);background:#fff;font-weight:900;font-size:20px;box-shadow:var(--shadow)}
+.mv-sort button.on{background:var(--blue);color:#fff}
+.mv-sort button:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.mv{display:flex;flex-direction:column;align-items:flex-end;line-height:1.1}
+.mv-big{font-size:22px;font-weight:900}.mv-sm{font-size:15px;font-weight:800;opacity:.8}
+.mv-cap{font-size:14px;color:#666;font-weight:700;margin:0 4px 12px}
+.mv-split{font-weight:900;color:#666;padding:10px 6px 2px;font-size:15px}
