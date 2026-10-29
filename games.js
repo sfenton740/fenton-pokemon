@@ -47,7 +47,18 @@ const SOUNDS = {
   // 🤫 secret found (Trivia's hidden Master Trainer mode): a sparkly rising run, then a shimmering chord
   secret: {gap: 1500, notes: [[N.G4, 0, .16, 'sine', 2], [N.C5, .08, .16, 'sine', 2], [N.E5, .16, .16, 'sine', 2], [N.G5, .24, .16, 'sine', 2],
           [N.C6, .32, .22, 'triangle', 2], [N.G5, .44, .14, 'sine', 2], [N.C6, .52, .14, 'sine', 2],
-          [N.C5, .66, 1.0, 'sine', 4], [N.E5, .66, 1.0, 'sine', 4], [N.G5, .68, 1.0, 'sine', 4], [N.C6, .70, 1.0, 'triangle', 4]]}
+          [N.C5, .66, 1.0, 'sine', 4], [N.E5, .66, 1.0, 'sine', 4], [N.G5, .68, 1.0, 'sine', 4], [N.C6, .70, 1.0, 'triangle', 4]]},
+  // Card Battle School: ⚡ super effective hit (bright two-step "pow-PING")
+  super: {gap: 300, notes: [[N.G4, 0, .12, 'triangle', 2], [N.C5, .08, .12, 'triangle', 2], [N.E5, .16, .32, 'sine', 2], [N.G5, .16, .32, 'sine', 2]]},
+  // ✨ a Pokémon ex enters: sparkly run, then a warm golden chord
+  shine: {gap: 1200, notes: [[N.C5, 0, .14, 'sine', 2], [N.E5, .07, .14, 'sine', 2], [N.G5, .14, .14, 'sine', 2], [N.C6, .21, .2, 'triangle', 2],
+          [N.G5, .34, .12, 'sine', 2], [N.C6, .42, .12, 'sine', 2],
+          [N.C5, .56, .8, 'sine', 4], [N.E5, .56, .8, 'sine', 4], [N.G5, .58, .8, 'sine', 4], [N.C6, .6, .8, 'triangle', 4]]},
+  // 💫 Knocked Out: a soft falling "dee-doo-dum"
+  faint: {gap: 500, notes: [[N.G4, 0, .22, 'sine', 1.6], [N.E4, .18, .24, 'sine', 1.6], [N.C4, .38, .5, 'sine', 1.6]]},
+  // 🌟 evolution: a rising scale that blooms into a chord
+  evo:   {gap: 800, notes: [[N.C4, 0, .14, 'sine', 2], [N.E4, .1, .14, 'sine', 2], [N.G4, .2, .14, 'sine', 2], [N.C5, .3, .14, 'sine', 2],
+          [N.E5, .4, .14, 'sine', 2], [N.G5, .5, .14, 'sine', 2], [N.C5, .62, .6, 'sine', 3], [N.E5, .62, .6, 'sine', 3], [N.G5, .64, .6, 'triangle', 3]]}
 };
 function graph(c) {                               // master gain -> soft compressor -> speakers
   const m = c.createGain(), comp = c.createDynamicsCompressor();
