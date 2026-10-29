@@ -354,8 +354,13 @@ const BANK = [
 const TIER = {little: 'e', big: 'h', master: 'm'};
 const P = {little: {name: 'Little Trainer', art: 'me55-23', em: '⚡'}, big: {name: 'Big Trainer', art: 'tcg-714372', em: '🔥'},
   master: {name: 'Master Trainer', art: 'me55-63', em: '👑'}};
-const CHEERS = ['Alright!', 'Awesome!', 'You got it!', 'Yes!', 'Great job!'];
-let cheerN = 0; const cheer = () => CHEERS[cheerN++ % CHEERS.length];
+const cheer = () => K().cheer();                 // varied praise, never the same one back-to-back
+const TRN = () => window.Trainer || null;
+function syncP() {                                // the kids' own trainer names + partner Pokémon
+  const T2 = TRN(); if (!T2) return;
+  ['little', 'big'].forEach(k => { const p = T2.get(k); if (p) { P[k].name = p.name; P[k].art = T2.stage(k)[0]; } });
+}
+const lvl = k => TRN() && TRN().get(k) ? `<span class="tv-lvl">Level ${TRN().level(k)}</span>` : '';
 const decks = {e: [], h: [], m: []};
 let T = null;
 
@@ -382,7 +387,11 @@ const readable = q => q.ro || q.o.every(c => /^[ectx]:/.test(c));
 const listSay = l => (l = l.map((x, i) => i ? x.replace(/^(A|The) /, m => m.toLowerCase()) : x), l).length === 2 ? `${l[0]}, or ${l[1]}?` : l.slice(0, -1).join(', ') + ', or ' + l[l.length - 1] + '?';
 
 /* ---------- pick who's playing ---------- */
-const best = k => +(K().store('trivBest.' + k) || 0);
+const best = k => {                              // best scores live in each kid's Trainer profile (old ones were moved in)
+  const T2 = TRN(), kid = k.replace('turns.', '');
+  if (T2 && T2.get(kid)) return +(T2.get(kid).best.trivia || 0);
+  if (T2 && k === 'master') return +(T2.get(T2.current()).best.triviaMaster || 0);
+  return +(K().store('trivBest.' + k) || 0); };
 /* 🤫 Secret: tap the big "Pokémon Trivia!" title 7 times within 3 seconds on the Who's playing? screen.
    Nothing hints at it, and the title makes no sound or movement when tapped, so normal tapping around won't find it by accident. */
 const unlocked = () => K().store('trivMaster') === '1';
@@ -406,18 +415,18 @@ function reveal() {
         <button class="btn blue" id="tvSecretLater">Not now</button></div></div>`;
   document.body.appendChild(ov);
   K().SFX.secret(); K().confetti(140); K().later(() => K().confetti(90), 900);
-  K().say('Whoa! You found the secret Master Trainer mode! Only real Pokémon Masters can beat it!');
+  K().say('Whoa! You found the secret Master Trainer mode!', 'result');
   const close = () => { const o = document.getElementById('tvSecret'); if (o) o.remove(); };
   document.getElementById('tvSecretGo').onclick = () => { close(); begin('master'); };
   document.getElementById('tvSecretLater').onclick = () => { K().SFX.tap(); close(); };
 }
 function picker(quiet) {
-  K().clearTimers(); T = null; secretTaps = [];
+  K().clearTimers(); T = null; secretTaps = []; syncP();
   const old = document.getElementById('tvSecret'); if (old) old.remove();
   const tile = k => `<button class="tv-player ${k}" data-mode="${k}" aria-label="${P[k].name}">
       <span class="tv-pava"><img src="${ART(P[k].art)}" alt="" draggable="false"></span>
       <span class="tv-pname">${P[k].name}</span><span class="tv-psub">${k === 'little' ? 'easy questions' : 'harder questions'}</span>
-      <span class="tv-best">🏆 Best: <b>${best(k)}</b> ⭐</span></button>`;
+      ${lvl(k)}<span class="tv-best">🏆 Best: <b>${best(k)}</b> ⭐</span></button>`;
   K().frame('Pokémon Trivia', `<div class="tv-pick">
       <div class="tv-title" id="tvTitle"><span class="fg-bounce">❓</span> Pokémon Trivia! <span class="fg-bounce d2">⭐</span></div>
       <div class="tv-hello">Who's playing?</div>
@@ -432,8 +441,7 @@ function picker(quiet) {
       </div></div>`, '<div class="tv-barfill"></div>');
   document.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => begin(b.dataset.mode));
   document.getElementById('tvTitle').addEventListener('pointerdown', secretTap);
-  if (!quiet) K().say("Pokémon Trivia! Who's playing? Pikachu is the Little Trainer. Charizard is the Big Trainer. Both of them, to take turns!" +
-    (unlocked() ? ' Or Mewtwo, the Master Trainer, for super hard questions!' : ''));
+  if (!quiet) K().say("Pokémon Trivia! Who's playing?", 'must');
 }
 
 /* ---------- a round ---------- */
@@ -472,12 +480,13 @@ function turnsOrder(a, b) {                     // Little and Big take turns; th
 }
 function begin(mode) {
   K().clearTimers(); K().SFX.match();
+  if (TRN() && (mode === 'little' || mode === 'big')) TRN().setCurrent(mode);
   const qs = mode === 'turns'
     ? turnsOrder(draw('e', 5), draw('h', 5))
     : mix(draw(TIER[mode], 10)).map(q => ({q, who: mode}));
   T = {mode, qs, i: 0, stars: {little: 0, big: 0, master: 0}, res: [], tfTold: false, mcTold: false};
-  const hi = mode === 'turns' ? "Alright, let's go! Little Trainer, I choose you!"
-    : mode === 'master' ? "Alright, let's go! Master Trainer, I choose you! These are the hardest questions of all." : `Alright, let's go! ${P[mode].name}, I choose you!`;
+  const hi = mode === 'turns' ? `${P.little.name}, I choose you!`
+    : mode === 'master' ? 'Master Trainer, I choose you!' : `${P[mode].name}, I choose you!`;
   showQ(hi);
 }
 function scoreBar() {
@@ -487,12 +496,12 @@ function scoreBar() {
   return `<div class="tv-dots" aria-label="Question ${T.i + 1} of ${T.qs.length}">${dots}</div>` +
     (T.mode === 'turns' ? box('little') + box('big') : box(T.mode));
 }
-function questionLine(q, first) {             // first = add the how-to line (first time this round, and on 🔊 replay)
+function questionLine(q, first) {             // first = add the how-to line (on 🔊 replay; the voice says it once a session)
   if (T.mode === 'master') first = false;      // readers: no kid how-to lines
-  if ('a' in q) return 'True or false? ' + q.q + (first ? ' Thumbs up for true. Thumbs down for false.' : '');
-  if (readable(q)) return q.q + ' ' + listSay(T.opts.map(c => parse(c).label));
-  return q.q + (first ? ' Tap the right picture.' : '');
+  return questionOnly(q) + (first ? ' ' + howTo(q) : '');
 }
+const questionOnly = q => 'a' in q ? 'True or false? ' + q.q : readable(q) ? q.q + ' ' + listSay(T.opts.map(c => parse(c).label)) : q.q;
+const howTo = q => T.mode === 'master' || (!('a' in q) && readable(q)) ? '' : 'a' in q ? 'Thumbs up for true. Thumbs down for false.' : 'Tap the right picture.';
 function showQ(prefix = '') {
   const {q, who} = T.qs[T.i], tf = 'a' in q;
   T.answered = false;
@@ -508,17 +517,16 @@ function showQ(prefix = '') {
         return `<button class="tv-opt k-${o.k}" data-v="${q.o.indexOf(c)}" aria-label="${o.label}">${picHTML(c)}<span class="tv-lab">${o.label}</span></button>`; }).join('')}</div>`;
   K().frame('Pokémon Trivia', `<div class="tv ${T.mode}" id="tv">
       <div class="tv-q">${turnTag}${pic}
-        <div class="tv-bubble"><button class="fg-icon tv-hear" id="tvHear" aria-label="Hear it again">🔊</button>
-          <div class="tv-text">${tf ? '<span class="tv-tag">True or false?</span> ' : ''}${q.q}</div></div></div>
+        <div class="tv-bubble"><div class="tv-text">${tf ? '<span class="tv-tag">True or false?</span> ' : ''}${q.q}</div></div></div>
       ${opts}
       <div class="tv-nextrow"><button class="btn red tv-next" id="tvNext">${T.i + 1 < T.qs.length ? 'Next ▶' : '🏆 My stars!'}</button></div>
     </div><div class="fg-win" id="tvWin" hidden></div>`, scoreBar());
-  const first = tf ? !T.tfTold : !T.mcTold; if (tf) T.tfTold = true; else if (!readable(q)) T.mcTold = true;
-  T.line = (prefix ? prefix + ' ' : '') + (T.mode === 'turns' && !prefix ? P[who].name + ', your turn! ' : '') + questionLine(q, first);
-  document.getElementById('tvHear').onclick = () => K().say(forEar(T.answered ? T.after : questionLine(q, true)));
+  const lead = (prefix ? prefix + ' ' : '') + (T.mode === 'turns' && !prefix ? P[who].name + ', your turn! ' : '');
+  T.line = lead + questionLine(q, false);
   document.getElementById('tvOpts').addEventListener('click', e => { const b = e.target.closest('.tv-opt'); if (b) answer(b); });
   document.getElementById('tvNext').onclick = next;
-  K().say(forEar(T.line));
+  K().say([[forEar(lead), 'result'], [forEar(questionOnly(q)), 'line'], [howTo(q), 'must']]);
+  K().line(forEar(questionLine(q, true)));       // 🔊 replays the whole question + how-to
 }
 function answer(b) {
   if (T.answered) return;
@@ -532,7 +540,7 @@ function answer(b) {
     T.stars[who]++; K().SFX.match();
     b.classList.add('right'); all.forEach(o => { if (o !== b) o.classList.add('gone'); });
     const s = document.getElementById('tvS_' + who); if (s) { s.querySelector('b').textContent = T.stars[who]; s.classList.remove('pop', 'lose', 'wobble'); void s.offsetWidth; s.classList.add('pop'); }
-    T.after = cheer() + ' ' + q.f;
+    T.after = cheer() + ' ' + q.f; T.praise = T.after.slice(0, T.after.length - q.f.length).trim();
     K().confetti(50, b);
   } else {
     K().SFX.aww();
@@ -545,9 +553,13 @@ function answer(b) {
   }
   const dots = document.querySelectorAll('.tv-dots i'); if (dots[T.i]) { dots[T.i].classList.remove('now'); dots[T.i].classList.add(right ? 'ok' : 'no'); }
   document.getElementById('tv').classList.add('answered');
-  K().say(forEar(T.after));
+  // Normal: the praise / "It's true" result + the fun fact once; Chatty: everything
+  const fact = forEar(q.f), head = forEar(T.after.slice(0, T.after.length - q.f.length).trim());
+  K().say([[head, 'result'], [fact, 'line']]); K().line(forEar(T.after));
+  const pid = trainerFor(who); if (pid) TRN().answer(pid, right);
   K().later(() => { const n = document.getElementById('tvNext'); if (n) n.classList.add('want'); }, 900);
 }
+const trainerFor = who => !TRN() ? null : who === 'master' ? TRN().current() : TRN().get(who) ? who : null;
 function loseStar(who) {
   const box = document.getElementById('tvS_' + who); if (!box) return; const s = box.querySelector('b');
   box.classList.remove('pop', 'lose', 'wobble'); void box.offsetWidth;
@@ -577,7 +589,7 @@ function finish() {
       <div class="tv-both">${['little', 'big'].map(k => `<div class="tv-one ${k}"><img src="${ART(P[k].art)}" alt="" draggable="false">
         <div class="tv-oname">${P[k].name}</div><div class="tv-onum">${T.stars[k]} ⭐</div><div class="tv-orow">${starRow(T.stars[k], 5)}</div>
         ${nb[k] ? '<div class="tv-new">🏆 New best!</div>' : ''}</div>`).join('')}</div>`;
-    line = `Little Trainer got ${starWord(T.stars.little)}! Big Trainer got ${starWord(T.stars.big)}! Great job, trainers!`;
+    line = `${P.little.name} got ${starWord(T.stars.little)}! ${P.big.name} got ${starWord(T.stars.big)}! Great job, trainers!`;
   } else {
     const n = T.stars[T.mode], old = best(T.mode), nb = n > old; if (nb) K().store('trivBest.' + T.mode, n);
     html = `<div class="fg-pikas"><span class="fg-bounce">⭐</span><img class="fg-bounce d1" src="${ART(P[T.mode].art)}" alt="" draggable="false"><span class="fg-bounce d2">⭐</span></div>
@@ -589,7 +601,14 @@ function finish() {
   }
   w.innerHTML = `<div class="fg-winbox tv-winbox ${T.mode === 'master' ? 'master' : ''}">${html}
     <div class="tc-winbtns"><button class="btn red fg-again" id="tvAgain">🔁 Play again</button><button class="btn blue fg-again" id="tvWho">👥 Who's playing?</button></div></div>`;
-  w.hidden = false; K().SFX.win(); K().say(line); K().confetti(120); K().later(() => K().confetti(80), 1000);
+  w.hidden = false; K().SFX.win(); K().say(line, 'result'); K().confetti(120); K().later(() => K().confetti(80), 1000);
+  // 🏅 Trainer XP: 3 per star + 5 for finishing; best scores; badges
+  const kids = T.mode === 'turns' ? ['little', 'big'] : [T.mode];
+  kids.forEach(k => { const pid = trainerFor(k); if (!pid) return; const n = T.stars[k], R = TRN();
+    R.recordScore(pid, k === 'master' ? 'triviaMaster' : 'trivia', n);
+    if (k === 'master' && n >= 7) R.award(pid, 'master');
+    if (n >= (T.mode === 'turns' ? 3 : 6)) R.recordWin(pid, k === 'master' ? 'triviaMaster' : 'trivia');
+    R.addXP(pid, 3 * n + 5, 'trivia'); });
   document.getElementById('tvAgain').onclick = () => begin(T.mode);
   document.getElementById('tvWho').onclick = () => { K().SFX.tap(); picker(); };
 }

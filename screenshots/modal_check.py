@@ -6,7 +6,7 @@ OUT = os.path.dirname(os.path.abspath(__file__))
 SIZES = [('pixel9xl', 412, 915, 2.625), ('pixel9xl_toolbar', 412, 700, 2.625), ('iphone', 390, 844, 3)]
 errs = []; ok = True
 with sync_playwright() as p:
-    b = p.chromium.launch()
+    b = p.chromium.launch(executable_path='/usr/bin/google-chrome')
     for name, w, h, dpr in SIZES:
         ctx = b.new_context(viewport={'width': w, 'height': h}, device_scale_factor=dpr, is_mobile=True, has_touch=True)
         pg = ctx.new_page(); pg.on('pageerror', lambda e: errs.append(str(e)))

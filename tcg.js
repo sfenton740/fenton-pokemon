@@ -89,7 +89,7 @@ const oppName = () => duo() ? S.op.name : 'Friend';
 const opWho = () => duo() ? S.op.name : 'Your friend';
 // how speech should say names (the screen shows the real name)
 const SAYFIX = Object.values(C).filter(c => c.s).sort((a, b) => b.n.length - a.n.length);
-const forEar = t => { t = noEmoji(t.replace(/<[^>]+>/g, ' ')); SAYFIX.forEach(c => { t = t.split(c.n).join(c.s); });
+const forEar = t => { t = noEmoji(t.replace(/<[^>]+>/g, ' ')).replace(/\s+([.,!?])/g, '$1'); SAYFIX.forEach(c => { t = t.split(c.n).join(c.s); });
   return t.replace(/\bHP\b/g, 'H P').replace(/\bex\b/g, 'E X').replace(/×2/g, 'times 2').replace(/\s+/g, ' ').trim(); };
 const RM = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
 
@@ -173,6 +173,10 @@ function tip(k) {
 /* ---------- start ---------- */
 const base = mode => ({mode, turn: 1, whose: 'me', drew: false, attached: false, retreated: false, sel: null, need: null, needN: 0, busy: false,
   fx: {}, post: [], hpFrom: {}, step: 0, over: false, msg: '', prizesShown: false, tipped: {}, level: K().store('tcLevel') || 'easy'});
+function duoName(k) {                                            // 2 Players: the kids' own trainer names
+  const R = TRN(); if (!R) return 'Player ' + k;
+  const a = R.current(), id = k === 1 ? a : otherKid(a); return id === a && k === 2 ? 'Player 2' : R.get(id).name;
+}
 function deal(sd, t, nE) {
   const build = () => K().shuffle([...TEAMS[t].cards, ...Array(nE).fill('E:' + t)].map(card));
   do { sd.deck = build(); sd.hand = sd.deck.splice(0, 5); } while (!sd.hand.some(c => basic(c.id)));   // always a Basic to start
@@ -190,7 +194,9 @@ function newGame(mode, team, team2) {
     S.op.deck = ['E:darkness', 'E:darkness', 'E:darkness'].map(card);
     S.op.prizes = ['E:darkness', 'E:darkness', 'E:darkness'].map(card);
   } else if (mode === 'duo') {
-    S.me = side('Player 1', team); S.op = side('Player 2', team2); S.me.human = S.op.human = true; S.me.pn = 1; S.op.pn = 2;
+    const n1 = duoName(1), n2 = duoName(2);
+    S.me = side(n1, team); S.op = side(n2, team2); S.me.human = S.op.human = true; S.me.pn = 1; S.op.pn = 2;
+    if (TRN()) { S.me.pid = TRN().current(); S.op.pid = otherKid(S.me.pid); }
     deal(S.me, team, 9); deal(S.op, team2, 9);
     S.prizesShown = true; S.need = 'pass';
   } else {
@@ -221,7 +227,7 @@ function wireHeader() {
   document.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => { K().SFX.tap(); const m = b.dataset.mode; if (m === 'learn') newGame('learn'); else pickTeam(m); });
   const tb = document.getElementById('tcTips');
   if (tb) tb.onclick = () => { const on = !tipsOn(); K().store('tcTips', on ? '1' : '0'); tb.classList.toggle('off', !on); tb.setAttribute('aria-pressed', on);
-    K().SFX.tap(); K().say(on ? 'Professor tips on!' : 'Professor tips off.'); };
+    K().SFX.tap(); K().say(on ? 'Professor tips on!' : 'Professor tips off.', 'result'); };
 }
 function shell() {
   K().frame('Card Battle School', `<div class="tc ${S.mode === 'learn' ? 'learn' : 'play'} ${S.mode}" id="tc"></div><div class="fg-win" id="tcWin" hidden></div>`,
@@ -232,7 +238,7 @@ function shell() {
 }
 function pickTeam(mode = 'play', first = null) {
   K().clearTimers(); clearTimeout(idle); $tc = null; S = {mode: 'pick', fx: {}, post: [], hpFrom: {}};
-  const who = mode === 'duo' ? (first ? 'Player 2' : 'Player 1') : '';
+  const who = mode === 'duo' ? duoName(first ? 2 : 1) : '';
   const lv = K().store('tcLevel') || 'easy';
   K().frame('Card Battle School', `<div class="tc-pick">
     <div class="tc-picktitle">${who ? who + ', pick' : 'Pick'} your team!</div>
@@ -241,19 +247,19 @@ function pickTeam(mode = 'play', first = null) {
       <button class="${lv === 'tricky' ? 'on' : ''}" data-level="tricky" aria-label="Tricky friend">💪 Tricky friend</button></div>` : ''}
     <div class="tc-teams">${Object.entries(TEAMS).map(([k, t]) => `<button class="tc-team ${k} ${k === first ? 'taken' : ''}" data-team="${k}" aria-label="${t.name}">
       <span class="tc-teamcards">${t.show.map(id => `<img class="${isEx(id) ? 'isex' : ''}" src="${IMG(id)}" alt="${C[id].n}" draggable="false">`).join('')}</span>
-      <span class="tc-teamname">${TY[k][0]} ${t.name}</span>${k === first ? '<span class="tc-takenby">Player 1</span>' : ''}</button>`).join('')}</div></div>`,
+      <span class="tc-teamname">${TY[k][0]} ${t.name}</span>${k === first ? `<span class="tc-takenby">${duoName(1)}</span>` : ''}</button>`).join('')}</div></div>`,
     header(mode));
   wireHeader();
   document.querySelectorAll('[data-level]').forEach(b => b.onclick = () => { K().store('tcLevel', b.dataset.level); K().SFX.tap();
     document.querySelectorAll('[data-level]').forEach(x => x.classList.toggle('on', x === b));
-    K().say(b.dataset.level === 'easy' ? 'Easy friend! Your friend will go easy on you.' : 'Tricky friend! Your friend plays for real. You can do it!'); });
+    K().say(b.dataset.level === 'easy' ? 'Easy friend!' : 'Tricky friend! You can do it!', 'result'); });
   document.querySelectorAll('[data-team]').forEach(b => b.onclick = () => {
     const t = b.dataset.team; K().SFX.match();
-    if (mode === 'duo' && !first) { K().say(`${TEAMS[t].name} for Player 1! Player 2, pick your team!`); return pickTeam('duo', t); }
-    K().say(TEAMS[t].name + '! Alright, let\'s go!');
+    if (mode === 'duo' && !first) { K().say(`${TEAMS[t].name}! ${duoName(2)}, pick your team!`, 'result'); return pickTeam('duo', t); }
+    K().say(TEAMS[t].name + '!', 'result');
     if (mode === 'duo') newGame('duo', first, t); else newGame('play', t);
   });
-  K().say(who ? `${who}, pick your team!` : 'Pick your team!');
+  if (!who) K().say('Pick your team!', 'must');
 }
 const en = t => `<i class="tc-e ${t}">${TY[t][0]}</i>`;
 const hpCls = f => f > .5 ? '' : f > .25 ? 'mid' : 'low';
@@ -286,9 +292,9 @@ function handHTML() {
     const f = S.fx[c.u] || '', sel = S.sel === c.u ? 'sel' : '';
     if (isE(c.id)) { const t = eT(c.id); return `<button class="tc-hc energy ${t} ${f} ${sel}" data-act="hand:${c.u}" aria-label="${nm(c.id)}"><span class="tc-ebig">${TY[t][0]}</span><span class="tc-hn">${TY[t][1]}<br>Energy</span></button>`; }
     const x = C[c.id], st = stageOf(c.id);
-    const tg = x.ex ? ['ex', '✨ ex'] : st === 2 ? ['evo s2', '⬆️⬆️ Stage 2'] : st === 1 ? ['evo', '⬆️ Stage 1'] : ['', 'Basic'];
+    const tg = x.ex ? ['ex', '✨ ex'] : st === 2 ? ['evo s2', 'Stage 2'] : st === 1 ? ['evo', 'Stage 1'] : ['', 'Basic'];
     return `<button class="tc-hc ${f} ${sel} ${x.ex ? 'isex' : ''}" data-act="hand:${c.u}" aria-label="${x.n}"><img src="${IMG(c.id)}" alt="${x.n}" draggable="false">
-      <span class="tc-tag ${tg[0]}">${S.mode === 'learn' && st === 1 ? '⬆️ Evolves' : tg[1]}</span></button>`;
+      <span class="tc-tag ${tg[0]}">${S.mode === 'learn' && st === 1 ? 'Evolves' : tg[1]}</span></button>`;
   }).join('');
 }
 function actsHTML() {
@@ -350,7 +356,24 @@ function glow() {                                                // the one thin
   const sel = w.endsWith('*') ? `[data-act^="${w.slice(0, -1)}"]` : `[data-act="${w}"]`;
   [...$tc.querySelectorAll(sel)].forEach(e => e.classList.add('want'));
 }
-function coach(text) { S.msg = text; const m = document.getElementById('tcMsg'); if (m) m.innerHTML = text; K().say(forEar(text)); }
+// coach(text, kind): the bubble always shows it; the voice follows the 💬 talk level. Professor tips are their own part
+// (spoken once a session). kinds: 'line' instruction · 'result' what happened · 'extra' the friend's play-by-play (Chatty only)
+function coach(text, kind = 'line') {
+  S.msg = text; const m = document.getElementById('tcMsg'); if (m) m.innerHTML = text;
+  const tips = [], main = text.replace(/<span class="tc-proftip">([\s\S]*?)<\/span>/g, (x, t) => { tips.push(t); return ' '; });
+  K().say([[forEar(main), kind], ...tips.map(t => [forEar(t), 'line'])]);
+}
+const TRN = () => window.Trainer || null;
+const otherKid = id => (TRN().list().find(p => p.id !== id) || TRN().get(id)).id;
+function trainerEnd(won) {                                       // 🏅 XP: lesson 30 · win 40 (Tricky 60) · good try 15 · 2 players: 30 / 20
+  const R = TRN(); if (!R || S.xpDone) return; S.xpDone = true;
+  if (duo()) { const w = S.me.pid, l = S.op.pid; if (!w) return;
+    R.recordWin(w, 'tcg'); R.addXP(w, 30, 'tcg'); if (l && l !== w) R.addXP(l, 20, 'tcg'); return; }
+  const p = R.current();
+  if (S.mode === 'learn') { R.award(p, 'scholar'); R.addXP(p, 30, 'tcg'); return; }
+  if (won) { R.recordWin(p, 'tcg', {tricky: S.level === 'tricky'}); R.addXP(p, S.level === 'tricky' ? 60 : 40, 'tcg'); }
+  else R.addXP(p, 15, 'tcg');
+}
 const talkMs = t => Math.max(2400, noEmoji(t.replace(/<[^>]+>/g, ' ')).split(' ').length * 430 + 900);   // let each sentence finish before the next one
 const wantOf = st => typeof st.want === 'function' ? st.want() : st.want;
 const uidOf = (sd, pred) => { const c = sd.hand.find(pred); return c ? c.u : -1; };
@@ -472,7 +495,7 @@ function learnOpp(n) {                                          // the friend's 
   ];
   let i = 0;
   const tick = () => {
-    const [t, f] = steps[i++]; f(); paint(); coach(t);
+    const [t, f] = steps[i++]; f(); paint(); coach(t, 'extra');
     if (i < steps.length) K().later(tick, talkMs(t)); else K().later(() => { S.busy = false; S.step++; runStep(); }, talkMs(t) + 300);
   };
   paint(); K().later(tick, 400);
@@ -487,7 +510,7 @@ function hitFx(def, dmg, att) { if (att) S.fx[att.u] = 'lunge'; strike(att || de
 
 /* ---------- taps ---------- */
 function act(a, el) {
-  if (a === 'hear') { K().say(forEar(document.getElementById('tcMsg').innerHTML)); return; }
+  if (a === 'hear') return K().replay();
   if (S.busy || S.over) return;
   clearTimeout(idle); S.showHint = false;
   if (S.mode === 'learn') return learnTap(a, el);
@@ -622,7 +645,7 @@ function playTap(a, el) {
       if (S.needN > 0) { coach('One more! Tap another Prize card!'); return paint(); }
       S.need = null;
       const l3 = me.prizes.length, said = `Awesome! You got it! ${l3} more Prize${l3 > 1 ? 's' : ''} to go.`;
-      coach(said); paint(); S.busy = true; K().later(() => { S.busy = false; endTurn(); }, talkMs(said)); return;
+      coach(said, 'praise'); paint(); S.busy = true; K().later(() => { S.busy = false; endTurn(); }, talkMs(said)); return;
     }
     case 'end': if (!me.active) return nudge('Send out a Pokémon first!'); S.sel = null; K().SFX.tap(); return endTurn();
   }
@@ -636,7 +659,7 @@ function doAttack(sd, os, i, done) {                             // lunge → hi
   const said = `${n(at.id)} used ${x[0]}!` + (weak ? (d ? ` Super effective! ${TY[C[at.id].t][1]} beats ${n(def.id)}. Double damage!` : '') + tip('weak') : '')
     + (gentle && !d ? ` ${n(def.id)} is too strong! No ouch.` : '')
     + (o.noweak && C[def.id].w === C[at.id].t ? ` ${x[0]} ignores Weakness.` : '');
-  coach(said);
+  coach(said, sd === S.me || weak ? 'result' : 'extra');
   K().later(() => {
     strike(at, def, d, weak && d > 0);
     if (o.disc === 'all') at.en = []; else if (o.disc) at.en.splice(-o.disc, o.disc);
@@ -652,7 +675,7 @@ function koThen(os, after) {                                     // faint, then 
 function koByMe() {
   koThen(S.op, (k, m) => {
     S.need = 'prize'; S.needN = Math.min(k, S.me.prizes.length); S.busy = false;
-    coach(`Alright! ${n(m.id)} is Knocked Out!` + (k === 2 ? ` It's a Pokémon ex, so you get 2 Prize cards! Tap a Prize card!` + tip('ex') : ' Tap a Prize card!'));
+    coach(`${n(m.id)} is Knocked Out!` + (k === 2 ? ` It's a Pokémon ex, so you get 2 Prize cards! Tap a Prize card!` + tip('ex') : ' Tap a Prize card!'));
     paint();
   });
 }
@@ -697,7 +720,7 @@ function oppTurn() {                                              // the kind fr
   let i = 0;
   const tick = () => {
     let r = null; while (i < steps.length && !(r = steps[i++]())) {}
-    if (r) { paint(); coach(r); }
+    if (r) { paint(); coach(r, /Whoa|evolving/.test(r) ? 'result' : 'extra'); }
     const wait = (r ? talkMs(r) : 600) + exWait; exWait = 0;
     if (i < steps.length) K().later(tick, wait); else K().later(oppAttack, wait);
   };
@@ -712,7 +735,7 @@ function oppAttack() {
       const took = o.prizes.splice(0, k); o.hand.push(...took);
       const r = rectOf('opprizes'); spawnPrizeSparkle(r);
       const said = `Oh no! ${n(m.id)} is Knocked Out. ` + (k === 2 ? 'It was a Pokémon ex, so your friend takes 2 Prize cards.' : 'Your friend takes a Prize card.');
-      paint(); coach(said);
+      paint(); coach(said, 'result');
       K().later(() => { if (!o.prizes.length || !inPlay(me).length) lose(); else startTurn(); }, talkMs(said));
     });
   });
@@ -756,7 +779,7 @@ function endScreen(title, stars, sub, spoken, used) {
       <div class="tc-wincards">${used.map(id => `<img class="${isEx(id) ? 'isex' : ''}" src="${IMG(id)}" alt="${C[id].n}" draggable="false">`).join('')}</div>
       <div class="tc-winbtns"><button class="btn red fg-again" id="tcAgain">🔁 Play again</button>
       ${S.mode === 'learn' ? '<button class="btn blue fg-again" id="tcBig">⭐ Battle a friend</button>' : '<button class="btn blue fg-again" id="tcLearn">🎓 Lesson</button>'}</div></div>`;
-    w.hidden = false; K().SFX.win(); K().say(spoken);
+    w.hidden = false; K().SFX.win(); K().say(spoken, 'result'); trainerEnd(!/Good game/.test(title));
     K().confetti(120); K().later(() => K().confetti(80), 1000);
     const mode = S.mode;
     document.getElementById('tcAgain').onclick = () => { K().SFX.tap(); mode === 'learn' ? newGame('learn') : pickTeam(mode); };
@@ -771,7 +794,7 @@ function win() {
   endScreen('You win!', '⭐⭐⭐', sub, S.mode === 'learn' ? 'You did it! You got all 3 Prize cards. You win!' : 'You did it! ' + sub + ' You win!', usedBy(S.me));
 }
 function lose() {                                                // 💪 Tricky friend won: kind words, try again
-  endScreen('Good game!', '🌟', 'Your friend won this time. You were awesome! Try again?', 'Good game! Your friend won this time. You were awesome! Want to play again?', usedBy(S.me));
+  endScreen('Good game!', '🌟', 'Your friend won this time. You were awesome! Try again?', 'Good game! You were awesome! Play again?', usedBy(S.me));
 }
 
 function render(app, data) { newGame('learn'); }

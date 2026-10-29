@@ -30,7 +30,7 @@ const owned = id => !D || !D.cards || !D.cards[id] || D.cards[id].qty > 0;
    10 ms linear attack + exponential release (no clicks), master gain 0.45 into a gentle compressor, max 6 voices, taps debounced,
    and speech waits until the jingle has finished. testSounds() renders every sound offline and reports its peak level. */
 let muted = store('mute') === '1', ac = null, master = null, sched = [], busyUntil = 0, sayTimer = null;
-const lastPlay = {};
+const lastPlay = {}; let lastAny = 0;
 const PEAK = .18, MAX_VOICES = 6, ATK = .018, TAIL = .025;
 const N = {C4: 262, E4: 330, G4: 392, A4: 440, C5: 523, D5: 587, E5: 659, G5: 784, C6: 1047};
 // [freq, start s, length s, wave, simultaneous voices at that moment] - per-note gain = PEAK / voices
@@ -58,11 +58,17 @@ const SOUNDS = {
   faint: {gap: 500, notes: [[N.G4, 0, .22, 'sine', 1.6], [N.E4, .18, .24, 'sine', 1.6], [N.C4, .38, .5, 'sine', 1.6]]},
   // 🌟 evolution: a rising scale that blooms into a chord
   evo:   {gap: 800, notes: [[N.C4, 0, .14, 'sine', 2], [N.E4, .1, .14, 'sine', 2], [N.G4, .2, .14, 'sine', 2], [N.C5, .3, .14, 'sine', 2],
-          [N.E5, .4, .14, 'sine', 2], [N.G5, .5, .14, 'sine', 2], [N.C5, .62, .6, 'sine', 3], [N.E5, .62, .6, 'sine', 3], [N.G5, .64, .6, 'triangle', 3]]}
+          [N.E5, .4, .14, 'sine', 2], [N.G5, .5, .14, 'sine', 2], [N.C5, .62, .6, 'sine', 3], [N.E5, .62, .6, 'sine', 3], [N.G5, .64, .6, 'triangle', 3]]},
+  // 🔔 gentle "ding-dong" instead of repeating a line the kids already heard
+  chime: {gap: 500, notes: [[N.G5, 0, .22, 'sine', 3], [N.E5, .1, .34, 'sine', 3]]},
+  // 🆙 Trainer level up: a bright climbing fanfare that lands on a big chord
+  levelup: {gap: 1500, notes: [[N.G4, 0, .12, 'triangle', 2], [N.C5, .1, .12, 'triangle', 2], [N.E5, .2, .12, 'triangle', 2], [N.G5, .3, .14, 'triangle', 2],
+          [N.E5, .42, .1, 'sine', 2], [N.G5, .5, .1, 'sine', 2], [N.C6, .58, .2, 'triangle', 2],
+          [N.C5, .78, 1.0, 'sine', 4], [N.E5, .78, 1.0, 'sine', 4], [N.G5, .8, 1.0, 'sine', 4], [N.C6, .82, 1.0, 'triangle', 4]]}
 };
 function graph(c) {                               // master gain -> soft compressor -> speakers
   const m = c.createGain(), comp = c.createDynamicsCompressor();
-  m.gain.value = .45;
+  m.gain.value = .38;                            // Oct 28: a little softer than before (.45)
   comp.threshold.value = -14; comp.knee.value = 10; comp.ratio.value = 4; comp.attack.value = .005; comp.release.value = .25;
   m.connect(comp); comp.connect(c.destination); return m;
 }
@@ -104,6 +110,7 @@ function note(c, dest, t0, [f, at, dur, type, nv], live) {
 function play(name) {
   const s = SOUNDS[name], c = audio(); if (!s || !c) return;
   const now = performance.now(); if (now - (lastPlay[name] || 0) < s.gap) return; lastPlay[name] = now;   // debounce rapid taps
+  lastAny = now;
   const t0 = c.currentTime + .02;
   s.notes.forEach(n => note(c, master, t0, n, true));
   const len = Math.max(...s.notes.map(n => n[1] + n[2]));
@@ -138,25 +145,149 @@ function pickVoice(list) {
 let voice = null;
 function loadVoice() { try { voice = pickVoice(speechSynthesis.getVoices()); } catch (e) {} }
 if ('speechSynthesis' in window) { loadVoice(); try { speechSynthesis.addEventListener('voiceschanged', loadVoice); } catch (e) { speechSynthesis.onvoiceschanged = loadVoice; } }
-const CHEERS = ['Awesome!', 'Alright!', 'You got it!', 'Yes!'];
-let cheerN = 0; const cheer = () => CHEERS[cheerN++ % CHEERS.length];
-function say(text) {
+/* 💬 Talk level (saved on this iPad): how much the trainer voice talks.
+   quiet  = sound effects only; speech only for 🔊 taps and essential first-time instructions
+   normal = (default) first-time lines + the result after each answer + short praise
+   chatty = says everything, every time (the old behavior)
+   In quiet/normal every instruction or tip is spoken ONCE per session; after that a soft chime plays instead.
+   kinds: 'must' essential first-time instruction · 'line' instruction/tip · 'result' what just happened · 'praise' · 'extra' (chatty only) · 'replay' (🔊 tap) */
+const LEVELS = ['quiet', 'normal', 'chatty'];
+let talk = LEVELS.includes(store('talk')) ? store('talk') : 'normal';
+let heard = new Set(); try { heard = new Set(JSON.parse(sessionStorage.getItem('fg.heard') || '[]')); } catch (e) {}
+const keyOf = t => String(t).toLowerCase().replace(/<[^>]+>/g, ' ').replace(/[^a-z]+/g, ' ').trim();
+const remember = k => { heard.add(k); try { sessionStorage.setItem('fg.heard', JSON.stringify([...heard].slice(-400))); } catch (e) {} };
+let current = '';                                  // the line on screen right now (🔊 replays it)
+const PRAISE = ['Awesome!', 'Alright!', 'You got it!', 'Yes!', 'Great job!', 'Way to go!', 'Super!', 'Nice one!', 'Wow!', 'Woo-hoo!'];
+const recent = [];
+function pickFresh(list) {                         // vary lines: never the same one twice in a row (or within the last 3)
+  let ok = list.filter(x => !recent.includes(x)); if (!ok.length) ok = list.filter(x => x !== recent[recent.length - 1]); if (!ok.length) ok = list;
+  const v = ok[Math.floor(Math.random() * ok.length)];
+  recent.push(v); if (recent.length > 3) recent.shift(); return v;
+}
+const cheer = () => pickFresh(PRAISE);
+function chime() { if (performance.now() - lastAny > 450) play('chime'); }   // one sound per tap: no chime on top of a tap sound
+function speakable(text, kind) {
+  if (kind === 'replay' || talk === 'chatty') return true;
+  const k = keyOf(text);
+  if (talk === 'quiet') return kind === 'must' && !heard.has(k);
+  if (kind === 'extra') return false;
+  if (kind === 'result' || kind === 'praise') return true;
+  return !heard.has(k);
+}
+// say(text, kind) or say([[text, kind], ...]) - parts that aren't spoken are skipped; if everything was already heard, a chime plays
+function say(text, kind = 'line') {
+  const parts = (Array.isArray(text) ? text : [[text, kind]]).filter(p => p && p[0]);
+  if (!parts.length) return;
+  const full = parts.map(p => p[0]).join(' ');
+  if (!parts.every(p => p[1] === 'replay')) current = full;
   if (muted || !('speechSynthesis' in window)) return;
-  sayNext = text; sayWaitSince = performance.now();
+  const go = parts.filter(p => speakable(p[0], p[1] || 'line'));
+  if (!go.length) { if (talk !== 'quiet' && parts.some(p => p[1] !== 'extra' && heard.has(keyOf(p[0])))) chime(); return; }
+  go.forEach(p => { if (p[1] !== 'result' && p[1] !== 'praise') remember(keyOf(p[0])); });
+  sayNext = go.map(p => p[0]).join(' '); sayWaitSince = performance.now();
   clearTimeout(sayTimer); sayTimer = setTimeout(sayTry, Math.max(0, busyUntil - performance.now()) + 120);
 }
+const replay = () => { if (current) { SFX.tap(); say(current, 'replay'); } };
+function setTalk(l) { if (!LEVELS.includes(l)) return; talk = l; store('talk', l); }
 function sayTry() {
   if (muted || sayNext == null) return;
   const now = performance.now();
   if (busyUntil > now) { sayTimer = setTimeout(sayTry, busyUntil - now + 120); return; }
   let talking = false; try { talking = speechSynthesis.speaking || speechSynthesis.pending; } catch (e) {}
-  if (talking && now - sayWaitSince < 15000) { sayTimer = setTimeout(sayTry, 150); return; }   // let the sentence finish
+  if (talking && now - sayWaitSince < 15000) { sayTimer = setTimeout(sayTry, 150); return; }   // let the sentence finish (never cut mid-word)
   const text = sayNext; sayNext = null;
   if (!voice) loadVoice();                        // iOS fills the list late
   try { const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US';
     if (voice) try { u.voice = voice; u.lang = voice.lang; } catch (e) {}      // a bad voice never blocks speech
-    u.rate = VOICE_RATE; u.pitch = VOICE_PITCH; u.volume = .9; speechSynthesis.speak(u); } catch (e) {}
+    u.rate = VOICE_RATE; u.pitch = VOICE_PITCH; u.volume = .9;
+    duck(true); const up = () => duck(false); u.onend = up; u.onerror = up;
+    setTimeout(up, 1500 + text.split(' ').length * 600);                  // safety: never stay ducked
+    speechSynthesis.speak(u); } catch (e) {}
 }
+
+/* ---------- 🎵 music: our own little chiptune songs, made right here with WebAudio (no files, nothing copyrighted) ----------
+   Same soft notes as the sound effects (sine/triangle, all under 1.1 kHz, 18 ms fade-in, smooth fade-out, so no clicks).
+   Off by default and quiet; it ducks under the trainer voice. Notation: one token per 8th note, '-' holds, '.' rests. */
+const TRACKS = {
+  adventure: {name: 'Adventure', em: '🗺️', bpm: 138,
+    mel: 'G4 C5 E5 G5 - E5 C5 D5 E5 - D5 C5 A4 - G4 - | A4 C5 F5 A5 - G5 F5 E5 D5 - E5 F5 G5 - - . | G4 C5 E5 G5 - A5 G5 E5 C5 - D5 E5 F5 - E5 D5 | C5 E5 D5 B4 - G4 A4 B4 C5 - - - . . . .',
+    bass: 'C3 . G3 . C3 . G3 . A3 . E3 . A3 . G3 . | F3 . C4 . F3 . C4 . G3 . D4 . G3 . G3 . | C3 . G3 . A3 . E3 . F3 . C4 . G3 . D4 . | F3 . G3 . E3 . A3 . F3 . G3 . C3 . . .'},
+  battle: {name: 'Battle', em: '⚔️', bpm: 160,
+    mel: 'A4 A4 C5 A4 D5 C5 A4 G4 A4 - E5 - D5 C5 D5 - | A4 A4 C5 A4 E5 D5 C5 D5 E5 - G5 - E5 - . . | F5 E5 D5 C5 D5 C5 A4 C5 D5 - F5 - E5 D5 E5 - | A5 - G5 E5 D5 C5 D5 E5 A4 - - - . . . .',
+    bass: 'A3 A3 . A3 A3 . G3 . A3 A3 . A3 C4 . G3 . | A3 A3 . A3 A3 . G3 . E3 E3 . E3 G3 . E3 . | F3 F3 . F3 F3 . C4 . D3 D3 . D3 F3 . D3 . | F3 . G3 . E3 . E3 . A3 . E3 . A3 . . .'},
+  center: {name: 'Pokémon Center', em: '🏥', bpm: 100,
+    mel: 'C5 - E5 G5 - E5 F5 - A5 - G5 - E5 - - . | D5 - F5 A5 - F5 E5 - G5 - E5 - C5 - - . | C5 - E5 G5 - E5 F5 - A5 - C6 - A5 - G5 - | F5 - E5 - D5 - G4 - C5 - - - . . . .',
+    bass: 'C3 - G3 - E3 - F3 - C4 - A3 - C3 - G3 - | D3 - A3 - F3 - C3 - G3 - E3 - C3 - G3 - | C3 - G3 - E3 - F3 - C4 - A3 - E3 - G3 - | F3 - A3 - G3 - B3 - C3 - G3 - C3 - - -'},
+  victory: {name: 'Victory', em: '🏆', bpm: 150,
+    mel: 'C5 C5 C5 - G4 - C5 E5 G5 - - - E5 - G5 - | A5 - G5 F5 E5 - D5 - E5 - C5 - - - . . | F5 F5 F5 - C5 - F5 A5 C6 - - - A5 - G5 - | F5 - E5 D5 E5 G5 - - C5 - - - . . . .',
+    bass: 'C3 . G3 . C3 . G3 . C3 . G3 . E3 . G3 . | F3 . C4 . G3 . B3 . C3 . G3 . C3 . . . | F3 . C4 . F3 . C4 . F3 . C4 . E3 . C4 . | G3 . D4 . G3 . B3 . C3 . G3 . C3 . . .'}
+};
+const TRACK_IDS = Object.keys(TRACKS);
+const midi = n => { const m = /^([A-G])(#?)(\d)$/.exec(n); return 12 * (+m[3] + 1) + {C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11}[m[1]] + (m[2] ? 1 : 0); };
+const hz = n => 440 * Math.pow(2, (midi(n) - 69) / 12);
+function parseLine(str) {                          // -> {len, ev: [[step, freq, steps]]}
+  const tok = str.replace(/\|/g, ' ').trim().split(/\s+/), ev = [];
+  tok.forEach((t, i) => { if (t === '-' && ev.length && ev[ev.length - 1][0] + ev[ev.length - 1][2] === i) ev[ev.length - 1][2]++;
+    else if (/^[A-G]/.test(t)) ev.push([i, hz(t), 1]); });
+  return {len: tok.length, ev};
+}
+Object.values(TRACKS).forEach(t => { const m = parseLine(t.mel), b = parseLine(t.bass); t.len = Math.max(m.len, b.len);
+  t.at = {}; m.ev.forEach(([i, f, n]) => (t.at[i] = t.at[i] || []).push([f, n, 'triangle', .055]));
+  b.ev.forEach(([i, f, n]) => (t.at[i] = t.at[i] || []).push([f, n, 'sine', .07])); });
+const mus = {on: false, track: TRACKS[store('musicTrack')] ? store('musicTrack') : 'adventure', vol: Math.min(1, Math.max(0, +(store('musicVol') || .35))),
+  bus: null, timer: null, next: 0, step: 0, ducked: false, listeners: []};
+function mNote(c, dest, t, dur, f, wave, pk) {      // one soft music note: 0 → peak in 18 ms, smooth fall, exact 0 before stop
+  const o = c.createOscillator(), g = c.createGain(); o.type = wave; o.frequency.value = f;
+  const end = t + Math.max(.08, dur);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(pk, t + ATK); g.gain.setValueAtTime(pk, t + Math.max(ATK, dur * .35));
+  g.gain.exponentialRampToValueAtTime(.001, end); g.gain.linearRampToValueAtTime(0, end + TAIL);
+  o.connect(g); g.connect(dest); o.start(t); o.stop(end + TAIL + .03); o.onended = () => { try { g.disconnect(); } catch (e) {} };
+}
+const busLevel = () => mus.vol * (mus.ducked ? .3 : 1);
+function mTick() {
+  const c = ac; if (!c || !mus.on || !mus.bus) return;
+  const tr = TRACKS[mus.track], st = 60 / tr.bpm / 2;
+  while (mus.next < c.currentTime + .4) {
+    (tr.at[mus.step % tr.len] || []).forEach(([f, n, w, pk]) => mNote(c, mus.bus, mus.next, n * st * .92, f, w, pk));
+    mus.next += st; mus.step++;
+  }
+}
+function mEmit() { mus.listeners = mus.listeners.filter(f => { try { return f() !== false; } catch (e) { return false; } }); const b = document.getElementById('hdrMusic'); if (b) b.classList.toggle('playing', mus.on); }
+function musicPlay(id) {
+  if (id && TRACKS[id]) { if (mus.on && id !== mus.track) musicStop(true); mus.track = id; store('musicTrack', id); }
+  if (mus.on) return mEmit();
+  if (muted) { muted = false; store('mute', '0'); }  // tapping play means "I want sound"
+  const c = audio(); if (!c) return;
+  const bus = c.createGain(); bus.gain.setValueAtTime(0, c.currentTime); bus.gain.linearRampToValueAtTime(busLevel(), c.currentTime + .3); bus.connect(master);
+  mus.bus = bus; mus.on = true; mus.next = c.currentTime + .08; mus.step = 0;
+  clearInterval(mus.timer); mus.timer = setInterval(mTick, 90); mTick(); mEmit();
+}
+function musicStop(keepState) {
+  clearInterval(mus.timer); mus.timer = null;
+  const b = mus.bus, c = ac; mus.bus = null; mus.on = false;
+  if (b && c) { try { b.gain.cancelScheduledValues(c.currentTime); b.gain.setValueAtTime(b.gain.value, c.currentTime); b.gain.linearRampToValueAtTime(0, c.currentTime + .25); } catch (e) {} setTimeout(() => { try { b.disconnect(); } catch (e) {} }, 900); }
+  if (!keepState) mEmit();
+}
+function musicNext() { const i = TRACK_IDS.indexOf(mus.track); const id = TRACK_IDS[(i + 1) % TRACK_IDS.length]; if (mus.on) musicPlay(id); else { mus.track = id; store('musicTrack', id); mEmit(); } }
+function musicVol(v) { mus.vol = Math.min(1, Math.max(0, v)); store('musicVol', mus.vol.toFixed(2)); if (mus.bus && ac) { mus.bus.gain.cancelScheduledValues(ac.currentTime); mus.bus.gain.setTargetAtTime(busLevel(), ac.currentTime, .05); } }
+function duck(on) { if (mus.ducked === on) return; mus.ducked = on; if (mus.bus && ac) { mus.bus.gain.cancelScheduledValues(ac.currentTime); mus.bus.gain.setTargetAtTime(busLevel(), ac.currentTime, on ? .08 : .4); } }
+const music = {play: musicPlay, stop: () => musicStop(), next: musicNext, vol: musicVol, state: () => ({on: mus.on, track: mus.track, vol: mus.vol, ducked: mus.ducked}), tracks: TRACKS, onChange: f => mus.listeners.push(f)};
+const YT_THEME = 'https://www.youtube.com/watch?v=MpaHR-V_R-o';   // "Gotta Catch 'Em All!" on The Official Pokémon YouTube channel
+async function testMusic() {                       // render one loop of each song offline; same click test as testSounds
+  const out = {};
+  for (const [k, tr] of Object.entries(TRACKS)) {
+    const st = 60 / tr.bpm / 2, len = tr.len * st + .5, rate = 48000;
+    const c = new OfflineAudioContext(1, Math.ceil(len * rate), rate), m = graph(c), bus = c.createGain(); bus.gain.value = 1; bus.connect(m);
+    let maxF = 0, slope = [];
+    for (let i = 0; i < tr.len; i++) (tr.at[i] || []).forEach(([f, n, w, pk]) => { mNote(c, bus, i * st, n * st * .92, f, w, pk); maxF = Math.max(maxF, f); slope.push(.38 * pk * f / rate * (w === 'triangle' ? 4 : 2 * Math.PI)); });
+    const d = (await c.startRendering()).getChannelData(0);
+    let peak = 0, jump = 0; for (let i = 1; i < d.length; i++) { peak = Math.max(peak, Math.abs(d[i])); jump = Math.max(jump, Math.abs(d[i] - d[i - 1])); }
+    const lim = slope.sort((a, b) => b - a).slice(0, 3).reduce((a, b) => a + b, 0);
+    out[k] = {seconds: +(tr.len * st).toFixed(1), peak: +peak.toFixed(4), maxJump: +jump.toFixed(5), smoothLimit: +lim.toFixed(5), clicks: jump > lim * 1.05 ? 'YES' : 'none', maxHz: Math.round(maxF)};
+  }
+  return out;
+}
+
 async function testSounds() {                     // render each sound offline through the same chain; report peak / clipped samples
   const out = {};
   for (const [k, s] of Object.entries(SOUNDS)) {
@@ -181,12 +312,61 @@ async function testSounds() {                     // render each sound offline t
   }
   return out;
 }
-function muteBtn() { return `<button class="fg-icon" id="fgMute" aria-label="${muted ? 'Sound off' : 'Sound on'}">${muted ? '🔇' : '🔊'}</button>`; }
-function bindMute() {
-  const b = document.getElementById('fgMute'); if (!b) return;
-  b.onclick = () => { muted = !muted; store('mute', muted ? '1' : '0'); if (muted) { clearTimeout(sayTimer); sayNext = null; if ('speechSynthesis' in window) speechSynthesis.cancel(); }   // only when you tap mute
-    b.textContent = muted ? '🔇' : '🔊'; b.setAttribute('aria-label', muted ? 'Sound off' : 'Sound on'); SFX.tap(); };
+/* ---------- 💬 talk + 🎵 music sheets (pop-up panels, work on every page) ---------- */
+const TALK_UI = {quiet: ['🤫', 'Quiet', 'Sounds only. Tap 🔊 to hear.'], normal: ['🙂', 'Normal', 'New tips, answers, cheers'], chatty: ['🗣️', 'Chatty', 'Talks about everything']};
+function closeSheet() { const o = document.getElementById('fgSheet'); if (o) o.remove(); }
+function sheet(title, inner, bind) {
+  closeSheet();
+  const o = document.createElement('div'); o.className = 'fg-sheetwrap'; o.id = 'fgSheet';
+  o.innerHTML = `<div class="fg-sheet" role="dialog" aria-modal="true" aria-label="${title}"><div class="fg-sheethead"><h2>${title}</h2>
+    <button class="fg-icon fg-x" aria-label="Close">✖️</button></div>${inner}</div>`;
+  document.body.appendChild(o);
+  o.addEventListener('click', e => { if (e.target === o || e.target.closest('.fg-x')) { SFX.tap(); closeSheet(); } });
+  if (bind) bind(o);
+  return o;
 }
+function talkHTML() {
+  return `<div class="fg-talk" role="radiogroup" aria-label="How much talking">${LEVELS.map(l => `<button class="${l === talk ? 'on' : ''}" data-talk="${l}" role="radio" aria-checked="${l === talk}">
+      <span class="fg-tem">${TALK_UI[l][0]}</span><b>${TALK_UI[l][1]}</b><span class="fg-tsub">${TALK_UI[l][2]}</span></button>`).join('')}</div>
+    <button class="fg-soundtog ${muted ? 'off' : ''}" data-sound aria-pressed="${!muted}">${muted ? '🔕 Sounds are off' : '🔔 Sounds are on'}</button>`;
+}
+function bindTalk(root) {
+  root.querySelectorAll('[data-talk]').forEach(b => b.onclick = () => { setTalk(b.dataset.talk); SFX.tap();
+    root.querySelectorAll('[data-talk]').forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-checked', x === b); });
+    say(TALK_UI[talk][1] + '!', 'replay'); });
+  const t = root.querySelector('[data-sound]');
+  if (t) t.onclick = () => { setMuted(!muted); t.classList.toggle('off', muted); t.setAttribute('aria-pressed', !muted); t.textContent = muted ? '🔕 Sounds are off' : '🔔 Sounds are on'; SFX.tap(); };
+}
+function setMuted(m) {
+  muted = m; store('mute', m ? '1' : '0');
+  if (m) { clearTimeout(sayTimer); sayNext = null; musicStop(); if ('speechSynthesis' in window) speechSynthesis.cancel(); }   // only when you tap it
+}
+const openTalk = () => { SFX.tap(); sheet('💬 Talking', talkHTML(), bindTalk); };
+function musicHTML() {
+  return `<div class="fg-music"><div class="fg-tracks">${TRACK_IDS.map(id => `<button class="fg-track ${id === mus.track ? 'on' : ''} ${id === mus.track && mus.on ? 'playing' : ''}" data-track="${id}" aria-label="${TRACKS[id].name}">
+      <span class="fg-tem">${TRACKS[id].em}</span><b>${TRACKS[id].name}</b><span class="fg-eq" aria-hidden="true"><i></i><i></i><i></i></span></button>`).join('')}</div>
+    <div class="fg-mctl"><button class="btn red fg-mbtn" data-m="play">${mus.on ? '⏸️ Pause' : '▶️ Play'}</button>
+      <button class="btn white fg-mbtn" data-m="next">⏭️ Next</button></div>
+    <label class="fg-vol"><span aria-hidden="true">🔈</span><input type="range" min="0" max="100" step="5" value="${Math.round(mus.vol * 100)}" aria-label="Music volume"><span aria-hidden="true">🔊</span></label>
+    <a class="btn blue fg-yt" href="${YT_THEME}" target="_blank" rel="noopener">📺 Pokémon theme on YouTube</a>
+    <p class="fg-mnote">Our own made-up songs. The real theme opens on YouTube.</p></div>`;
+}
+function bindMusic(root) {
+  const box = root.querySelector('.fg-music'); if (!box) return;
+  const redraw = () => { if (!box.isConnected) return false;
+    box.querySelectorAll('[data-track]').forEach(b => { b.classList.toggle('on', b.dataset.track === mus.track); b.classList.toggle('playing', b.dataset.track === mus.track && mus.on); });
+    const pb = box.querySelector('[data-m="play"]'); if (pb) pb.textContent = mus.on ? '⏸️ Pause' : '▶️ Play'; };
+  mus.listeners.push(redraw);
+  box.querySelectorAll('[data-track]').forEach(b => b.onclick = () => musicPlay(b.dataset.track));
+  box.querySelector('[data-m="play"]').onclick = () => { if (mus.on) musicStop(); else musicPlay(); };
+  box.querySelector('[data-m="next"]').onclick = musicNext;
+  box.querySelector('input[type=range]').oninput = e => musicVol(e.target.value / 100);
+}
+const openMusic = () => { SFX.tap(); sheet('🎵 Music', musicHTML(), bindMusic); };
+function wireHeader() { const b = document.getElementById('hdrMusic'); if (b && !b.dataset.on) { b.dataset.on = '1'; b.onclick = openMusic; } }
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wireHeader); else wireHeader();
+function barIcons() { return `<button class="fg-icon" id="fgSay" aria-label="Say it again">🔊</button><button class="fg-icon" id="fgTalk" aria-label="Talking settings">💬</button>`; }
+function bindBar() { const a = document.getElementById('fgSay'), b = document.getElementById('fgTalk'); if (a) a.onclick = replay; if (b) b.onclick = openTalk; }
 
 /* ---------- confetti ---------- */
 function confetti(n = 70, from = null) {
@@ -208,32 +388,46 @@ function confetti(n = 70, from = null) {
 const balls = n => `<span class="fg-balls">${'<span class="mini-ball"></span>'.repeat(n)}</span>`;
 function frame(title, inner, bar) {
   $app.innerHTML = `<div class="fg" id="fg">
-    <div class="fg-bar"><a class="fg-icon" href="#/games" aria-label="All games">🎮</a>${bar}${muteBtn()}</div>${inner}</div>`;
-  bindMute();
+    <div class="fg-bar"><a class="fg-icon" href="#/games" aria-label="All games">🎮</a>${bar}${barIcons()}</div>${inner}</div>`;
+  bindBar();
 }
 
 /* ---------- menu ---------- */
+const TR = () => window.Trainer || null;
+const curP = () => TR() ? TR().current() : null;
 function menu() {
-  const pika = 'me55-23';
-  $app.innerHTML = `<div class="fg" id="fg">
-    <div class="fg-hello"><span class="fg-bounce">⭐</span> Game Time! <span class="fg-bounce d2">⭐</span></div>
+  const pika = 'me55-23', math = !!window.FentonMath;
+  $app.innerHTML = `<div class="fg fg-hub" id="fg">
+    <div class="fg-bar hub"><a class="fg-icon" href="#/" aria-label="Home">🏠</a><div class="fg-hello"><span class="fg-bounce">⭐</span> Game Time! <span class="fg-bounce d2">⭐</span></div>${barIcons()}</div>
+    ${TR() ? TR().whoHTML() : ''}
     <div class="fg-menu">
       <a class="fg-pick red" href="#/games/memory" data-say="Memory Match!">
         <span class="fg-pickart"><span class="fg-back mini"></span><span class="fg-face mini"><img src="${ART(pika)}" alt="" draggable="false"></span><span class="fg-back mini"></span></span>
-        <span class="fg-pickname">Memory Match</span><span class="fg-picksub">find the pairs 🃏🃏</span></a>
+        <span class="fg-pickname">Memory Match</span><span class="fg-picksub">find the pairs</span></a>
       <a class="fg-pick blue" href="#/games/who" data-say="Who's that Pokémon?">
         <span class="fg-pickart"><span class="fg-silmini"><img src="${SIL(pika)}" alt="" draggable="false"><b>?</b></span></span>
-        <span class="fg-pickname">Who's That Pokémon?</span><span class="fg-picksub">guess the shadow 👀</span></a>
+        <span class="fg-pickname">Who's That Pokémon?</span><span class="fg-picksub">guess the shadow</span></a>
       <a class="fg-pick green" href="#/games/tcg" data-say="Card Battle School!">
         <span class="fg-pickart tcgpick"><img class="l" src="games/tcg/me55-9.jpg" alt="" draggable="false"><span class="vs">VS</span><img class="r" src="games/tcg/me55-113.jpg" alt="" draggable="false"></span>
-        <span class="fg-pickname">Card Battle School</span><span class="fg-picksub">learn to play the card game ⚔️</span></a>
+        <span class="fg-pickname">Card Battle School</span><span class="fg-picksub">learn the card game</span></a>
       <a class="fg-pick purple" href="#/games/trivia" data-say="Pokémon Trivia!">
         <span class="fg-pickart tvpick"><span class="tvpick-q"><img src="${ART(pika)}" alt="" draggable="false"><b>?</b></span><span class="tvpick-tf"><i>👍</i><i>👎</i></span></span>
-        <span class="fg-pickname">Pokémon Trivia</span><span class="fg-picksub">true or false? ⭐ quiz</span></a>
-    </div>
-    <div class="fg-menu-foot">${muteBtn()}<span>Pictures are from our own cards!</span></div></div>`;
-  bindMute();
-  $app.querySelectorAll('[data-say]').forEach(a => a.addEventListener('click', () => { SFX.tap(); say(a.dataset.say); }));
+        <span class="fg-pickname">Pokémon Trivia</span><span class="fg-picksub">true or false?</span></a>
+      <a class="fg-pick orange" href="#/games/math" data-say="Pokémon Math!">
+        <span class="fg-pickart mathpick"><span class="mathpick-eq">1 + 2</span><img src="${ART('me55-116')}" alt="" draggable="false"></span>
+        <span class="fg-pickname">Pokémon Math</span><span class="fg-picksub">${math ? 'count and add' : 'coming soon'}</span></a>
+      <a class="fg-pick gold" href="#/leaderboard" data-say="Our trainers!">
+        <span class="fg-pickart lbpick"><span>🏆</span><span>🏅</span></span>
+        <span class="fg-pickname">Trainers &amp; Badges</span><span class="fg-picksub">levels and best scores</span></a>
+    </div></div>`;
+  bindBar(); if (TR()) TR().bindWho($app);
+  $app.querySelectorAll('[data-say]').forEach(a => a.addEventListener('click', () => { SFX.tap(); say(a.dataset.say, 'line'); }));
+}
+function mathSoon() {                              // placeholder until the Math game file is added (it registers window.FentonMath)
+  frame('Pokémon Math', `<div class="fg-soon"><div class="fg-soonart"><img src="${ART('me55-116')}" alt="Eevee" draggable="false"></div>
+    <div class="fg-big">Pokémon Math is coming soon!</div><div class="fg-sub">Counting and adding with Pokémon.</div>
+    <a class="btn red fg-again" href="#/games">🎮 Pick another game</a></div>`, '');
+  say('Pokémon Math is coming soon!', 'line');
 }
 
 /* ---------- Memory Match ---------- */
@@ -252,7 +446,7 @@ function memory() {
      <div class="fg-moves" id="memMoves" ${hard ? '' : 'hidden'}>Moves <b>0</b></div>`);
   document.querySelectorAll('[data-hard]').forEach(b => b.onclick = () => { SFX.tap(); store('memHard', b.dataset.hard); clearTimers(); memory(); });
   document.getElementById('memGrid').addEventListener('click', e => { const b = e.target.closest('.fg-card'); if (b) flip(+b.dataset.i, b); });
-  sizeGrid(); say("Let's go! Find two the same!");
+  sizeGrid(); say("Let's go! Find two the same!", 'must');
 }
 function sizeGrid() {
   const g = document.getElementById('memGrid'); if (!g) return;
@@ -275,7 +469,7 @@ function flip(i, el) {
   if (a.c.id === b.c.id) {
     later(() => {
       a.c.done = b.c.done = true; a.el.classList.add('done'); b.el.classList.add('done');
-      SFX.match(); say(cheer() + ' ' + (SAY[a.c.name] || a.c.name) + '!'); confetti(26, b.el); M.found++; M.lock = false;
+      SFX.match(); say(cheer() + ' ' + (SAY[a.c.name] || a.c.name) + '!', 'praise'); confetti(26, b.el); M.found++; M.lock = false;
       if (M.found === M.pairs) later(memWin, 900);
     }, 380);
   } else {
@@ -290,7 +484,8 @@ function memWin() {
     ${M.hard ? `<div class="fg-sub">All 6 pairs in ${M.moves} moves!</div>` : ''}
     <div class="fg-found">${got.map(id => `<img src="${ART(id)}" alt="${NAME[id]}" draggable="false">`).join('')}</div>
     <button class="btn red fg-again" id="memAgain">🔁 Play again</button></div>`;
-  w.hidden = false; SFX.win(); say('You did it! You found them all!'); confetti(110); later(() => confetti(70), 900);
+  w.hidden = false; SFX.win(); say('You did it! You found them all!', 'result'); confetti(110); later(() => confetti(70), 900);
+  const p = curP(); if (p) { const T = TR(); T.recordWin(p, 'memory'); T.recordScore(p, M.hard ? 'memoryHard' : 'memoryEasy', M.moves); T.addXP(p, M.hard ? 25 : 15, 'memory'); }
   document.getElementById('memAgain').onclick = () => { SFX.tap(); clearTimers(); memory(); };
 }
 
@@ -306,7 +501,6 @@ function who() {
       <div class="fg-q"><div class="fg-rays"></div>
         <img class="fg-sil" id="whoSil" src="${SIL(ans)}" alt="Mystery Pokémon shadow" draggable="false">
         <img class="fg-reveal" id="whoArt" src="${ART(ans)}" alt="${NAME[ans]}" draggable="false">
-        <button class="fg-icon fg-hear" id="whoHear" aria-label="Hear it again">🗣️</button>
         <div class="fg-qtext" id="whoText">Who's that Pokémon?</div></div>
       <div class="fg-opts ${names ? 'names' : 'pics'}" id="whoOpts">${opts.map(id => `<button class="fg-opt" data-id="${id}" aria-label="${NAME[id]}">
         ${names ? `<span>${NAME[id]}</span>` : `<img src="${ART(id)}" alt="${NAME[id]}" draggable="false">`}</button>`).join('')}</div>
@@ -317,17 +511,17 @@ function who() {
       <button class="${names ? 'on' : ''}" data-names="1" aria-label="Big kid, names"><span class="fg-em">🔤</span><span>Big kid</span></button></div>
      <div class="fg-starbox" aria-label="${W.stars} stars"><span>⭐</span><b id="whoStars">${W.stars}</b></div>`);
   document.querySelectorAll('[data-names]').forEach(b => b.onclick = () => { SFX.tap(); store('whoNames', b.dataset.names); W.deck.push(W.ans); clearTimers(); who(); });
-  document.getElementById('whoHear').onclick = () => say(W.solved ? W.cheer + " It's " + spoken(W.ans) + '!' : "Who's that Pokémon?");
   document.getElementById('whoOpts').addEventListener('click', e => { const b = e.target.closest('.fg-opt'); if (b) answer(b); });
   document.getElementById('whoNext').onclick = () => { SFX.tap(); clearTimers(); who(); scrollTo(0, 0); };
-  say("Who's that Pokémon?");
+  say("Who's that Pokémon?", 'must');
 }
 function answer(b) {
   if (W.solved || b.disabled) return;
   if (b.dataset.id !== W.ans) {      // wrong: wiggle + dim that choice (can't be tapped again), lose 1 star (never below 0), keep guessing
     W.tries++; b.disabled = true; SFX.aww(); b.classList.remove('wiggle'); void b.offsetWidth; b.classList.add('wiggle');
     later(() => b.classList.add('gone'), 450);
-    loseStar(); say('Oops! Try again!'); return;
+    loseStar(); say(pickFresh(['Oops! Try again!', 'Not that one! Try again!', 'Hmm, try another one!']), 'result');
+    if (curP()) TR().answer(curP(), false); return;
   }
   W.solved = true; W.stars++;
   document.getElementById('fg').querySelector('.fg-q').classList.add('solved');
@@ -337,7 +531,8 @@ function answer(b) {
   W.cheer = big ? 'You did it!' : cheer();
   document.getElementById('whoText').innerHTML = `${W.cheer} It's <b>${NAME[W.ans]}</b>!${big ? ` ${W.stars} stars! 🎉` : ''}`;
   if (big) SFX.win(); else SFX.match();
-  say(W.cheer + " It's " + spoken(W.ans) + '!' + (big ? ` ${W.stars} stars!` : '')); confetti(big ? 140 : 60);
+  say(W.cheer + " It's " + spoken(W.ans) + '!' + (big ? ` ${W.stars} stars!` : ''), 'result'); confetti(big ? 140 : 60);
+  const p = curP(); if (p) { const T = TR(); T.answer(p, W.tries === 0); T.recordScore(p, 'who', W.stars); if (big) T.recordWin(p, 'who'); T.addXP(p, W.tries === 0 ? 5 : 3, 'who'); }
   document.getElementById('whoNext').hidden = false;
 }
 
@@ -359,11 +554,14 @@ function render(app, data, sub) {
   if (sub === 'who') return who();
   if (sub === 'tcg' && window.FentonTCG) return window.FentonTCG.render(app, data);
   if (sub === 'trivia' && window.FentonTrivia) return window.FentonTrivia.render(app, data);
+  if (sub === 'math') return window.FentonMath ? window.FentonMath.render(app, data) : mathSoon();
   return menu();
 }
 let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(sizeGrid, 120); });
 addEventListener('orientationchange', () => setTimeout(sizeGrid, 300));
 // shared helpers for tcg.js (Card Battle School) so it uses the same sound engine, speech and look
-const kit = {say, SFX, confetti, frame, later, clearTimers, store, shuffle, owned, spoken, isMuted: () => muted};
-return {render, FILES, stop: clearTimers, testSounds, kit, pickVoice, _voice: () => voice, _voicePrefs: () => ({pitch: VOICE_PITCH, rate: VOICE_RATE})};
+const kit = {say, SFX, confetti, frame, later, clearTimers, store, shuffle, owned, spoken, isMuted: () => muted, cheer, pickFresh, ART,
+  line: t => { current = t; }, replay, talk: () => talk, setTalk, sheet, closeSheet, openTalk, openMusic, talkHTML, bindTalk, musicHTML, bindMusic, music};
+return {render, FILES, stop: clearTimers, testSounds, testMusic, kit, pickVoice, _voice: () => voice, _voicePrefs: () => ({pitch: VOICE_PITCH, rate: VOICE_RATE}),
+  _heard: () => [...heard], _resetHeard: () => { heard = new Set(); try { sessionStorage.removeItem('fg.heard'); } catch (e) {} }};
 })();

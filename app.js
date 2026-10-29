@@ -40,35 +40,50 @@ function setTitle(t, back = true) { $title.textContent = t; $back.hidden = !back
 /* ---------- pages ---------- */
 function home() {
   setTitle('Our Pokémon', false);
-  const t = D.totals, main = D.sets.find(s => s.name === '30th Celebration'), cc = D.sets.find(s => s.name === 'Classic Collection');
-  const binTiles = D.binders.map((b, i) => `<a class="tile ${i === 0 ? 'red' : i === 1 ? 'blue' : 'yellow'}" href="#/binder/${i}/1">
-      <span class="em">${b.emoji}</span>${esc(b.name.replace(' (new pulls)', ''))}<span class="sub">${b.cards} cards</span></a>`).join('');
-  const pts1m = sliceHist(D.history, 30);
+  const t = D.totals, ms = masterStats(), pts1m = sliceHist(D.history, 30), TR = window.Trainer;
+  const pics = ['me55-23', 'me55-9', 'me55-116', 'me55-63'].map(id => `<img src="games/art/${id}.jpg" alt="" draggable="false">`).join('');
   $app.innerHTML = `
-  <div class="ticker-hero">
-    <div class="lbl">💰 Our cards are worth</div>
-    <div class="big">${money(t.value)}</div>
-    <div id="homeChg">${chgHtml(pts1m, true)}</div>
-    <div class="lbl" style="margin-top:8px">🃏 ${t.cards} cards · ⭐ ${t.different} different</div>
-    <div class="pills"><span class="pill up">➕ ${t.up}</span><span class="pill down">➖ ${t.down}</span><span class="pill same">⏸️ ${t.same}</span></div>
+  <div class="h-top">
+    <a class="h-val" href="#/value"><span class="lbl">💰 Our cards are worth</span><span class="big">${money(t.value)}</span><span id="homeChg">${chgHtml(pts1m, true)}</span></a>
+    ${ms ? `<a class="h-master" href="#/sets"><span class="mtop"><span>⭐ 30th Master Set</span><b>${ms.pc}%</b></span>
+      <span class="bar big"><span style="width:${Math.max(2, ms.pc)}%"></span></span><span class="msub">${ms.have} of ${ms.size}${ms.have >= ms.size ? ' · 🎉 complete!' : ` · ${ms.size - ms.have} to go`}</span></a>` : ''}
   </div>
-  <div class="ticker-wrap" id="homeTicker"><div class="ticker-tip" hidden></div></div>
-  <div id="homeRanges">${rangeButtons('1M')}</div>
-  ${moversStrip()}
-  ${masterBox()}
-  <div class="tiles">
-    ${binTiles}
+  ${TR ? TR.homeHTML() : ''}
+  <div class="h-tiles">
+    <a class="h-tile games" href="#/games"><span class="h-ico">🎮</span><span class="h-txt"><b>Games</b><span>Memory · Who's That · Card School · Trivia · Math</span></span><span class="h-pics" aria-hidden="true">${pics}</span></a>
+    <a class="h-tile cards" href="#/cards"><span class="h-ico">📒</span><span class="h-txt"><b>Our Cards</b><span>${t.cards} cards · binders</span></span></a>
+    <a class="h-tile value" href="#/value"><span class="h-ico">📈</span><span class="h-txt"><b>Value</b><span>chart · up &amp; down</span></span></a>
+    <a class="h-tile music" href="#/music"><span class="h-ico">🎵</span><span class="h-txt"><b>Music</b><span>songs · talking</span></span></a>
+    <a class="h-tile board" href="#/leaderboard"><span class="h-ico">🏆</span><span class="h-txt"><b>Leaderboard</b><span>levels · badges</span></span></a>
+  </div>
+  <p class="foot">Prices: ${esc(D.prices_note)}, ${esc(fmtDate(D.prices_asof))}.</p>`;
+}
+function masterStats() {
+  const parts = ['30th Celebration', 'Classic Collection'].map(n => D.sets.find(s => s.name === n)).filter(Boolean);
+  if (!parts.length) return null;
+  const have = parts.reduce((a, s) => a + s.have, 0), size = parts.reduce((a, s) => a + s.size, 0);
+  return {have, size, pc: Math.round(100 * have / size)};
+}
+function cardsPage() {
+  setTitle('📒 Our Cards');
+  const t = D.totals, mi = D.sets.findIndex(s => s.name === '30th Celebration'), main = D.sets[mi], cc = D.sets.find(s => s.name === 'Classic Collection');
+  const cls = ['red', 'blue', 'yellow', 'green'];
+  $app.innerHTML = `<h2>📚 Binders</h2>
+  <div class="tiles big">${D.binders.map((b, i) => `<a class="tile ${cls[i % 4]}" href="#/binder/${i}/1"><span class="em">${b.emoji}</span>${esc(b.name.replace(' (new pulls)', ''))}<span class="sub">${b.cards} cards</span></a>`).join('')}</div>
+  ${mi >= 0 ? `<h2>✅ 30th Celebration</h2><div class="tiles">
+    <a class="tile green" href="#/set/${mi}/have"><span class="em">✅</span>We have<span class="sub">${main.have} cards</span></a>
+    <a class="tile" href="#/set/${mi}/need"><span class="em">❔</span>We need<span class="sub">${main.size - main.have} to find</span></a></div>` : ''}
+  <h2>🔎 More</h2><div class="tiles">
     <a class="tile" href="#/sets"><span class="em">✅</span>Checklists<span class="sub">${main ? `${main.have}/${main.size}` : ''}${cc ? ` · ${cc.have}/${cc.size}` : ''}</span></a>
     <a class="tile yellow" href="#/wish"><span class="em">🛒</span>Wishlist<span class="sub">${t.wish_count} to find</span></a>
-    <a class="tile" href="#/top"><span class="em">🏆</span>Top Cards<span class="sub">most valuable</span></a>
-    <a class="tile" href="#/movers"><span class="em">📈</span>Up &amp; Down<span class="sub">last ${D.settings.window} days</span></a>
-    <a class="tile blue" href="#/grading"><span class="em">💎</span>Grading<span class="sub">PSA 10 check</span></a>
-    <a class="tile red" href="#/opened"><span class="em">📦</span>Opened<span class="sub">${t.packs} packs</span></a>
-    <a class="tile yellow" href="#/search"><span class="em">🔍</span>Find a card<span class="sub">search by name</span></a>
-  </div>
-  <a class="gamebtn" href="#/games" aria-label="Game Time! Play Pokémon games"><span class="ball"></span><span>Game Time!<small>🃏 Memory · 👀 Who's That? · ⚔️ Card School · ❓ Trivia</small></span><span class="ball"></span></a>
-  <p class="foot">Prices: ${esc(D.prices_note)}, ${esc(fmtDate(D.prices_asof))}.<br>Tap any card to see it big! Drag the chart to peek at a day.</p>`;
-  mountHomeTicker('1M');
+    <a class="tile blue" href="#/search"><span class="em">🔍</span>Find a card<span class="sub">search by name</span></a>
+    <a class="tile red" href="#/opened"><span class="em">📦</span>Opened<span class="sub">${t.packs} packs</span></a></div>`;
+}
+function musicPage() {
+  setTitle('🎵 Music');
+  const K = window.FentonGames && window.FentonGames.kit; if (!K) return home();
+  $app.innerHTML = `<div class="fg-page"><h2>🎵 Music</h2>${K.musicHTML()}<h2>💬 Talking</h2>${K.talkHTML()}</div>`;
+  K.bindMusic($app); K.bindTalk($app);
 }
 
 function masterBox() {
@@ -251,12 +266,18 @@ function value() {
     <div class="lbl">🕙 ${t.base_date ? fmtDate(t.base_date) : '30 days ago'}: ${money(t.value_30d)}</div>
     <div class="lbl ${''}" style="margin-top:4px">${ch >= 0 ? '⬆️' : '⬇️'} ${ch >= 0 ? '+' : '−'}${money(Math.abs(ch))} (${pct(p)})</div>
     <div class="pills"><span class="pill up">➕ ${t.up} up</span><span class="pill down">➖ ${t.down} down</span><span class="pill same">⏸️ ${t.same} same</span></div></div>
+  ${masterBox()}
   <h2>📈 Value over time</h2>
   <div id="valChg" style="text-align:center;margin-bottom:6px"></div>
   <div class="ticker-wrap solo" id="valTicker"><div class="ticker-tip" hidden></div></div>
   <div id="valRanges">${rangeButtons('1M')}</div>
   <div class="note">➕ up · ➖ down · ⏸️ about the same (within ${Math.round(D.settings.trend_pct * 100)}% or less than ${money(D.settings.trend_min)}) over ${D.settings.window} days.
    New sets usually drop after release, then settle. We're keeping our cards, so this is just for fun!</div>
+  ${moversStrip()}
+  <div class="tiles">
+    <a class="tile" href="#/movers"><span class="em">📈</span>Up &amp; Down<span class="sub">last ${D.settings.window} days</span></a>
+    <a class="tile" href="#/top"><span class="em">🏆</span>Top Cards<span class="sub">most valuable</span></a>
+    <a class="tile blue" href="#/grading"><span class="em">💎</span>Grading<span class="sub">PSA 10 check</span></a></div>
   <h2>📒 Binders</h2><div class="list">${bins}</div>
   <h2>📚 Sets</h2><div class="list">${sets}</div>
   <div class="tiles"><div class="tile" style="cursor:default"><span class="em">🃏</span>${t.cards}<span class="sub">cards</span></div>
@@ -501,8 +522,12 @@ function route() {
   document.body.classList.toggle('game-mode', p[0] === 'games');
   if (window.FentonGames) window.FentonGames.stop();
   switch (p[0]) {
-    case 'games': setTitle(p[1] === 'memory' ? 'Memory Match' : p[1] === 'who' ? "Who's That Pokémon?" : p[1] === 'tcg' ? 'Card Battle School' : p[1] === 'trivia' ? 'Pokémon Trivia' : 'Game Time'); return window.FentonGames ? window.FentonGames.render($app, D, p[1]) : home();
+    case 'games': setTitle(p[1] === 'memory' ? 'Memory Match' : p[1] === 'who' ? "Who's That Pokémon?" : p[1] === 'tcg' ? 'Card Battle School' : p[1] === 'trivia' ? 'Pokémon Trivia' : p[1] === 'math' ? 'Pokémon Math' : 'Game Time'); return window.FentonGames ? window.FentonGames.render($app, D, p[1]) : home();
     case 'value': return value();
+    case 'cards': return cardsPage();
+    case 'music': return musicPage();
+    case 'trainer': setTitle('🏅 Trainer'); return window.Trainer ? window.Trainer.profilePage($app, p[1]) : home();
+    case 'leaderboard': setTitle('🏆 Leaderboard'); return window.Trainer ? window.Trainer.leaderboardPage($app) : home();
     case 'binder': return binder(+p[1] || 0, +p[2] || 1);
     case 'sets': return sets();
     case 'set': return setPage(+p[1] || 0, p[2]);

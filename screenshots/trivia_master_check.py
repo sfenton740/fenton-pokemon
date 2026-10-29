@@ -39,7 +39,7 @@ def run(name, vp):
     open_pick()                         # remembered after reload
     assert pg.locator('[data-mode="master"]').count()==1
     pg.wait_for_timeout(500); pg.screenshot(path=OUT+f'trivia_master_picker_{name}.png')
-    print('   picker says:', pg.evaluate('window._said')[-1])
+    print('   picker says:', (pg.evaluate('window._said') or ['(intro already heard this session -> chime only)'])[-1])
     taps(7,100); pg.wait_for_timeout(300); assert pg.locator('#tvSecret').count()==0   # no second reveal
     pg.click('[data-mode="master"]'); pg.wait_for_selector('.tv.master .tv-opt')
     st=lambda: pg.evaluate("(()=>{const T=FentonTrivia._state();const x=T.qs[T.i];return {i:T.i,n:T.qs.length,who:x.who,tf:'a' in x.q,a:x.q.a,l:x.q.l,q:x.q.q,p:!!x.q.p}})()")
