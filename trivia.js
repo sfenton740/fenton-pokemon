@@ -1,5 +1,5 @@
-/* Pokémon Trivia - true/false + picture questions for little trainers (#/games/trivia).
-   🐣 Little Trainer = easy questions (age 4), 🔥 Big Trainer = harder ones (age 6), 👥 Take Turns = both, 5 questions each.
+/* Pokémon Trivia - true/false + picture questions for young trainers (#/games/trivia).
+   ⭐ Star Trainer = easy questions (age 4), 🔥 Ace Trainer = harder ones (age 6), 👥 Take Turns = both, 5 questions each.
    👑 Master Trainer = a secret, super-hard mode for grown-ups (unlock: tap the title 7 times in 3 seconds on Who's playing?).
    Every question and answer is read aloud (🔊 to hear it again); answers are big pictures, emoji, colors or 👍/👎, so no reading needed.
    Right = +1 ⭐. Wrong = we say the right answer gently, show it glowing, and take away 1 ⭐ (never below 0), like Who's That.
@@ -44,12 +44,12 @@ const forEar = t => { EAR.forEach(([a, b]) => { t = t.split(a).join(b); });     
   return t.replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{2B50}]/gu, '').replace(/\s+/g, ' ').trim(); };
 
 /* ---------- the questions ----------
-   l: 'e' easy (Little Trainer) | 'h' harder (Big Trainer).  True/False: a = true|false.  Picture choice: o = options, the FIRST one is right
+   l: 'e' easy (Star Trainer) | 'h' harder (Ace Trainer).  True/False: a = true|false.  Picture choice: o = options, the FIRST one is right
    (they get shuffled on screen).  p = picture shown with the question.  f = the fact we say after the answer (always true).
    Picture codes: 'a:ID' card art · 'k:ID' whole card · 'e:🔥:Fire' emoji · 'c:#hex:Yellow' color · 't:60:60' big number · 'ball' a Poké Ball.
    Choices made of emoji, colors or numbers are read out loud; choices of Pokémon pictures are not (that's the game!). */
 const BANK = [
-  // ===== EASY: Little Trainer =====
+  // ===== EASY: Star Trainer =====
   {l: 'e', q: 'Pikachu is yellow.', a: true, p: 'a:me55-23', f: 'Pikachu is yellow!'},
   {l: 'e', q: 'Snorlax loves to sleep.', a: true, p: 'a:me55-119', f: 'Snorlax sleeps a lot. Zzz!'},
   {l: 'e', q: 'Charizard is a Water type.', a: false, p: 'a:tcg-714372', f: 'Charizard is a Fire type. It breathes fire!'},
@@ -101,7 +101,7 @@ const BANK = [
   {l: 'e', q: 'Team Rocket takes care of Pokémon at the Pokémon Center.', a: false, p: 'e:🏥:Pokémon Center', f: 'Nurse Joy takes care of Pokémon at the Pokémon Center!'},
   {l: 'e', q: 'Where does Lapras love to swim?', o: ['e:🌊:The water', 'e:🌋:A volcano', 'e:🏜️:The desert'], p: 'a:me55-17', f: 'Lapras swims in the water!'},
 
-  // ===== HARDER: Big Trainer =====
+  // ===== HARDER: Ace Trainer =====
   {l: 'h', q: 'Ash\'s last name is Mustard.', a: false, p: 'e:🧢:Ash', f: 'His name is Ash Ketchum!'},
   {l: 'h', q: 'Pikachu evolves into Pichu.', a: false, p: 'a:me55-23', f: 'Pichu evolves into Pikachu, and Pikachu evolves into Raichu!'},
   {l: 'h', q: 'Nurse Joy gave Ash his first Pokémon, Pikachu.', a: false, p: 'a:me55-23', f: 'Professor Oak gave Ash his Pikachu!'},
@@ -168,7 +168,7 @@ const BANK = [
   {l: 'h', q: 'You win when you take all of your Prize cards.', a: true, p: 'e:🎁:Prize cards', f: 'Take all your Prize cards to win!'},
   {l: 'h', q: 'You can flip a coin to see who goes first.', a: true, p: 'e:🪙:Coin', f: 'Flip a coin to see who goes first!'},
   {l: 'h', q: 'Fire Pokémon like Vulpix are weak to Water.', a: true, p: 'k:me55-9', f: 'Look at the bottom of the card. Vulpix is weak to Water!'},
-  // ===== EASY: more for Little Trainer =====
+  // ===== EASY: more for Star Trainer =====
   {l: 'e', q: 'Drifloon looks like a big rock.', a: false, p: 'a:me55-73', f: 'Drifloon looks like a purple balloon. Float away!'},
   {l: 'e', q: 'Which one looks like a balloon?', o: ['a:me55-73', 'a:me55-119', 'a:me55-17'], f: 'Drifloon looks like a balloon!'},
   {l: 'e', q: 'Vivillon is a fish Pokémon.', a: false, p: 'a:me55-8', f: 'Vivillon is a pretty butterfly, not a fish!'},
@@ -215,7 +215,7 @@ const BANK = [
   {l: 'e', q: 'What do you use to catch a Pokémon?', o: ['e:🔴:A Poké Ball', 'e:🧺:A basket', 'e:🎣:A fishing net'], f: 'You use a Poké Ball!'},
   {l: 'e', q: 'Which one is Victini?', o: ['a:me55-13', 'a:me55-77', 'a:me55-15'], f: "That's Victini! V is for victory!"},
 
-  // ===== HARDER: more for Big Trainer =====
+  // ===== HARDER: more for Ace Trainer =====
   {l: 'h', q: 'Gengar evolves into Haunter.', a: false, p: 'a:me55-90', f: 'Haunter evolves into Gengar! Gastly, Haunter, Gengar!'},
   {l: 'h', q: 'What does Deino grow up to be?', o: ['a:me55-99', 'a:me55-17', 'a:me55-77'], p: 'a:me55-97', f: 'Deino evolves into Zweilous, and then Hydreigon!'},
   {l: 'h', q: 'What does Jangmo-o grow up to be?', o: ['a:me55-112', 'a:me55-61', 'a:me55-13'], p: 'a:me55-110', f: 'Jangmo-o evolves into Hakamo-o, and then Kommo-o!'},
@@ -425,7 +425,7 @@ function picker(quiet) {
   const old = document.getElementById('tvSecret'); if (old) old.remove();
   const tile = k => `<button class="tv-player ${k}" data-mode="${k}" aria-label="${P[k].name}">
       <span class="tv-pava"><img src="${ART(P[k].art)}" alt="" draggable="false"></span>
-      <span class="tv-pname">${P[k].name}</span><span class="tv-psub">${k === 'little' ? '🐣 Little Trainer · easy' : '🔥 Big Trainer · harder'}</span>
+      <span class="tv-pname">${P[k].name}</span><span class="tv-psub">${k === 'little' ? '⭐ Star Trainer · ages 4-5' : '🔥 Ace Trainer · ages 6+'}</span>
       ${lvl(k)}<span class="tv-best">🏆 Best: <b>${best(k)}</b> ⭐</span></button>`;
   K().frame('Pokémon Trivia', `<div class="tv-pick">
       <div class="tv-title" id="tvTitle"><span class="fg-bounce">❓</span> Pokémon Trivia! <span class="fg-bounce d2">⭐</span></div>
@@ -472,7 +472,7 @@ function mix(list) {
   for (let i = 0; i < 300 && longestRun(s) > MAX_RUN; i++) s = K().shuffle(list);
   return s;
 }
-function turnsOrder(a, b) {                     // Little and Big take turns; the run rule counts both players' questions in play order
+function turnsOrder(a, b) {                     // Star and Ace take turns; the run rule counts both players' questions in play order
   const build = () => { const x = K().shuffle(a), y = K().shuffle(b); return x.flatMap((q, i) => [{q, who: 'little'}, {q: y[i], who: 'big'}]); };
   let r = build();
   for (let i = 0; i < 300 && longestRun(r.map(o => o.q)) > MAX_RUN; i++) r = build();

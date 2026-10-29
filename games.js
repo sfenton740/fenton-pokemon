@@ -395,7 +395,7 @@ function frame(title, inner, bar) {
 /* ---------- menu ---------- */
 const TR = () => window.Trainer || null;
 const curP = () => TR() ? TR().current() : null;
-// game settings are remembered per kid; first time, Harper (little) gets the easy mode and Carter (big) the harder one
+// game settings are remembered per kid; first time, Harper (Star Trainer) gets the starter mode and Carter (Ace Trainer) the harder one
 const kidPref = (key, v) => { const id = curP() || 'little'; if (v != null) return store(key + '.' + id, v); const x = store(key + '.' + id); return x != null ? x : id === 'big' ? '1' : '0'; };
 function menu() {
   const pika = 'me55-23', math = !!window.FentonMath;

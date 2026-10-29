@@ -45,7 +45,7 @@ const GAMES = {
   tcg: {name: 'Card Battle wins', emoji: '⚔️', unit: 'wins', wins: true},
   math: {name: 'Math', emoji: '➕', unit: 'points'}
 };
-// the two kids: Harper (age 4) plays the Little Trainer modes, Carter (age 6) the Big Trainer modes
+// the two kids: Harper (age 4) plays the Star Trainer modes, Carter (age 6) the Ace Trainer modes
 const KIDS = {little: 'Harper', big: 'Carter'};
 const DEFAULT = () => ({v: 2, current: 'little', profiles: {
   little: blank('little', KIDS.little, 'pikachu'), big: blank('big', KIDS.big, 'charmander')}});

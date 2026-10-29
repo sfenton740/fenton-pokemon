@@ -1,10 +1,10 @@
-/* Pokémon Math - adaptive number games for little trainers (#/games/math).
-   🐣 Little Trainer (age 4-5): counting to 10 then 20, more/fewer, find the number, shapes, patterns, adding and taking away with pictures.
-   🔥 Big Trainer (age 6+): + and - to 20 then 100 (tens and ones), missing numbers, skip counting, comparing, HP word problems,
+/* Pokémon Math - adaptive number games for young trainers (#/games/math).
+   ⭐ Star Trainer (age 4-5): counting to 10 then 20, more/fewer, find the number, shapes, patterns, adding and taking away with pictures.
+   🔥 Ace Trainer (age 6+): + and - to 20 then 100 (tens and ones), missing numbers, skip counting, comparing, HP word problems,
       teams (intro times) and real card-game math (Weakness x2, Resistance -30, prize cards).
    👑 Champion: times tables to 10x10, sharing (division), doubling/halving, number patterns, multi-step HP math.
    Adaptive: 3 right in a row = level up, 2 misses in a row = a slightly easier level; each mode's level is saved on the iPad.
-   Doing great at the top Big Trainer level unlocks the Champion crown (Champion can also be picked directly).
+   Doing great at the top Ace Trainer level unlocks the Champion crown (Champion can also be picked directly).
    Right = +1 ⭐, wrong = -1 ⭐ (never below 0), like the other games. A Charmander buddy evolves as the streak grows.
    Sound + speech come from the shared engine in games.js (FentonGames.kit). Talk level (Quiet / Normal / Chatty) is read from
    the shared setting; nothing is ever repeated automatically - 🔊 says it again. */
@@ -84,7 +84,7 @@ const bigNums = (ans, steps = [1, 2, 10], lo = 0, hi = 999) => numOpts(ans, 4, l
 
 /* ---------- question makers (each returns plain data; check / expr let the test script verify the maths) ---------- */
 const G = {
-  // 🐣 Little Trainer
+  // ⭐ Star Trainer
   count(max) {
     const min = max > 10 ? 11 : max > 5 ? 4 : 1, n = ri(min, max), k = pick(LM);
     return {kind: 'num', ans: n, expr: '' + n, check: {count: n}, text: `How many ${NM(k)}?`, say: `How many ${NM(k)} can you count?`,
@@ -144,7 +144,7 @@ const G = {
     return {kind: 'num', ans: d, expr: `${a}-${b}`, check: {a, b, max}, text: k === 'ball' ? `${a} ${ballName(a)} − ${b}` : `${a} ${NM(k)}, ${b} ${b === 1 ? 'runs' : 'run'} away`,
       say: how + ' How many are left?', vis: items(k, a, b), opts: littleNums(d, 0, max), right: `${a} take away ${b} is ${d}!`, wrong: `${a} take away ${b} leaves ${d}.`};
   },
-  // 🔥 Big Trainer
+  // 🔥 Ace Trainer
   add(max, regroup) {
     let a, b;
     if (max <= 20) { a = ri(2, max - 2); b = ri(2, max - a); }
@@ -305,11 +305,11 @@ const LEVELS = {
     {name: 'Multi-step HP math', em: '❤️', skills: [['multiHP', false], ['mult', 10], ['numPattern', false], ['share', 8], ['dblHalf', 100]]},
     {name: 'Champion mix', em: '👑', skills: [['multiHP', true], ['multiHP', false], ['mult', 10], ['missingFactor'], ['share', 10], ['numPattern', true], ['dblHalf', 200]]}]
 };
-const MODES = {little: {name: 'Little Trainer', who: 'little', art: 'me55-23', age: 'ages 4-5', cls: 'little'},
-  big: {name: 'Big Trainer', who: 'big', art: 'tcg-714372', age: 'ages 6+', cls: 'big'},
+const MODES = {little: {name: 'Star Trainer', who: 'little', art: 'me55-23', age: 'ages 4-5', cls: 'little'},
+  big: {name: 'Ace Trainer', who: 'big', art: 'tcg-714372', age: 'ages 6+', cls: 'big'},
   champ: {name: 'Champion', who: 'big', art: 'me55-63', age: 'hard mix', cls: 'champ'}};
 const ROUND = 10;
-// the kid who usually plays each mode (Harper = Little Trainer, Carter = Big Trainer / Champion), from their Trainer profile
+// the kid who usually plays each mode (Harper = Star Trainer, Carter = Ace Trainer / Champion), from their Trainer profile
 const kid = m => { const id = MODES[m].who; try { const p = window.Trainer && Trainer.get(id); if (p && p.name) return p.name; } catch (e) {} return id === 'little' ? 'Harper' : 'Carter'; };
 // evolving buddy: Charmander -> Charmeleon -> Charizard (cards from Card Battle School)
 const BUDDY = [{id: 'base1-46', n: 'Charmander'}, {id: 'base1-24', n: 'Charmeleon'}, {id: 'tcg-714372', n: 'Charizard'}];
@@ -350,13 +350,13 @@ function picker(quiet) {
       <span class="mt-pava"><img src="${ART(M.art)}" alt="" draggable="false">${m === 'champ' ? `<i aria-hidden="true">👑</i>` : ''}</span>
       <span class="mt-ptext"><span class="mt-pname">${M.name}</span><span class="mt-psub">${m === 'champ' ? kid(m) + ' or a grown-up' : kid(m)} · ${M.age} · ${L.em} ${L.name}</span>
       <span class="mt-pbest">🏆 Best <b>${bestOf(m)}</b> ⭐ · Level <b>${lvlOf(m) + 1}</b>/${LEVELS[m].length}</span>
-      ${m === 'champ' && !champUnlocked() ? '<span class="mt-plock">Earn the crown in Big Trainer, or try it now!</span>' : ''}</span></button>`; };
+      ${m === 'champ' && !champUnlocked() ? '<span class="mt-plock">Earn the crown in Ace Trainer, or try it now!</span>' : ''}</span></button>`; };
   K().frame('Pokémon Math', `<div class="mt-pick">
       <div class="mt-title"><span class="fg-bounce">🔢</span> Pokémon Math! <span class="fg-bounce d2">⭐</span></div>
       <div class="mt-hello">Who's playing?</div>
       <div class="mt-players">${tile('little')}${tile('big')}${tile('champ')}</div></div>`, '<div class="mt-barfill"></div>');
   document.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => begin(b.dataset.mode));
-  if (!quiet && talk() !== 'quiet') speak([[`Pokémon Math! Who's playing? ${kid('little')} is the Little Trainer. ${kid('big')} is the Big Trainer. Mewtwo is the Champion!`, 'line']]);
+  if (!quiet && talk() !== 'quiet') speak([[`Pokémon Math! Who's playing? ${kid('little')} is the Star Trainer. ${kid('big')} is the Ace Trainer. Mewtwo is the Champion!`, 'line']]);
 }
 function begin(mode) {
   K().clearTimers(); K().SFX.match(); closeOverlays();
@@ -397,7 +397,7 @@ function show(prefix = '', keep = null) {
   const sw = document.getElementById('mtSwitch');
   if (sw) sw.onclick = () => { if (S.answered) return; K().SFX.tap(); store('mathPad.' + S.mode, pad ? '0' : '1'); show('', q); };   // same question, other answer style
   document.getElementById('mtNext').onclick = next;
-  // speech: the youngest can't read, so the question is always spoken for Little Trainer (unless muted); quiet = no extras
+  // speech: pre-readers can't read, so the question is always spoken for Star Trainer (unless muted); quiet = no extras
   const t = talk(), first = !S.told[q.skill]; S.told[q.skill] = 1;
   const parts = [];
   if (t !== 'quiet' && prefix) parts.push([prefix, 'line']);

@@ -246,7 +246,7 @@ function pickTeam(mode = 'play', first = null) {
       <button class="${lv === 'easy' ? 'on' : ''}" data-level="easy" aria-label="Easy friend">😊 Easy friend</button>
       <button class="${lv === 'tricky' ? 'on' : ''}" data-level="tricky" aria-label="Tricky friend">💪 Tricky friend</button></div>` : ''}
     <div class="tc-teams">${Object.entries(TEAMS).map(([k, t]) => `<button class="tc-team ${k} ${k === first ? 'taken' : ''}" data-team="${k}" aria-label="${t.name}">
-      <span class="tc-teamcards">${t.show.map(id => `<img class="${isEx(id) ? 'isex' : ''}" src="${IMG(id)}" alt="${C[id].n}" draggable="false">`).join('')}</span>
+      <span class="tc-teamcards">${t.show.map(id => `<span class="tc-tcw"><img class="${isEx(id) ? 'isex' : ''}" src="${IMG(id)}" alt="${C[id].n}" draggable="false"><span class="tc-zoom" data-zoom="${id}" role="button" aria-label="Look at ${C[id].n}"></span></span>`).join('')}</span>
       <span class="tc-teamname">${TY[k][0]} ${t.name}</span>${k === first ? `<span class="tc-takenby">${duoName(1)}</span>` : ''}</button>`).join('')}</div></div>`,
     header(mode));
   wireHeader();
@@ -268,7 +268,7 @@ function monHTML(m, who, big) {
   const pct = v => Math.round(100 * v / c.hp), shown = from != null ? from : L;
   const tag = who === 'me' ? 'mon' : 'opmon';
   return `<button class="tc-mon ${big ? 'big' : 'sm'} ${f} ${who} ${c.ex ? 'isex' : ''} t-${c.t}" data-act="${tag}:${m.u}" aria-label="${c.n}, ${L} HP left">
-    <img src="${IMG(m.id)}" alt="${c.n}" draggable="false">
+    <img src="${IMG(m.id)}" alt="${c.n}" draggable="false"><span class="tc-zoom" data-zoom="${m.id}" role="button" aria-label="Look at ${c.n}"></span>
     <span class="tc-hp ${hpCls(L / c.hp)}"><em style="width:${pct(shown)}%" ${from != null ? `data-to="${pct(L)}"` : ''}></em><i style="width:${pct(shown)}%" ${from != null ? `data-to="${pct(L)}"` : ''}></i><b ${from != null ? `data-from="${from}" data-to="${L}"` : ''}>❤️ <span>${shown}</span></b></span>
     ${ctr && f !== 'ko' ? `<span class="tc-ctr">${ctr <= 8 ? '<i></i>'.repeat(ctr) : `<i></i>×${ctr}`}</span>` : ''}
     ${m.en.length ? `<span class="tc-ens">${m.en.map(en).join('')}</span>` : ''}
@@ -293,7 +293,7 @@ function handHTML() {
     if (isE(c.id)) { const t = eT(c.id); return `<button class="tc-hc energy ${t} ${f} ${sel}" data-act="hand:${c.u}" aria-label="${nm(c.id)}"><span class="tc-ebig">${TY[t][0]}</span><span class="tc-hn">${TY[t][1]}<br>Energy</span></button>`; }
     const x = C[c.id], st = stageOf(c.id);
     const tg = x.ex ? ['ex', '✨ ex'] : st === 2 ? ['evo s2', 'Stage 2'] : st === 1 ? ['evo', 'Stage 1'] : ['', 'Basic'];
-    return `<button class="tc-hc ${f} ${sel} ${x.ex ? 'isex' : ''}" data-act="hand:${c.u}" aria-label="${x.n}"><img src="${IMG(c.id)}" alt="${x.n}" draggable="false">
+    return `<button class="tc-hc ${f} ${sel} ${x.ex ? 'isex' : ''}" data-act="hand:${c.u}" aria-label="${x.n}"><img src="${IMG(c.id)}" alt="${x.n}" draggable="false"><span class="tc-zoom" data-zoom="${c.id}" role="button" aria-label="Look at ${x.n}"></span>
       <span class="tc-tag ${tg[0]}">${S.mode === 'learn' && st === 1 ? 'Evolves' : tg[1]}</span></button>`;
   }).join('');
 }
@@ -797,7 +797,53 @@ function lose() {                                                // 💪 Tricky 
   endScreen('Good game!', '🌟', 'Your friend won this time. You were awesome! Try again?', 'Good game! You were awesome! Play again?', usedBy(S.me));
 }
 
+/* ---------- 🔍 card zoom: tap the magnifier on any card to read it big (the card itself still plays when tapped) ---------- */
+const STAGE = id => C[id].ex ? (C[id].from ? 'Stage 1 Pokémon ex' : 'Basic Pokémon ex') : ['Basic Pokémon', 'Stage 1 Pokémon', 'Stage 2 Pokémon'][stageOf(id)];
+function atkWords(x) {                                         // the attack's text, in plain words
+  const o = x[3] || {}, w = [];
+  if (o.x === 'prize') w.push(`Does ${x[2]} damage for each Prize card you have taken.`);
+  else if (o.x === 'types') w.push(`Does ${x[2]} damage for each kind of Energy on all your Pokémon in play.`);
+  else w.push(`Does ${x[2]} damage.`);
+  if (o.plus) w.push(`Does ${o.plus[0]} more damage for each ${TY[o.plus[1]][1]} Energy on this Pokémon.`);
+  if (o.plusOpp) w.push(`Does ${o.plusOpp} more damage for each Energy on the other Active Pokémon.`);
+  if (o.noweak) w.push("Weakness doesn't change this attack's damage.");
+  if (o.disc === 'all') w.push('Then discard all Energy from this Pokémon.');
+  else if (o.disc) w.push(`Then discard ${o.disc} Energy from this Pokémon.`);
+  if (o.rest) w.push("This Pokémon can't attack during your next turn.");
+  return w.join(' ');
+}
+function zoomCard(id) {
+  const c = C[id]; if (!c) return;
+  closeZoom(true);
+  const ty = t => `<i class="tc-e ${t}">${TY[t][0]}</i>`;
+  const atks = c.a.map(x => `<div class="tc-zatk"><div class="tc-zatop"><span class="tc-zcost">${costOf(id, c.a.indexOf(x)).map(ty).join('')}</span>
+      <b class="tc-zan">${x[0]}</b><b class="tc-zdmg">${dmgText(x)}</b></div><p>${atkWords(x)}</p></div>`).join('');
+  const from = c.from ? `<p class="tc-zfrom">Evolves from ${C[c.from].n}</p>` : '';
+  const w = document.createElement('div');
+  w.className = 'fg-win tc-zoomwrap'; w.id = 'tcZoom'; w.setAttribute('role', 'dialog'); w.setAttribute('aria-modal', 'true'); w.setAttribute('aria-label', c.n);
+  w.innerHTML = `<div class="tc-zbox t-${c.t} ${c.ex ? 'isex' : ''}">
+    <button class="tc-zclose" id="tcZClose" aria-label="Close">✕ Close</button>
+    <div class="tc-zgrid"><img class="tc-zimg ${c.ex ? 'isex' : ''}" src="${IMG(id)}" alt="${c.n}" draggable="false">
+    <div class="tc-ztext">
+      <div class="tc-zhead"><b class="tc-zname">${c.n}</b><span class="tc-zhp">❤️ ${c.hp} HP</span></div>
+      <p class="tc-zline">${ty(c.t)} ${TY[c.t][1]} · ${STAGE(id)}</p>${from}
+      ${c.ex ? '<p class="tc-zex">✨ <b>Pokémon ex rule:</b> when it is Knocked Out, the other player takes 2 Prize cards.</p>' : ''}
+      ${atks}
+      <div class="tc-zfoot"><span>Weakness ${c.w ? ty(c.w) + ' ×2' : 'none'}</span>${c.rs ? `<span>Resistance ${ty(c.rs)} −30</span>` : ''}<span>Retreat ${c.r ? '⭐'.repeat(c.r) : 'free'}</span></div>
+    </div></div></div>`;
+  document.body.appendChild(w);
+  w.addEventListener('click', e => { if (e.target === w || e.target.closest('#tcZClose')) { K().SFX.tap(); closeZoom(); } });
+  const b = document.getElementById('tcZClose'); try { b.focus({preventScroll: true}); } catch (e) {}
+  K().SFX.tap(); K().say(forEar(c.n) + '!', 'line');
+}
+function closeZoom(quiet) { const z = document.getElementById('tcZoom'); if (z) z.remove(); }
+// capture phase, so tapping the 🔍 never also plays / selects the card underneath
+document.addEventListener('click', e => { const z = e.target.closest && e.target.closest('[data-zoom]'); if (!z) return;
+  e.preventDefault(); e.stopPropagation(); zoomCard(z.dataset.zoom); }, true);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeZoom(); });
+window.addEventListener('hashchange', () => closeZoom());
+
 function render(app, data) { newGame('learn'); }
 // test hooks for headless checks
-return {render, FILES, TEAMS, _state: () => S, _hint: () => hint(), _force: f => { FORCE = f; }, _paint: () => paint(), _calc: calc, _cards: C};
+return {render, FILES, TEAMS, _state: () => S, _hint: () => hint(), _force: f => { FORCE = f; }, _paint: () => paint(), _calc: calc, _cards: C, _zoom: zoomCard};
 })();

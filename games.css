@@ -204,7 +204,8 @@ body.game-mode main{max-width:1100px;padding-top:10px}
 .tc-team.fire{background:linear-gradient(160deg,#ffd27a,#ff7a3d)}.tc-team.lightning{background:linear-gradient(160deg,#fff59a,#ffc400)}
 .tc-team.psychic{background:linear-gradient(160deg,#ecd4ff,#b57bff)}.tc-team.darkness{background:linear-gradient(160deg,#a9a3c0,#4b4363);color:#fff}
 .tc-teamcards{display:flex;justify-content:center}.tc-teamcards img{width:min(24vw,118px);border-radius:8px;border:3px solid var(--ink);margin:0 -14px;box-shadow:0 4px 0 rgba(0,0,0,.25)}
-.tc-teamcards img:nth-child(1){transform:rotate(-8deg)}.tc-teamcards img:nth-child(3){transform:rotate(8deg)}.tc-teamcards img:nth-child(2){position:relative;z-index:1;transform:translateY(-6px)}
+.tc-tcw{position:relative;display:block;margin:0 -14px}.tc-teamcards .tc-tcw img{margin:0;display:block}
+.tc-teamcards .tc-tcw:nth-child(1){transform:rotate(-8deg)}.tc-teamcards .tc-tcw:nth-child(3){transform:rotate(8deg)}.tc-teamcards .tc-tcw:nth-child(2){z-index:1;transform:translateY(-6px)}
 .tc-team:active{transform:translateY(4px)}
 /* win */
 .tc-wincards{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:12px 0}
@@ -698,7 +699,7 @@ body.game-mode main{max-width:1100px;padding-top:10px}
   .tc-teams{gap:10px}
   .tc-team{font-size:22px;padding:12px 6px;min-width:0}
   .tc-teamname{text-align:center;overflow-wrap:anywhere}
-  .tc-teamcards img{width:min(17vw,80px);margin:0 -8px}
+  .tc-teamcards img{width:min(17vw,80px)}.tc-tcw{margin:0 -8px}
 }
 @media (max-width:600px){.tc-hand{flex-wrap:wrap;overflow:visible;justify-content:center;--hw:clamp(70px,22vw,96px)}}
 @media (max-width:600px){
@@ -731,3 +732,40 @@ body.game-mode main{max-width:1100px;padding-top:10px}
   .mt-ptext{align-items:center}.mt-pbest{align-self:center}
   .mt-pava{width:min(56vw,220px)}
 }
+
+/* ===== 🔍 Card Battle School: tap the magnifier to read a card big ===== */
+.tc-zoom{position:absolute;z-index:3;width:36px;height:36px;border-radius:50%;background:#fff;border:3px solid var(--ink);box-shadow:0 2px 0 rgba(0,0,0,.3);
+  display:grid;place-items:center;cursor:zoom-in;touch-action:manipulation}
+.tc-zoom::before{content:"🔍";font-size:18px;line-height:1}
+.tc-zoom::after{content:"";position:absolute;inset:-8px}           /* bigger tap area than it looks */
+.tc-mon .tc-zoom{right:-10px;top:52%}
+.tc-mon.sm .tc-zoom{width:30px;height:30px;right:-8px}.tc-mon.sm .tc-zoom::before{font-size:15px}
+.tc-hc .tc-zoom{right:-8px;top:-8px}
+.tc-tcw .tc-zoom{right:-4px;top:-10px;width:32px;height:32px}.tc-tcw:first-child .tc-zoom{right:auto;left:-4px}.tc-tcw .tc-zoom::before{font-size:16px}
+.tc-zoom:active{transform:scale(.9)}
+.tc-zoomwrap{z-index:60;padding:10px;align-items:center}
+.tc-zbox{position:relative;background:#fff8dc;border:6px solid var(--ink);border-radius:28px;padding:14px 16px 18px;width:100%;max-width:640px;max-height:calc(100dvh - 20px);
+  overflow:auto;box-shadow:0 10px 0 rgba(0,0,0,.3);animation:fgpop .4s;font-size:20px;line-height:1.3;text-align:left;color:var(--ink)}
+.tc-zbox.isex{background:linear-gradient(160deg,#fffbe6,#ffe9a3)}
+.tc-zclose{display:block;margin:0 0 10px auto;min-height:52px;padding:6px 20px;border-radius:999px;border:4px solid var(--ink);background:var(--red,#e3350d);color:#fff;font-weight:900;font-size:22px}
+.tc-zgrid{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;justify-items:center}
+.tc-zimg{display:block;max-height:30dvh;max-width:70%;width:auto;height:auto;border-radius:12px;border:4px solid var(--ink);box-shadow:0 5px 0 rgba(0,0,0,.25)}
+.tc-zimg.isex{box-shadow:0 0 0 4px #ffd94a,0 0 18px 5px rgba(255,196,40,.8)}
+.tc-ztext{width:100%;min-width:0}
+.tc-zhead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 12px}
+.tc-zname{font-size:30px;line-height:1.1;font-weight:900;overflow-wrap:anywhere}
+.tc-zhp{font-size:24px;font-weight:900;color:#c21807;white-space:nowrap}
+.tc-ztext p{margin:6px 0}
+.tc-zline,.tc-zfrom{font-weight:800}
+.tc-zex{background:#fff3b0;border:3px solid #9a6b00;border-radius:14px;padding:6px 10px}
+.tc-zatk{background:#fff;border:3px solid var(--ink);border-radius:16px;padding:8px 12px;margin:10px 0}
+.tc-zatop{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tc-zcost{display:flex;gap:3px}.tc-zbox .tc-e{width:34px;height:34px;font-size:20px;font-style:normal}
+.tc-zan{flex:1 1 auto;font-size:24px;font-weight:900;min-width:0;overflow-wrap:anywhere}
+.tc-zdmg{font-size:28px;font-weight:900}
+.tc-zfoot{display:flex;flex-wrap:wrap;gap:6px 16px;font-weight:800;border-top:3px dashed rgba(0,0,0,.25);padding-top:8px;margin-top:6px}
+@media (min-width:700px){.tc-zbox{font-size:24px;padding:18px 24px 24px}.tc-zname{font-size:38px}.tc-zhp{font-size:30px}.tc-zan{font-size:28px}.tc-zdmg{font-size:34px}.tc-zbox .tc-e{width:40px;height:40px;font-size:24px}
+  .tc-zimg{max-height:38dvh}}
+@media (orientation:landscape) and (min-width:900px){.tc-zbox{max-width:1020px}.tc-zgrid{grid-template-columns:minmax(0,5fr) minmax(0,7fr);align-items:start}
+  .tc-zimg{max-height:calc(100dvh - 140px);max-width:100%}}
+@media (prefers-reduced-motion:reduce){.tc-zbox{animation:none}}
