@@ -527,6 +527,7 @@ function route() {
     case 'cards': return cardsPage();
     case 'music': return musicPage();
     case 'trainer': setTitle('🏅 Trainer'); return window.Trainer ? window.Trainer.profilePage($app, p[1]) : home();
+    case 'collection': setTitle('📚 Collection'); return window.Trainer && window.Trainer.collectionPage ? window.Trainer.collectionPage($app, p[1], p[2]) : home();
     case 'leaderboard': setTitle('🏆 Leaderboard'); return window.Trainer ? window.Trainer.leaderboardPage($app) : home();
     case 'binder': return binder(+p[1] || 0, +p[2] || 1);
     case 'sets': return sets();

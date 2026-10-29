@@ -4,7 +4,7 @@ B='http://localhost:8765/'
 with sync_playwright() as p:
   b=p.chromium.launch(executable_path='/usr/bin/google-chrome'); ctx=b.new_context(viewport={'width':820,'height':1180})
   pg=ctx.new_page(); errs=[]; pg.on('pageerror',lambda e: errs.append(str(e)))
-  pg.add_init_script("""window._said=[];window._sfx=[];(()=>{const o=speechSynthesis.speak.bind(speechSynthesis);speechSynthesis.speak=u=>{window._said.push(u.text);o(u);};})();
+  pg.add_init_script("""window.FG_NO_AUTO_PACKS=1;window._said=[];window._sfx=[];(()=>{const o=speechSynthesis.speak.bind(speechSynthesis);speechSynthesis.speak=u=>{window._said.push(u.text);o(u);};})();
     try{if(location.protocol.startsWith('http')&&!sessionStorage.getItem('seeded')){sessionStorage.setItem('seeded',1);localStorage.clear();localStorage.setItem('fg.trivBest.little','5');localStorage.setItem('fg.trivBest.big','8');localStorage.setItem('fg.trivBest.master','9');localStorage.setItem('fg.trivMaster','1');}}catch(e){}""")
   pg.goto(B+'#/games'); pg.wait_for_timeout(1200)
   K="FentonGames.kit"
@@ -60,7 +60,7 @@ with sync_playwright() as p:
   pg.evaluate("s => { localStorage.setItem('fg.trainers', s); Trainer._reload(); }", _j.dumps(old))
   got = pg.evaluate("['little','big'].map(k => { const p = Trainer.get(k); return [p.name, p.xp, Object.keys(p.badges).join(), JSON.stringify(p.best)]; })")
   print('migrated old save:', got, 'v', pg.evaluate("JSON.parse(localStorage.getItem('fg.trainers')).v"))
-  assert got[0][:2] == ['Harper', 123] and got[1][:2] == ['Carter', 456] and got[0][2] == 'first' and got[1][2] == 'tricky'
+  assert got[0][:2] == ['Harper', 123] and got[1][:2] == ['Carter', 456] and 'first' in got[0][2].split(',') and 'tricky' in got[1][2].split(',')
   old['profiles']['little']['name'] = 'Harpy'; old['v'] = 1
   pg.evaluate("s => { localStorage.setItem('fg.trainers', s); Trainer._reload(); }", _j.dumps(old))
   print('a typed-in name is kept:', pg.evaluate("Trainer.get('little').name")); assert pg.evaluate("Trainer.get('little').name") == 'Harpy'

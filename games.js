@@ -420,7 +420,7 @@ function menu() {
         <span class="fg-pickname">Pokémon Math</span><span class="fg-picksub">${math ? 'count and add' : 'coming soon'}</span></a>
       <a class="fg-pick gold" href="#/leaderboard" data-say="Our trainers!">
         <span class="fg-pickart lbpick"><span>🏆</span><span>🏅</span></span>
-        <span class="fg-pickname">Trainers &amp; Badges</span><span class="fg-picksub">levels and best scores</span></a>
+        <span class="fg-pickname">Trainers &amp; Badges</span><span class="fg-picksub">badges, packs, scores</span></a>
     </div></div>`;
   bindBar(); if (TR()) TR().bindWho($app);
   $app.querySelectorAll('[data-say]').forEach(a => a.addEventListener('click', () => { SFX.tap(); say(a.dataset.say, 'line'); }));
@@ -523,7 +523,7 @@ function answer(b) {
     W.tries++; b.disabled = true; SFX.aww(); b.classList.remove('wiggle'); void b.offsetWidth; b.classList.add('wiggle');
     later(() => b.classList.add('gone'), 450);
     loseStar(); say(pickFresh(['Oops! Try again!', 'Not that one! Try again!', 'Hmm, try another one!']), 'result');
-    if (curP()) TR().answer(curP(), false); return;
+    if (curP()) TR().answer(curP(), false, 'who'); return;
   }
   W.solved = true; W.stars++;
   document.getElementById('fg').querySelector('.fg-q').classList.add('solved');
@@ -534,7 +534,7 @@ function answer(b) {
   document.getElementById('whoText').innerHTML = `${W.cheer} It's <b>${NAME[W.ans]}</b>!${big ? ` ${W.stars} stars! 🎉` : ''}`;
   if (big) SFX.win(); else SFX.match();
   say(W.cheer + " It's " + spoken(W.ans) + '!' + (big ? ` ${W.stars} stars!` : ''), 'result'); confetti(big ? 140 : 60);
-  const p = curP(); if (p) { const T = TR(); T.answer(p, W.tries === 0); T.recordScore(p, 'who', W.stars); if (big) T.recordWin(p, 'who'); T.addXP(p, W.tries === 0 ? 5 : 3, 'who'); }
+  const p = curP(); if (p) { const T = TR(); T.answer(p, W.tries === 0, 'who'); T.recordScore(p, 'who', W.stars); if (big) T.recordWin(p, 'who'); T.addXP(p, W.tries === 0 ? 5 : 3, 'who'); }
   document.getElementById('whoNext').hidden = false;
 }
 

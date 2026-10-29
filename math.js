@@ -435,7 +435,7 @@ function answer(v, btn) {
     if (S.miss >= 2) { S.miss = 0; levelMsg = levelDown(); }
   }
   stars(right);
-  try { if (window.Trainer && window.Trainer.answer) window.Trainer.answer(S.who, right); } catch (e) {}
+  try { if (window.Trainer && window.Trainer.answer) window.Trainer.answer(S.who, right, 'math'); } catch (e) {}
   const buddy = document.getElementById('mtBuddy'), sk = document.getElementById('mtStreak');
   if (sk) sk.textContent = '🔥' + S.streak;
   const after = document.getElementById('mtAfter');

@@ -19,7 +19,7 @@ with sync_playwright() as p:
     b=p.chromium.launch(executable_path='/usr/bin/google-chrome'); ctx=b.new_context(viewport={'width':820,'height':1180},is_mobile=True,has_touch=True)
     pg=ctx.new_page(); pg.on('pageerror',lambda e:errors.append(str(e))); pg.on('console',lambda m:m.type=='error' and errors.append(m.text))
     # iOS-like: voices empty at load, then arrive via voiceschanged
-    pg.add_init_script("""
+    pg.add_init_script("""window.FG_NO_AUTO_PACKS=1;
       window._said=[]; let vs=[];
       const mk=(n,l,d)=>{const v=Object.create(SpeechSynthesisVoice.prototype);Object.defineProperties(v,{name:{value:n},lang:{value:l},default:{value:!!d},voiceURI:{value:n},localService:{value:true}});return v;};
       speechSynthesis.getVoices=()=>vs;

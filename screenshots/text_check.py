@@ -119,6 +119,12 @@ SCREENS = [
   ('cards', '#/cards', '', 600), ('value', '#/value', '', 800), ('music page', '#/music', '', 600),
   ('music sheet', '#/games', "FentonGames.kit.openMusic()", 600), ('talk sheet', '#/games', "FentonGames.kit.openTalk()", 600),
   ('trainer', '#/trainer/little', '', 600), ('leaderboard', '#/leaderboard', '', 600),
+  ('pack closed', '#/trainer/big', "const S=Trainer._test.S(), p=S.profiles.big; p.pending=[{k:'tier',t:'explore',tier:3,cards:[{no:25,n:'Pikachu',r:'C',sh:0,c:1,isNew:true}]}]; Trainer._test.reveal('big');", 900),
+  ('pack tier', '#/trainer/big', "const S=Trainer._test.S(), p=S.profiles.little; p.pending=[{k:'tier',t:'right',tier:2,cards:[{no:6,n:'Charizard',r:'R',sh:0,c:3,isNew:false}]},{k:'tier',t:'plays',tier:1,cards:[{no:1,n:'Bulbasaur',r:'C',sh:0,c:1,isNew:true}]},{k:'tier',t:'who',tier:1,cards:[{no:7,n:'Squirtle',r:'C',sh:0,c:1,isNew:true}]}]; Trainer._test.reveal('little');setTimeout(()=>document.getElementById('trPack').click(),300);", 3200),
+  ('pack legend', '#/trainer/big', "const S=Trainer._test.S(), p=S.profiles.big; p.pending=[{k:'tier',t:'first',tier:7,cards:[{no:888,n:'Zacian',r:'L',sh:1,c:1,isNew:true}],title:'Pokémon Master ★3',color:'Galaxy'}]; Trainer._test.reveal('big');setTimeout(()=>document.getElementById('trPack').click(),300);", 3200),
+  ('pack secret', '#/trainer/big', "const S=Trainer._test.S(), p=S.profiles.little; p.pending=[{k:'secret',s:'rainbow',cards:[{no:1008,n:'Fletchinder',r:'C',sh:0,c:1,isNew:true}]}]; Trainer._test.reveal('little');setTimeout(()=>document.getElementById('trPack').click(),300);", 3200),
+  ('pack welcome', '#/trainer/big', "const S=Trainer._test.S(), p=S.profiles.big; p.pending=[{k:'welcome',cards:Trainer.DEX.slice(140,151).map(d=>({no:d.no,n:d.n,r:d.r,sh:d.no%5==0?1:0,c:1,isNew:true}))}]; Trainer._test.reveal('big');setTimeout(()=>document.getElementById('trPack').click(),300);", 4600),
+  ('collection mine', '#/collection/big', '', 1200), ('collection gen', '#/collection/little', "document.querySelector('[data-tab=\"0\"]').click()", 1200),
   ('binder', '#/binder/0/1', '', 900), ('sets', '#/sets', '', 600), ('set', '#/set/0/need', '', 900), ('wish', '#/wish', '', 900),
   ('top', '#/top', '', 900), ('movers', '#/movers', '', 900), ('grading', '#/grading', '', 900), ('opened', '#/opened', '', 900),
   ('search', '#/search/pika', '', 900),
@@ -134,7 +140,7 @@ async def main():
         for (w, h) in views:
             ctx = await b.new_context(viewport={'width': w, 'height': h}, device_scale_factor=1, has_touch=True)
             pg = await ctx.new_page()
-            await pg.add_init_script("try{localStorage.setItem('fg.mute','1')}catch(e){}")
+            await pg.add_init_script("try{localStorage.setItem('fg.mute','1')}catch(e){} window.FG_NO_AUTO_PACKS=1;")
             for label, route, js, wait in SCREENS:
                 if only and not any(o in label for o in only): continue
                 await pg.goto('about:blank'); await pg.goto(BASE + route); await pg.wait_for_timeout(500)

@@ -556,7 +556,7 @@ function answer(b) {
   // Normal: the praise / "It's true" result + the fun fact once; Chatty: everything
   const fact = forEar(q.f), head = forEar(T.after.slice(0, T.after.length - q.f.length).trim());
   K().say([[head, 'result'], [fact, 'line']]); K().line(forEar(T.after));
-  const pid = trainerFor(who); if (pid) TRN().answer(pid, right);
+  const pid = trainerFor(who); if (pid) TRN().answer(pid, right, 'trivia');
   K().later(() => { const n = document.getElementById('tvNext'); if (n) n.classList.add('want'); }, 900);
 }
 const trainerFor = who => !TRN() ? null : who === 'master' ? TRN().current() : TRN().get(who) ? who : null;
@@ -608,6 +608,8 @@ function finish() {
     R.recordScore(pid, k === 'master' ? 'triviaMaster' : 'trivia', n);
     if (k === 'master' && n >= 7) R.award(pid, 'master');
     if (n >= (T.mode === 'turns' ? 3 : 6)) R.recordWin(pid, k === 'master' ? 'triviaMaster' : 'trivia');
+    const mine = T.qs.map((x, i) => [x.who, T.res[i]]).filter(x => x[0] === k);          // 💯 every question right = a Perfect Round
+    if (mine.length && mine.every(x => x[1]) && R.event) R.event(pid, 'perfect');
     R.addXP(pid, 3 * n + 5, 'trivia'); });
   document.getElementById('tvAgain').onclick = () => begin(T.mode);
   document.getElementById('tvWho').onclick = () => { K().SFX.tap(); picker(); };

@@ -10,7 +10,7 @@ with sync_playwright() as p:
     for name,vp in [('portrait',{'width':820,'height':1180}),('landscape',{'width':1180,'height':820})]:
         ctx=b.new_context(viewport=vp,device_scale_factor=2,is_mobile=True,has_touch=True); pg=ctx.new_page()
         pg.on('console', lambda m: m.type=='error' and errors.append(m.text)); pg.on('pageerror', lambda e: errors.append(str(e)))
-        pg.add_init_script("window._said=[];(()=>{const o=speechSynthesis.speak.bind(speechSynthesis);speechSynthesis.speak=u=>{window._said.push(u.text);o(u);};})()")
+        pg.add_init_script("window.FG_NO_AUTO_PACKS=1;window._said=[];(()=>{const o=speechSynthesis.speak.bind(speechSynthesis);speechSynthesis.speak=u=>{window._said.push(u.text);o(u);};})()")
         pg.goto(BASE+'#/games/who'); pg.wait_for_selector('.fg-opt'); pg.wait_for_timeout(500)
         for mode in ['0','1']:
             pg.click(f'[data-names="{mode}"]'); pg.wait_for_timeout(500)
