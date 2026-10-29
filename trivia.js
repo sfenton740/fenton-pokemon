@@ -352,7 +352,7 @@ const BANK = [
   {l: 'm', q: "Ash's Pikachu finally evolved into Raichu at the end of the anime.", a: false, p: 'a:me55-23', f: "Ash's Pikachu never evolved. It stayed a Pikachu the whole way!"},
 ];
 const TIER = {little: 'e', big: 'h', master: 'm'};
-const P = {little: {name: 'Little Trainer', art: 'me55-23', em: '⚡'}, big: {name: 'Big Trainer', art: 'tcg-714372', em: '🔥'},
+const P = {little: {name: 'Harper', art: 'me55-23', em: '⚡'}, big: {name: 'Carter', art: 'tcg-714372', em: '🔥'},
   master: {name: 'Master Trainer', art: 'me55-63', em: '👑'}};
 const cheer = () => K().cheer();                 // varied praise, never the same one back-to-back
 const TRN = () => window.Trainer || null;
@@ -425,7 +425,7 @@ function picker(quiet) {
   const old = document.getElementById('tvSecret'); if (old) old.remove();
   const tile = k => `<button class="tv-player ${k}" data-mode="${k}" aria-label="${P[k].name}">
       <span class="tv-pava"><img src="${ART(P[k].art)}" alt="" draggable="false"></span>
-      <span class="tv-pname">${P[k].name}</span><span class="tv-psub">${k === 'little' ? 'easy questions' : 'harder questions'}</span>
+      <span class="tv-pname">${P[k].name}</span><span class="tv-psub">${k === 'little' ? '🐣 Little Trainer · easy' : '🔥 Big Trainer · harder'}</span>
       ${lvl(k)}<span class="tv-best">🏆 Best: <b>${best(k)}</b> ⭐</span></button>`;
   K().frame('Pokémon Trivia', `<div class="tv-pick">
       <div class="tv-title" id="tvTitle"><span class="fg-bounce">❓</span> Pokémon Trivia! <span class="fg-bounce d2">⭐</span></div>

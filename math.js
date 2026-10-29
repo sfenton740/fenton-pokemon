@@ -309,6 +309,8 @@ const MODES = {little: {name: 'Little Trainer', who: 'little', art: 'me55-23', a
   big: {name: 'Big Trainer', who: 'big', art: 'tcg-714372', age: 'ages 6+', cls: 'big'},
   champ: {name: 'Champion', who: 'big', art: 'me55-63', age: 'hard mix', cls: 'champ'}};
 const ROUND = 10;
+// the kid who usually plays each mode (Harper = Little Trainer, Carter = Big Trainer / Champion), from their Trainer profile
+const kid = m => { const id = MODES[m].who; try { const p = window.Trainer && Trainer.get(id); if (p && p.name) return p.name; } catch (e) {} return id === 'little' ? 'Harper' : 'Carter'; };
 // evolving buddy: Charmander -> Charmeleon -> Charizard (cards from Card Battle School)
 const BUDDY = [{id: 'base1-46', n: 'Charmander'}, {id: 'base1-24', n: 'Charmeleon'}, {id: 'tcg-714372', n: 'Charizard'}];
 const stageFor = s => s >= 6 ? 2 : s >= 3 ? 1 : 0;
@@ -346,7 +348,7 @@ function picker(quiet) {
   const tile = m => { const M = MODES[m], L = LEVELS[m][lvlOf(m)];
     return `<button class="mt-player ${M.cls}" data-mode="${m}" aria-label="${M.name}">
       <span class="mt-pava"><img src="${ART(M.art)}" alt="" draggable="false">${m === 'champ' ? `<i aria-hidden="true">👑</i>` : ''}</span>
-      <span class="mt-ptext"><span class="mt-pname">${M.name}</span><span class="mt-psub">${M.age} · ${L.em} ${L.name}</span>
+      <span class="mt-ptext"><span class="mt-pname">${M.name}</span><span class="mt-psub">${m === 'champ' ? kid(m) + ' or a grown-up' : kid(m)} · ${M.age} · ${L.em} ${L.name}</span>
       <span class="mt-pbest">🏆 Best <b>${bestOf(m)}</b> ⭐ · Level <b>${lvlOf(m) + 1}</b>/${LEVELS[m].length}</span>
       ${m === 'champ' && !champUnlocked() ? '<span class="mt-plock">Earn the crown in Big Trainer, or try it now!</span>' : ''}</span></button>`; };
   K().frame('Pokémon Math', `<div class="mt-pick">
@@ -354,13 +356,13 @@ function picker(quiet) {
       <div class="mt-hello">Who's playing?</div>
       <div class="mt-players">${tile('little')}${tile('big')}${tile('champ')}</div></div>`, '<div class="mt-barfill"></div>');
   document.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => begin(b.dataset.mode));
-  if (!quiet && talk() !== 'quiet') speak([["Pokémon Math! Who's playing? Pikachu is the Little Trainer. Charizard is the Big Trainer. Mewtwo is the Champion!", 'line']]);
+  if (!quiet && talk() !== 'quiet') speak([[`Pokémon Math! Who's playing? ${kid('little')} is the Little Trainer. ${kid('big')} is the Big Trainer. Mewtwo is the Champion!`, 'line']]);
 }
 function begin(mode) {
   K().clearTimers(); K().SFX.match(); closeOverlays();
   S = {mode, who: MODES[mode].who, lvl: lvlOf(mode), i: 0, stars: 0, res: [], run: 0, miss: 0, streak: 0, bestStreak: 0, stage: 0, told: {}, lvUps: 0, unlockedNow: false, startLvl: lvlOf(mode)};
   recent = [];
-  show(`Let's go, ${MODES[mode].name}!`);
+  show(mode === 'champ' ? `Let's go, Champion!` : `Let's go, ${kid(mode)}!`);
 }
 function bar() {
   const L = LEVELS[S.mode][S.lvl], b = BUDDY[S.stage];

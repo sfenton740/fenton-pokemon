@@ -682,3 +682,52 @@ body.game-mode main{max-width:1100px;padding-top:10px}
 .tc-wk{font-size:18px;line-height:24px;padding:0 6px}
 .tc-proftip{font-size:18px}
 .tc-level button{font-size:22px}
+
+/* ===== Phones (< 600px wide): the game's mode switch gets its own row, icons a little smaller ===== */
+@media (max-width:600px){
+  .fg-bar{gap:8px}
+  .fg-icon{width:54px;height:54px;flex-basis:54px;font-size:27px}
+  .fg-seg{order:10;flex:1 1 100%;min-width:0}
+  .fg-seg button{min-width:0;padding:4px 2px;line-height:1.05;text-align:center}
+}
+@media (max-width:600px){
+  .fg-seg button{flex-direction:column;gap:0;min-height:66px}
+  .fg-seg button .fg-em{font-size:24px;line-height:1}
+  .tc{grid-template-columns:minmax(0,1fr)}
+  .tc>*{min-width:0}
+  .tc-teams{gap:10px}
+  .tc-team{font-size:22px;padding:12px 6px;min-width:0}
+  .tc-teamname{text-align:center;overflow-wrap:anywhere}
+  .tc-teamcards img{width:min(17vw,80px);margin:0 -8px}
+}
+@media (max-width:600px){.tc-hand{flex-wrap:wrap;overflow:visible;justify-content:center;--hw:clamp(70px,22vw,96px)}}
+@media (max-width:600px){
+  .fg-menu{grid-template-columns:minmax(0,1fr)}
+  .fg-pick{min-width:0}
+  .tcgpick{gap:10px}.tcgpick img{width:min(28vw,110px)}.tcgpick .vs{font-size:34px}
+  .fg-tracks{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+  .fg-track{min-width:0;padding:8px 10px;gap:6px}.fg-track .fg-tem{font-size:28px}
+  .fg-track b{overflow-wrap:anywhere}
+  .fg-winbox{padding:18px 14px 20px}
+  .fg-pikas{font-size:40px;gap:8px}.fg-pikas img{width:min(36vw,150px);height:auto;aspect-ratio:15/11}
+  .tv-winbox .fg-big{font-size:clamp(30px,9vw,58px)}
+  .tv-orow,.tv-orow.big{font-size:min(6.6vw,30px);letter-spacing:0;overflow-wrap:anywhere}
+  .tc-winbtns{flex-wrap:wrap}
+  .tc-winbtns>*{min-width:0;max-width:100%}
+}
+@media (max-width:600px){
+  .fg-bar.hub .fg-hello{font-size:clamp(28px,8.4vw,40px);white-space:nowrap}
+  .fg-bar.hub .fg-hello .fg-bounce{display:none}
+  .tr-who{gap:8px}
+  .tr-wholbl{flex:1 1 100%;text-align:center;font-size:22px}
+  .tr-chip{gap:6px;padding:4px 12px 4px 4px;min-width:0}
+}
+@media (max-width:600px){.fg-bar.hub .fg-hello{order:-1;flex:1 1 100%;text-align:center}}
+@media (max-width:600px){.fg-bar.hub{justify-content:flex-end}.fg-bar.hub>a.fg-icon{margin-right:auto}}
+/* Pokémon Math picker on phones (rules live here so math.css stays the Math game's own) */
+@media (max-width:600px){
+  .mt-title{font-size:clamp(28px,8.6vw,34px)}.mt-title .fg-bounce{display:none}
+  .mt-player{flex-direction:column;text-align:center;gap:10px;padding:14px 12px}
+  .mt-ptext{align-items:center}.mt-pbest{align-self:center}
+  .mt-pava{width:min(56vw,220px)}
+}

@@ -1,12 +1,16 @@
-"""Automated text-size / overlap / clipping check for every page and game screen at the three iPad sizes.
+"""Automated text-size / overlap / clipping / overflow check for every page and game screen at three phone and three iPad sizes.
    Rules: body text >= 18px, the main text of every button >= 22px, no two pieces of text overlapping,
-   no text clipped by its box or cut off the screen, no sideways scrolling.
+   no text clipped by its box or cut off the screen, no text or picture spilling out of the tile/card/button it sits in,
+   no element wider than the screen, no sideways scrolling.
+   Run one size or screen: python3 screenshots/text_check.py 412x915 home
    Run: python3 screenshots/text_check.py   (site served on http://localhost:8765)   -> exit 1 if anything is found."""
 import asyncio, json, sys
 from playwright.async_api import async_playwright
 
 BASE = 'http://localhost:8765/'
-VIEWS = [(820, 1180), (1180, 820), (1024, 1366)]
+PHONES = [(360, 780), (390, 844), (412, 915)]
+PADS = [(820, 1180), (1180, 820), (1024, 1366)]
+VIEWS = PHONES + PADS
 MIN_TEXT, MIN_BTN = 18, 22
 
 CHECK_JS = r"""
@@ -79,6 +83,19 @@ CHECK_JS = r"""
     }
     if (it.el.scrollWidth > it.el.clientWidth + 2 && getComputedStyle(it.el).textOverflow === 'ellipsis') out.push({k: 'ellipsis', el: name(it.el), t: it.t.slice(0, 40)});
   }
+  // 4) spill: text or a picture sticking out of the nearest box it sits in (a tile, card, button, panel with a border or background)
+  const boxy = e => { const cs = getComputedStyle(e); if (cs.display.startsWith('inline') && cs.display !== 'inline-block' && cs.display !== 'inline-flex' && cs.display !== 'inline-grid') return false;
+    return parseFloat(cs.borderLeftWidth) > 0 || parseFloat(cs.borderTopWidth) > 0 || (cs.backgroundColor !== 'rgba(0, 0, 0, 0)' && cs.backgroundColor !== 'transparent') || cs.backgroundImage !== 'none'; };
+  const boxOf = el => { for (let e = el; e && e !== document.body; e = e.parentElement) {
+      const cs = getComputedStyle(e); if (e !== el && boxy(e)) return e; if (cs.position === 'absolute' || cs.position === 'fixed') return null; } return null; };
+  const spill = (el, rects, t) => { const bx = boxOf(el); if (!bx) return; const c = bx.getBoundingClientRect(); if (c.width < 2) return;
+    for (const r of rects) if (r.left < c.left - 2 || r.right > c.right + 2) { out.push({k: 'spill', el: name(el) + ' out of ' + name(bx), t, px: Math.round(Math.max(c.left - r.left, r.right - c.right))}); return; } };
+  for (const it of items) if (it.words && !it.el.closest('header')) spill(it.el, it.rects, it.t.slice(0, 40));
+  for (const im of document.querySelectorAll('img')) { if (skip(im) || !vis(im)) continue; const r = im.getBoundingClientRect(); if (r.width < 4) continue; spill(im, [r], 'img ' + (im.alt || '').slice(0, 30)); }
+  // 5) anything (not deliberately moving) wider than the screen
+  for (const e of document.querySelectorAll('body *')) { if (skip(e) || e.closest('.ticker-strip,.ticker-wrap,.fg-confetti,.tr-rays')) continue; const r = e.getBoundingClientRect();
+    if (r.width > 2 && (r.right > W + 2 || r.left < -2) && getComputedStyle(e).position !== 'fixed' && vis(e)) { let sc = false; for (let a = e.parentElement; a && a !== document.body; a = a.parentElement) { const cs = getComputedStyle(a); if (/(auto|scroll|hidden|clip)/.test(cs.overflowX)) { sc = true; break; } }
+      if (!sc) { out.push({k: 'wide', el: name(e), t: Math.round(r.left) + '..' + Math.round(r.right) + ' of ' + W}); } } }
   if (document.documentElement.scrollWidth > W + 1) out.push({k: 'hscroll', el: 'page', t: document.documentElement.scrollWidth + ' > ' + W});
   return out;
 };
@@ -105,11 +122,13 @@ SCREENS = [
 ]
 
 async def main():
-    only = sys.argv[1:]
+    args = sys.argv[1:]
+    views = [tuple(map(int, a.split('x'))) for a in args if 'x' in a and a.replace('x', '').isdigit()] or VIEWS
+    only = [a for a in args if not ('x' in a and a.replace('x', '').isdigit())]
     found = 0
     async with async_playwright() as p:
         b = await p.chromium.launch(executable_path='/usr/bin/google-chrome')
-        for (w, h) in VIEWS:
+        for (w, h) in views:
             ctx = await b.new_context(viewport={'width': w, 'height': h}, device_scale_factor=1, has_touch=True)
             pg = await ctx.new_page()
             await pg.add_init_script("try{localStorage.setItem('fg.mute','1')}catch(e){}")
@@ -124,7 +143,7 @@ async def main():
                     key = (r['k'], r['el'], r['t'])
                     if key in seen: continue
                     seen.add(key); found += 1
-                    print(f"{w}x{h} {label:16} {r['k']:9} {r['el']}  '{r['t']}'" + (f" {r['fs']}px" if 'fs' in r else ''))
+                    print(f"{w}x{h} {label:16} {r['k']:9} {r['el']}  '{r['t']}'" + (f" {r['fs']}px" if 'fs' in r else '') + (f" by {r['px']}px" if 'px' in r else ''))
             await ctx.close()
         await b.close()
     print('PROBLEMS:', found)

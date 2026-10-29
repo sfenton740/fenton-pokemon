@@ -218,3 +218,22 @@ body.modal-open{position:fixed;left:0;right:0;overflow:hidden;width:100%}
 .row .nm{font-size:22px}
 .row .rt{font-size:22px}
 .mv-sort button{font-size:22px}
+
+/* ===== Phones (< 600px wide): header title wraps instead of being cut, home tiles become full-width rows ===== */
+@media (max-width:600px){
+  header{gap:8px;padding-left:10px;padding-right:10px}
+  .brand{font-size:clamp(19px,5.6vw,24px);gap:8px}
+  .brand span#title{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.1;overflow-wrap:anywhere}
+  .hbtn{width:46px;height:46px;flex-basis:46px;font-size:22px}
+  .h-tiles{grid-template-columns:1fr;gap:12px}
+  .h-tile{min-height:92px;padding:12px 16px;gap:14px;border-radius:26px}
+  .h-ico{font-size:clamp(40px,12vw,50px);flex:0 0 auto}
+  .h-txt b{font-size:clamp(24px,7.4vw,30px);overflow-wrap:anywhere}
+  .h-tile.games{min-height:120px}
+  .h-tile.games .h-ico{font-size:clamp(48px,14vw,60px)}.h-tile.games b{font-size:clamp(30px,9vw,38px)}
+  .h-val .big{font-size:clamp(32px,10vw,44px)}
+}
+@media (max-width:600px){
+  /* card names wrap onto as many lines as they need instead of being cut off */
+  .cell .cap{display:block;-webkit-line-clamp:unset;overflow:visible;overflow-wrap:anywhere;hyphens:auto}
+}

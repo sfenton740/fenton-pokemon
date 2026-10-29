@@ -395,6 +395,8 @@ function frame(title, inner, bar) {
 /* ---------- menu ---------- */
 const TR = () => window.Trainer || null;
 const curP = () => TR() ? TR().current() : null;
+// game settings are remembered per kid; first time, Harper (little) gets the easy mode and Carter (big) the harder one
+const kidPref = (key, v) => { const id = curP() || 'little'; if (v != null) return store(key + '.' + id, v); const x = store(key + '.' + id); return x != null ? x : id === 'big' ? '1' : '0'; };
 function menu() {
   const pika = 'me55-23', math = !!window.FentonMath;
   $app.innerHTML = `<div class="fg fg-hub" id="fg">
@@ -433,7 +435,7 @@ function mathSoon() {                              // placeholder until the Math
 /* ---------- Memory Match ---------- */
 let M = null;
 function memory() {
-  const hard = store('memHard') === '1', pairs = hard ? 6 : 3;
+  const hard = kidPref('memHard') === '1', pairs = hard ? 6 : 3;
   const pool = shuffle(MEM.filter(m => owned(m[0]))).slice(0, pairs);
   M = {hard, pairs, deck: shuffle([...pool, ...pool]).map((m, i) => ({i, id: m[0], name: m[1], up: false, done: false})), open: [], moves: 0, found: 0, lock: false};
   frame('Memory Match', `
@@ -444,7 +446,7 @@ function memory() {
       <button class="${hard ? '' : 'on'}" data-hard="0" aria-label="Easy, 6 cards">${balls(1)}<span>Easy</span></button>
       <button class="${hard ? 'on' : ''}" data-hard="1" aria-label="Hard, 12 cards">${balls(3)}<span>Hard</span></button></div>
      <div class="fg-moves" id="memMoves" ${hard ? '' : 'hidden'}>Moves <b>0</b></div>`);
-  document.querySelectorAll('[data-hard]').forEach(b => b.onclick = () => { SFX.tap(); store('memHard', b.dataset.hard); clearTimers(); memory(); });
+  document.querySelectorAll('[data-hard]').forEach(b => b.onclick = () => { SFX.tap(); kidPref('memHard', b.dataset.hard); clearTimers(); memory(); });
   document.getElementById('memGrid').addEventListener('click', e => { const b = e.target.closest('.fg-card'); if (b) flip(+b.dataset.i, b); });
   sizeGrid(); say("Let's go! Find two the same!", 'must');
 }
@@ -492,7 +494,7 @@ function memWin() {
 /* ---------- Who's That Pokémon? ---------- */
 let W = {stars: 0, deck: []};
 function who() {
-  const names = store('whoNames') === '1';
+  const names = kidPref('whoNames') === '1';
   if (!W.deck.length) W.deck = shuffle(WHO_IDS.filter(owned));
   const ans = W.deck.pop(), others = shuffle(WHO_IDS.filter(id => id !== ans && owned(id))).slice(0, 2), opts = shuffle([ans, ...others]);
   W.ans = ans; W.tries = 0; W.solved = false;
@@ -510,7 +512,7 @@ function who() {
       <button class="${names ? '' : 'on'}" data-names="0" aria-label="Pictures"><span class="fg-em">🖼️</span><span>Pictures</span></button>
       <button class="${names ? 'on' : ''}" data-names="1" aria-label="Big kid, names"><span class="fg-em">🔤</span><span>Big kid</span></button></div>
      <div class="fg-starbox" aria-label="${W.stars} stars"><span>⭐</span><b id="whoStars">${W.stars}</b></div>`);
-  document.querySelectorAll('[data-names]').forEach(b => b.onclick = () => { SFX.tap(); store('whoNames', b.dataset.names); W.deck.push(W.ans); clearTimers(); who(); });
+  document.querySelectorAll('[data-names]').forEach(b => b.onclick = () => { SFX.tap(); kidPref('whoNames', b.dataset.names); W.deck.push(W.ans); clearTimers(); who(); });
   document.getElementById('whoOpts').addEventListener('click', e => { const b = e.target.closest('.fg-opt'); if (b) answer(b); });
   document.getElementById('whoNext').onclick = () => { SFX.tap(); clearTimers(); who(); scrollTo(0, 0); };
   say("Who's that Pokémon?", 'must');

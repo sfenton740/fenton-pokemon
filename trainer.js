@@ -45,8 +45,10 @@ const GAMES = {
   tcg: {name: 'Card Battle wins', emoji: '⚔️', unit: 'wins', wins: true},
   math: {name: 'Math', emoji: '➕', unit: 'points'}
 };
-const DEFAULT = () => ({v: 1, current: 'little', profiles: {
-  little: blank('little', 'Little Trainer', 'pikachu'), big: blank('big', 'Big Trainer', 'charmander')}});
+// the two kids: Harper (age 4) plays the Little Trainer modes, Carter (age 6) the Big Trainer modes
+const KIDS = {little: 'Harper', big: 'Carter'};
+const DEFAULT = () => ({v: 2, current: 'little', profiles: {
+  little: blank('little', KIDS.little, 'pikachu'), big: blank('big', KIDS.big, 'charmander')}});
 function blank(id, name, partner) { return {id, name, partner, xp: 0, badges: {}, best: {}, wins: {}, plays: {}, days: [], lastDay: '', streak: 0, run: 0, bestRun: 0}; }
 
 /* ---------- save / load (+ move the old Trivia best scores in, once) ---------- */
@@ -56,6 +58,10 @@ function load() {
   if (!s || !s.profiles) { s = DEFAULT(); migrate(s); save(s); }
   Object.values(s.profiles).forEach(p => { const b = blank(p.id, p.name, p.partner); for (const k in b) if (p[k] == null) p[k] = b[k]; if (!PARTNERS[p.partner]) p.partner = 'pikachu'; });
   if (!s.profiles[s.current]) s.current = Object.keys(s.profiles)[0];
+  // v1 -> v2: the old placeholder names become the kids' names (XP, badges and scores stay); a name someone typed in is kept
+  if ((s.v || 1) < 2) { const old = {little: 'Little Trainer', big: 'Big Trainer'};
+    for (const k in KIDS) { const p = s.profiles[k]; if (p && (!p.name || p.name === old[k])) p.name = KIDS[k]; }
+    s.v = 2; save(s); }
   return s;
 }
 function migrate(s) {                                  // old per-device Trivia bests -> each kid's profile

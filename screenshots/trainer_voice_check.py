@@ -5,7 +5,7 @@ with sync_playwright() as p:
   b=p.chromium.launch(executable_path='/usr/bin/google-chrome'); ctx=b.new_context(viewport={'width':820,'height':1180})
   pg=ctx.new_page(); errs=[]; pg.on('pageerror',lambda e: errs.append(str(e)))
   pg.add_init_script("""window._said=[];window._sfx=[];(()=>{const o=speechSynthesis.speak.bind(speechSynthesis);speechSynthesis.speak=u=>{window._said.push(u.text);o(u);};})();
-    if(!sessionStorage.getItem('seeded')){sessionStorage.setItem('seeded',1);localStorage.clear();localStorage.setItem('fg.trivBest.little','5');localStorage.setItem('fg.trivBest.big','8');localStorage.setItem('fg.trivBest.master','9');localStorage.setItem('fg.trivMaster','1');}""")
+    try{if(location.protocol.startsWith('http')&&!sessionStorage.getItem('seeded')){sessionStorage.setItem('seeded',1);localStorage.clear();localStorage.setItem('fg.trivBest.little','5');localStorage.setItem('fg.trivBest.big','8');localStorage.setItem('fg.trivBest.master','9');localStorage.setItem('fg.trivMaster','1');}}catch(e){}""")
   pg.goto(B+'#/games'); pg.wait_for_timeout(1200)
   K="FentonGames.kit"
   print('talk default:', pg.evaluate(f"{K}.talk()"))
@@ -50,5 +50,29 @@ with sync_playwright() as p:
   pg.on('dialog', lambda d: d.accept())
   pg.fill('#trPaste', code); pg.click('text=Load code'); pg.wait_for_timeout(800)
   print('after import little xp:', pg.evaluate(f"Trainer.get('little').xp"), 'badges', list(pg.evaluate("Trainer.get('little').badges").keys()))
+  # Harper / Carter: new installs get the kids' names; an old save (v1, placeholder names) is renamed and keeps its XP, badges, scores
+  print('new install names:', pg.evaluate("[Trainer.get('little').name, Trainer.get('big').name]"))
+  assert pg.evaluate("[Trainer.get('little').name, Trainer.get('big').name]") == ['Harper', 'Carter']
+  old = {'v': 1, 'current': 'big', 'profiles': {
+    'little': {'id': 'little', 'name': 'Little Trainer', 'partner': 'pikachu', 'xp': 123, 'badges': {'first': '2026-10-28'}, 'best': {'trivia': 7}, 'wins': {}, 'plays': {}, 'days': [], 'lastDay': '', 'streak': 0, 'run': 0, 'bestRun': 0},
+    'big': {'id': 'big', 'name': 'Big Trainer', 'partner': 'charmander', 'xp': 456, 'badges': {'tricky': '2026-10-28'}, 'best': {'memoryHard': 20}, 'wins': {'tcg': 2}, 'plays': {}, 'days': [], 'lastDay': '', 'streak': 0, 'run': 0, 'bestRun': 0}}}
+  import json as _j
+  pg.evaluate("s => { localStorage.setItem('fg.trainers', s); Trainer._reload(); }", _j.dumps(old))
+  got = pg.evaluate("['little','big'].map(k => { const p = Trainer.get(k); return [p.name, p.xp, Object.keys(p.badges).join(), JSON.stringify(p.best)]; })")
+  print('migrated old save:', got, 'v', pg.evaluate("JSON.parse(localStorage.getItem('fg.trainers')).v"))
+  assert got[0][:2] == ['Harper', 123] and got[1][:2] == ['Carter', 456] and got[0][2] == 'first' and got[1][2] == 'tricky'
+  old['profiles']['little']['name'] = 'Harpy'; old['v'] = 1
+  pg.evaluate("s => { localStorage.setItem('fg.trainers', s); Trainer._reload(); }", _j.dumps(old))
+  print('a typed-in name is kept:', pg.evaluate("Trainer.get('little').name")); assert pg.evaluate("Trainer.get('little').name") == 'Harpy'
+  # per-kid game modes: Harper starts on the easy ones, Carter on the harder ones
+  pg.evaluate("localStorage.removeItem('fg.trainers'); Trainer._reload(); Trainer.setCurrent('little')")
+  pg.goto('about:blank'); pg.goto(B + '#/games/memory'); pg.wait_for_timeout(900); h = pg.locator('.fg-card').count()
+  pg.evaluate("Trainer.setCurrent('big')"); pg.goto(B + '#/games/who'); pg.goto(B + '#/games/memory'); pg.wait_for_timeout(700); c = pg.locator('.fg-card').count()
+  print('memory cards Harper / Carter:', h, c); assert h == 6 and c == 12
+  pg.goto(B + '#/games/trivia'); pg.wait_for_timeout(700)
+  print('trivia picker:', pg.evaluate("[...document.querySelectorAll('.tv-player')].map(b => b.innerText.replace(/\\s+/g, ' ').trim())"))
+  pg.goto(B + '#/games/math'); pg.wait_for_timeout(900)
+  print('math picker:', pg.evaluate("[...document.querySelectorAll('.mt-player')].map(b => b.innerText.replace(/\\s+/g, ' ').trim())"))
+  print('math says:', [t for t in pg.evaluate('window._said') if 'Math' in t][-1:])
   print('errors', errs); assert not errs
   b.close()
