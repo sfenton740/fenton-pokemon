@@ -5,6 +5,8 @@
    👥 2 Players: pass-and-play on one iPad.
    Rules (kid size): 3 Prize cards, a Pokémon ex is worth 2, Bench holds 3, one Energy per turn, attacking ends your turn,
    real Energy costs (colored dots = that type, ⭐ = any Energy), real Weakness (×2) and Retreat costs.
+   🎒 Trainer cards (Oct 29): kid-size versions of real Trainer cards in 4 kinds with the real rules - Items (as many as you like),
+   Supporters (only 1 each turn), Pokémon Tools (1 per Pokémon), Stadiums (only 1 in play; a new one replaces it).
    Animations are CSS + a little JS (no libraries) and turn off with "Reduce Motion".
    Uses the sound + speech engine from games.js (FentonGames.kit), so the audio rules are the same everywhere. */
 window.FentonTCG = (() => {
@@ -74,21 +76,51 @@ const TEAMS = {
   darkness:  {name: 'Darkness team', show: ['me55-97', 'me55-90', 'me55-99'],
               cards: ['me55-97', 'me55-97', 'me55-98', 'me55-99', 'me55-95', 'me55-96', 'me55-90']}
 };
+/* 🎒 Trainer cards: kid-size versions of real cards. k = kind, em = picture, f = short name on the little hand card (&shy; = soft hyphen),
+   txt = what it does (zoom + voice), go = target: 'hurt' (your hurt Pokémon), 'bench' (your Bench), 'candy', 'basic' (Basic without a Tool), 'opbench' */
+const TK = {
+  item:      {name: 'Item',         em: '🎒', rule: 'Items: play as many as you like each turn.'},
+  supporter: {name: 'Supporter',    em: '🧑‍🏫', rule: 'Supporters: only one each turn!'},
+  tool:      {name: 'Pokémon Tool', em: '🔧', rule: 'Tools: attach one to a Pokémon. Each Pokémon can hold just 1 Tool.'},
+  stadium:   {name: 'Stadium',      em: '🏟️', rule: 'Stadiums: only one can be in play. A new Stadium replaces the old one.'}
+};
+const TC = {
+  'T:potion':   {n: 'Potion', k: 'item', em: '🧪', go: 'hurt', txt: 'Heal 30 damage from 1 of your Pokémon.'},
+  'T:nest':     {n: 'Nest Ball', k: 'item', em: '🥚', txt: 'Put a Basic Pokémon from your deck onto your Bench.'},
+  'T:ultra':    {n: 'Ultra Ball', k: 'item', em: '🟡', f: 'Ultra Ball', txt: 'Discard 2 other cards from your hand. Then take a Pokémon from your deck into your hand.'},
+  'T:switch':   {n: 'Switch', k: 'item', em: '🔄', go: 'bench', txt: 'Switch your Active Pokémon with 1 of your Benched Pokémon. It\'s free!'},
+  'T:candy':    {n: 'Rare Candy', k: 'item', em: '🍬', go: 'candy', txt: 'Evolve a Basic Pokémon right into the Stage 2 card in your hand, skipping Stage 1! Not on the turn the Basic was played.'},
+  'T:research': {n: "Professor's Research", k: 'supporter', em: '🔬', f: 'Re&shy;search', s: 'Professor\'s Research', txt: 'Discard your hand and draw 5 new cards. (The real card draws 7.)'},
+  'T:boss':     {n: "Boss's Orders", k: 'supporter', em: '📢', go: 'opbench', txt: "Pick 1 of your opponent's Benched Pokémon. It switches with their Active Pokémon, so you can battle it!"},
+  'T:iono':     {n: 'Iono', k: 'supporter', em: '🎤', s: 'Eye-oh-no', txt: 'Each player puts their hand on the bottom of their deck. Then each player draws 1 card for each of their Prize cards left.'},
+  'T:charm':    {n: 'Bravery Charm', k: 'tool', em: '🛡️', f: 'Brav&shy;ery Charm', go: 'basic', txt: 'Attach to 1 of your Basic Pokémon. It gets +50 HP.'},
+  'T:artazon':  {n: 'Artazon', k: 'stadium', em: '🌻', f: 'Arta&shy;zon', s: 'Ar-ta-zon', txt: 'Once during each player\'s turn, they can tap the Stadium to put a Basic Pokémon (not a Pokémon ex) from their deck onto their Bench.'}
+};
+// each team gets 5 Trainer cards that fit how it plays
+const TEAM_TR = {
+  fire:      ['T:candy', 'T:potion', 'T:nest', 'T:research', 'T:charm'],
+  water:     ['T:switch', 'T:potion', 'T:nest', 'T:boss', 'T:research'],
+  lightning: ['T:potion', 'T:nest', 'T:ultra', 'T:iono', 'T:charm'],
+  psychic:   ['T:potion', 'T:nest', 'T:artazon', 'T:research', 'T:switch'],
+  darkness:  ['T:candy', 'T:ultra', 'T:nest', 'T:boss', 'T:potion']
+};
+Object.keys(TEAMS).forEach(k => { TEAMS[k].tr = TEAM_TR[k]; });
 const FILES = Object.keys(C).map(IMG);
 const isE = id => id.startsWith('E:'), eT = id => id.slice(2);
-const nm = id => isE(id) ? TY[eT(id)][1] + ' Energy' : C[id].n;
-const basic = id => !isE(id) && !C[id].from;
-const isEx = id => !isE(id) && !!C[id].ex;
+const isT = id => id.startsWith('T:'), isP = id => !!C[id];
+const nm = id => isE(id) ? TY[eT(id)][1] + ' Energy' : isT(id) ? TC[id].n : C[id].n;
+const basic = id => isP(id) && !C[id].from;
+const isEx = id => isP(id) && !!C[id].ex;
 const stageOf = id => C[id].st === 2 ? 2 : C[id].from ? 1 : 0;
 const noEmoji = t => t.replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}\u{2B50}]/gu, '').replace(/\bHP\b/g, 'H P').replace(/\s+/g, ' ');
 let U = 0; const card = id => ({u: ++U, id});
-const side = (name, type) => ({name, type, deck: [], hand: [], active: null, bench: [], prizes: [], disc: []});
+const side = (name, type) => ({name, type, deck: [], hand: [], active: null, bench: [], prizes: [], disc: [], used: []});
 let S = null, $tc = null, idle = null, FORCE = null;
 const duo = () => S && S.mode === 'duo';
 const oppName = () => duo() ? S.op.name : 'Friend';
 const opWho = () => duo() ? S.op.name : 'Your friend';
 // how speech should say names (the screen shows the real name)
-const SAYFIX = Object.values(C).filter(c => c.s).sort((a, b) => b.n.length - a.n.length);
+const SAYFIX = [...Object.values(C), ...Object.values(TC)].filter(c => c.s).sort((a, b) => b.n.length - a.n.length);
 const forEar = t => { t = noEmoji(t.replace(/<[^>]+>/g, ' ')).replace(/\s+([.,!?])/g, '$1'); SAYFIX.forEach(c => { t = t.split(c.n).join(c.s); });
   return t.replace(/\bHP\b/g, 'H P').replace(/\bex\b/g, 'E X').replace(/×2/g, 'times 2').replace(/\s+/g, ' ').trim(); };
 const RM = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
@@ -97,7 +129,7 @@ const RM = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').m
 const mon = c => ({u: c.u, id: c.id, dmg: 0, en: [], turnIn: S.turn, under: [], restUntil: 0});
 const inPlay = sd => [sd.active, ...sd.bench].filter(Boolean);
 const findMon = (sd, u) => inPlay(sd).find(m => m.u === u);
-const hp = m => C[m.id].hp, left = m => Math.max(0, hp(m) - m.dmg);
+const hp = m => C[m.id].hp + (m.tool === 'T:charm' && stageOf(m.id) === 0 ? 50 : 0), left = m => Math.max(0, hp(m) - m.dmg);
 const costOf = (id, i) => C[id].a[i][1].split('').map(ch => CL[ch]);
 function payPlan(m, i) {                      // which cost dots are covered: typed dots need that Energy, ⭐ takes any
   const pool = m.en.slice(), cost = costOf(m.id, i), got = cost.map(() => false);
@@ -140,7 +172,7 @@ function attach(sd, eu, mu) {
 }
 function evolve(sd, cu, mu) {
   const c = take(sd.hand, cu), m = findMon(sd, mu); if (!c || !m) return;
-  m.under.push(m.id); m.id = c.id; m.turnIn = S.turn; m.restUntil = 0; S.fx[m.u] = 'evo';
+  m.under.push(m.id); m.id = c.id; m.turnIn = S.turn; m.restUntil = 0; S.fx[m.u] = 'evo'; if (m.dmg >= hp(m)) m.dmg = hp(m) - 10;
   S.post.push(() => sparkle(monEl(m), 'evo'));
 }
 function retreatTo(mu) {                                          // pay the retreat cost (discard Energy), swap
@@ -150,6 +182,88 @@ function retreatTo(mu) {                                          // pay the ret
 }
 function promote(sd, mu) { const b = findMon(sd, mu); if (!b) return; sd.bench.splice(sd.bench.indexOf(b), 1); sd.active = b; S.fx[b.u] = 'in'; }
 function knockOut(sd) { const m = sd.active; if (!m) return; sd.disc.push(m); sd.active = null; }
+
+/* ---------- 🎒 Trainer cards: rules + what each one does ---------- */
+const s2For = (sd, m) => sd.hand.find(x => isP(x.id) && C[x.id].st === 2 && C[C[x.id].from].from === m.id);
+const candyMons = sd => inPlay(sd).filter(m => stageOf(m.id) === 0 && m.turnIn < S.turn && s2For(sd, m));
+function targets(sd, os, id) {                                   // the Pokémon a Trainer card can be used on
+  switch (TC[id].go) {
+    case 'hurt': return inPlay(sd).filter(m => m.dmg > 0);
+    case 'bench': return sd.active ? sd.bench.slice() : [];
+    case 'candy': return candyMons(sd);
+    case 'basic': return inPlay(sd).filter(m => stageOf(m.id) === 0 && !m.tool);
+    case 'opbench': return os.active ? os.bench.slice() : [];
+  }
+  return null;
+}
+const ASK = {hurt: 'Tap a hurt Pokémon to heal it.', bench: 'Tap a Bench Pokémon to switch in.', candy: 'Tap the Basic Pokémon to evolve it.',
+  basic: 'Tap a Basic Pokémon to give it the charm.', opbench: "Tap one of the other side's Bench Pokémon to call it out."};
+function trainerWhyNot(sd, os, id) {                              // '' = OK to play now, else a friendly reason
+  const t = TC[id];
+  if (t.k === 'supporter' && S.supp) return 'Only one Supporter each turn! Save it for next turn.';
+  if (t.k === 'stadium') { if (S.stPlayed) return 'Only one Stadium each turn!'; if (S.stadium && S.stadium.id === id) return `${t.n} is already in play!`; }
+  if (!sd.active && id !== 'T:research' && id !== 'T:iono') return 'Send out a Pokémon first!';
+  const tg = targets(sd, os, id);
+  if (tg && !tg.length) return {hurt: 'None of your Pokémon are hurt. Save Potion for later!', bench: 'You need a Pokémon on your Bench to switch with.',
+    candy: 'Rare Candy needs a Basic Pokémon that has been in play since last turn, and its Stage 2 card in your hand.',
+    basic: 'Bravery Charm goes on a Basic Pokémon that has no Tool yet.', opbench: 'There are no Bench Pokémon to call out.'}[t.go];
+  if (id === 'T:nest') { if (sd.bench.length >= 3) return 'Your Bench is full!'; if (!sd.deck.some(c => basic(c.id))) return 'No Basic Pokémon left in your deck.'; }
+  if (id === 'T:ultra') { if (sd.hand.length < 3) return 'Ultra Ball needs 2 other cards in your hand to discard.'; if (!sd.deck.some(c => isP(c.id))) return 'No Pokémon left in your deck.'; }
+  return '';
+}
+function ultraPick(sd) {                                          // the Pokémon you need most: an evolution for something in play, then a Stage 2 for Rare Candy, then the strongest Basic
+  const d = sd.deck.filter(c => isP(c.id)), ids = inPlay(sd).map(m => m.id), hand = sd.hand.map(c => c.id);
+  return d.find(c => ids.includes(C[c.id].from) && !hand.includes(c.id))
+    || (hand.includes('T:candy') && d.find(c => C[c.id].st === 2 && ids.includes(C[C[c.id].from].from)))
+    || d.filter(c => basic(c.id)).sort((a, b) => C[b.id].hp - C[a.id].hp)[0] || d[0];
+}
+function ultraToss(sd, keep) {                                    // which 2 cards go: spare Energy first, then other Trainers, then Pokémon
+  const es = sd.hand.filter(c => isE(c.id)).length;
+  const score = c => c === keep ? 99 : isE(c.id) ? (es > 1 ? 0 : 3) : isT(c.id) ? 1 : basic(c.id) ? 2 : 4;
+  return sd.hand.slice().sort((a, b) => score(a) - score(b)).slice(0, 2);
+}
+function doTrainer(sd, os, cu, mu) {                              // play it; returns what happened (words for the bubble + voice)
+  const c = sd.hand.find(x => x.u === cu); if (!c) return '';
+  const id = c.id, t = TC[id]; let r = '';
+  if (id === 'T:ultra') { const toss = ultraToss(sd, c); toss.forEach(x => take(sd.hand, x.u)); sd.used.push(...toss);
+    take(sd.hand, cu); const p = ultraPick(sd); take(sd.deck, p.u); sd.hand.push(p); S.fx[p.u] = 'in'; sd.used.push(c);
+    return `Ultra Ball! Away go ${toss.map(x => nm(x.id)).join(' and ')}. It found ${n(p.id)}!`; }
+  take(sd.hand, cu);
+  if (t.k === 'supporter') S.supp = true;
+  const m = mu != null ? (findMon(sd, mu) || findMon(os, mu)) : null;
+  switch (id) {
+    case 'T:potion': { const h = Math.min(30, m.dmg); S.hpFrom[m.u] = left(m); m.dmg -= h; S.fx[m.u] = 'glow'; K().SFX.match(); r = `${n(m.id)} is healed ${h}! Feel better!`; break; }
+    case 'T:nest': { const b = sd.deck.filter(x => basic(x.id)).sort((p, q) => C[q.id].hp - C[p.id].hp)[0]; take(sd.deck, b.u); const nm2 = mon(b); sd.bench.push(nm2); S.fx[nm2.u] = 'in';
+      if (isEx(b.id)) exEntrance(b.id, 200); r = `Nest Ball found ${n(b.id)}! It hops onto the Bench.`; break; }
+    case 'T:switch': { const a = sd.active; sd.bench[sd.bench.indexOf(m)] = a; sd.active = m; S.fx[m.u] = 'in'; r = `Switch! ${n(m.id)} jumps in, and ${n(a.id)} rests on the Bench. Free!`; break; }
+    case 'T:candy': { const s2 = s2For(sd, m), was = m.id; take(sd.hand, s2.u); m.under.push(m.id, C[s2.id].from); m.id = s2.id; m.turnIn = S.turn; m.restUntil = 0; S.fx[m.u] = 'evo';
+      S.post.push(() => sparkle(monEl(m), 'evo')); K().SFX.evo(); r = `Rare Candy! ${n(was)} skipped a step and evolved right into ${n(m.id)}!`; break; }
+    case 'T:research': { sd.used.push(...sd.hand.splice(0)); for (let i = 0; i < 5; i++) draw(sd); r = "Professor's Research! Old cards away, and 5 brand new cards!"; break; }
+    case 'T:boss': { const a = os.active; os.bench[os.bench.indexOf(m)] = a; os.active = m; S.fx[m.u] = 'in'; r = `Boss's Orders! ${n(m.id)} has to come out and battle!`; break; }
+    case 'T:iono': { [sd, os].forEach(x => { x.deck.push(...x.hand.splice(0)); for (let i = 0; i < x.prizes.length; i++) draw(x); }); r = 'Iono! Everyone puts their hand at the bottom of the deck, then draws 1 card for each Prize card left.'; break; }
+    case 'T:charm': { m.tool = id; S.fx[m.u] = 'glow'; K().SFX.match(); r = `${n(m.id)} holds a Bravery Charm. 50 more HP!`; break; }
+    case 'T:artazon': { const old = S.stadium; if (old) old.sd.used.push(card(old.id)); S.stadium = {id, sd}; S.stPlayed = true;
+      r = old ? `Artazon replaces ${TC[old.id].n}! Only one Stadium can be in play.` : 'Artazon is in play! Once each turn, tap it to bring a Basic Pokémon to your Bench.'; return r; }
+  }
+  if (id !== 'T:charm') sd.used.push(c);
+  return r;
+}
+function stadiumWhyNot(sd) {
+  if (!S.stadium) return 'There is no Stadium in play.';
+  if (S.stUsed) return 'You used the Stadium already this turn.';
+  if (sd.bench.length >= 3 || !sd.active) return sd.active ? 'Your Bench is full!' : 'Send out a Pokémon first!';
+  if (!sd.deck.some(c => basic(c.id) && !isEx(c.id))) return 'No Basic Pokémon (not ex) left in your deck.';
+  return '';
+}
+function useStadium(sd) {
+  const b = sd.deck.filter(c => basic(c.id) && !isEx(c.id)).sort((p, q) => C[q.id].hp - C[p.id].hp)[0]; take(sd.deck, b.u);
+  const m = mon(b); sd.bench.push(m); S.fx[m.u] = 'in'; S.stUsed = true; return `Artazon! ${n(b.id)} comes to the Bench.`;
+}
+const trFace = id => { const t = TC[id]; return `<span class="tc-trk" aria-hidden="true">${TK[t.k].em}</span><span class="tc-trem" aria-hidden="true">${t.em}</span><span class="tc-trn">${t.f || t.n}</span>`; };
+function trFlash(id) {                                            // the Trainer card pops up big in the middle for a moment, so everyone sees what was played
+  if (!$tc) return; const d = document.createElement('div'); d.className = `tc-trflash tc-hc trainer k-${TC[id].k}`; d.setAttribute('aria-hidden', 'true'); d.dataset.textcheck = 'skip';
+  d.innerHTML = trFace(id); document.body.appendChild(d); K().SFX.shine(); setTimeout(() => d.remove(), 1500);
+}
 
 /* ---------- 🧑‍🏫 Professor tips: each idea once per game, the first time it matters ---------- */
 const TIPS = {
@@ -162,7 +276,11 @@ const TIPS = {
   weak: 'Look at Weakness on the card. A Pokémon gets hit times 2 by its Weakness type!',
   ex: 'Pokémon ex are super strong. But if one is Knocked Out, the other player takes 2 Prize cards!',
   retreat: 'Swapping is called Retreat. It costs Energy. Count the stars on the Swap button.',
-  rest: 'Some big attacks need a rest. Read the card to see!'
+  rest: 'Some big attacks need a rest. Read the card to see!',
+  item: 'Item cards are blue. You can play as many Items as you like each turn!',
+  supporter: 'Supporter cards are orange. They are strong, so you can play only one Supporter each turn.',
+  tool: 'Pokémon Tools are purple. Attach one to a Pokémon. Each Pokémon can hold just 1 Tool.',
+  stadium: 'Stadium cards are green. Only one Stadium can be in play, and both players can use it!'
 };
 const tipsOn = () => K().store('tcTips') !== '0';
 function tip(k) {
@@ -172,13 +290,13 @@ function tip(k) {
 
 /* ---------- start ---------- */
 const base = mode => ({mode, turn: 1, whose: 'me', drew: false, attached: false, retreated: false, sel: null, need: null, needN: 0, busy: false,
-  fx: {}, post: [], hpFrom: {}, step: 0, over: false, msg: '', prizesShown: false, tipped: {}, level: K().store('tcLevel') || 'easy'});
+  fx: {}, post: [], hpFrom: {}, step: 0, over: false, msg: '', prizesShown: false, tipped: {}, supp: false, stUsed: false, stPlayed: false, stadium: null, level: K().store('tcLevel') || 'easy'});
 function duoName(k) {                                            // 2 Players: the kids' own trainer names
   const R = TRN(); if (!R) return 'Player ' + k;
   const a = R.current(), id = k === 1 ? a : otherKid(a); return id === a && k === 2 ? 'Player 2' : R.get(id).name;
 }
 function deal(sd, t, nE) {
-  const build = () => K().shuffle([...TEAMS[t].cards, ...Array(nE).fill('E:' + t)].map(card));
+  const build = () => K().shuffle([...TEAMS[t].cards, ...(TEAMS[t].tr || []), ...Array(nE).fill('E:' + t)].map(card));
   do { sd.deck = build(); sd.hand = sd.deck.splice(0, 5); } while (!sd.hand.some(c => basic(c.id)));   // always a Basic to start
   sd.prizes = sd.deck.splice(0, 3);
 }
@@ -204,6 +322,7 @@ function newGame(mode, team, team2) {
     S.me = side('You', team); S.op = side('Friend', ot); S.me.human = true;
     deal(S.me, team, 9); deal(S.op, ot, 8);
     if (FORCE && FORCE.hand) { S.me.deck.push(...S.me.hand); S.me.hand = FORCE.hand.map(card); }
+    if (FORCE && FORCE.opHand) { S.op.deck.push(...S.op.hand); S.op.hand = FORCE.opHand.map(card); }
     // the friend sets up right away: a Basic in front, one helper on the Bench
     const ob = S.op.hand.filter(c => basic(c.id)).sort((a, b) => isEx(a.id) - isEx(b.id));
     playBasic(S.op, ob[0].u); if (ob[1]) playBasic(S.op, ob[1].u);
@@ -264,16 +383,16 @@ function pickTeam(mode = 'play', first = null) {
 const en = t => `<i class="tc-e ${t}">${TY[t][0]}</i>`;
 const hpCls = f => f > .5 ? '' : f > .25 ? 'mid' : 'low';
 function monHTML(m, who, big) {
-  const c = C[m.id], f = S.fx[m.u] || '', ctr = Math.round(m.dmg / 10), L = left(m), from = S.hpFrom[m.u];
-  const pct = v => Math.round(100 * v / c.hp), shown = from != null ? from : L;
+  const c = C[m.id], f = S.fx[m.u] || '', ctr = Math.round(m.dmg / 10), L = left(m), from = S.hpFrom[m.u], H = hp(m);
+  const pct = v => Math.min(100, Math.round(100 * v / H)), shown = from != null ? from : L;
   const tag = who === 'me' ? 'mon' : 'opmon';
-  return `<button class="tc-mon ${big ? 'big' : 'sm'} ${f} ${who} ${c.ex ? 'isex' : ''} t-${c.t}" data-act="${tag}:${m.u}" aria-label="${c.n}, ${L} HP left">
+  return `<button class="tc-mon ${big ? 'big' : 'sm'} ${f} ${who} ${c.ex ? 'isex' : ''} t-${c.t}" data-act="${tag}:${m.u}" aria-label="${c.n}, ${L} HP left${m.tool ? ', holding ' + TC[m.tool].n : ''}">
     <img src="${IMG(m.id)}" alt="${c.n}" draggable="false"><span class="tc-zoom" data-zoom="${m.id}" role="button" aria-label="Look at ${c.n}"></span>
-    <span class="tc-hp ${hpCls(L / c.hp)}"><em style="width:${pct(shown)}%" ${from != null ? `data-to="${pct(L)}"` : ''}></em><i style="width:${pct(shown)}%" ${from != null ? `data-to="${pct(L)}"` : ''}></i><b ${from != null ? `data-from="${from}" data-to="${L}"` : ''}>❤️ <span>${shown}</span></b></span>
+    <span class="tc-hp ${hpCls(L / H)}"><em style="width:${pct(shown)}%" ${from != null ? `data-to="${pct(L)}"` : ''}></em><i style="width:${pct(shown)}%" ${from != null ? `data-to="${pct(L)}"` : ''}></i><b ${from != null ? `data-from="${from}" data-to="${L}"` : ''}>❤️ <span>${shown}</span></b></span>
     ${ctr && f !== 'ko' ? `<span class="tc-ctr">${ctr <= 8 ? '<i></i>'.repeat(ctr) : `<i></i>×${ctr}`}</span>` : ''}
     ${m.en.length ? `<span class="tc-ens">${m.en.map(en).join('')}</span>` : ''}
     ${big && S.mode !== 'learn' && c.w ? `<span class="tc-wk" aria-label="Weakness ${TY[c.w][1]}">${TY[c.w][0]}×2</span>` : ''}
-    ${resting(m) ? '<span class="tc-rest" aria-label="Resting">💤</span>' : ''}
+    ${resting(m) ? '<span class="tc-rest" aria-label="Resting">💤</span>' : ''}${m.tool ? `<span class="tc-tool" aria-label="Holding ${TC[m.tool].n}">${TC[m.tool].em}</span>` : ''}
     ${f === 'hit' ? `<span class="tc-pop ${S.popWeak ? 'weak' : ''}">-${S.popN}</span>` : ''}${f === 'ko' ? '<span class="tc-dizzy">💫</span><span class="tc-kotxt">Knocked Out!</span>' : ''}</button>`;
 }
 function sideHTML(sd, who) {
@@ -291,6 +410,7 @@ function handHTML() {
   return S.me.hand.map(c => {
     const f = S.fx[c.u] || '', sel = S.sel === c.u ? 'sel' : '';
     if (isE(c.id)) { const t = eT(c.id); return `<button class="tc-hc energy ${t} ${f} ${sel}" data-act="hand:${c.u}" aria-label="${nm(c.id)}"><span class="tc-ebig">${TY[t][0]}</span><span class="tc-hn">${TY[t][1]}<br>Energy</span></button>`; }
+    if (isT(c.id)) { const t = TC[c.id]; return `<button class="tc-hc trainer k-${t.k} ${f} ${sel}" data-act="hand:${c.u}" aria-label="${t.n}, ${TK[t.k].name} card">${trFace(c.id)}<span class="tc-zoom" data-zoom="${c.id}" role="button" aria-label="Look at ${t.n}"></span></button>`; }
     const x = C[c.id], st = stageOf(c.id);
     const tg = x.ex ? ['ex', '✨ ex'] : st === 2 ? ['evo s2', 'Stage 2'] : st === 1 ? ['evo', 'Stage 1'] : ['', 'Basic'];
     return `<button class="tc-hc ${f} ${sel} ${x.ex ? 'isex' : ''}" data-act="hand:${c.u}" aria-label="${x.n}"><img src="${IMG(c.id)}" alt="${x.n}" draggable="false"><span class="tc-zoom" data-zoom="${c.id}" role="button" aria-label="Look at ${x.n}"></span>
@@ -306,7 +426,9 @@ function actsHTML() {
       <span class="tc-cost">${cost.map((t, k) => `<i class="tc-e ${t} ${got[k] ? '' : 'empty'}">${TY[t][0]}</i>`).join('')}</span>
       <span class="tc-an">${x[0]}</span><b>${dmgText(x)}</b>${r && r.weak ? '<span class="tc-x2">×2!</span>' : ''}</button>`; }).join('');
   if (S.mode === 'learn') return `<div class="tc-acts">${atks}</div>`;
-  return `<div class="tc-acts">${atks}
+  const selT = S.me.hand.find(c => c.u === S.sel && isT(c.id));
+  const playB = selT && !TC[selT.id].go ? `<button class="tc-btn play" data-act="play" ${mine ? '' : 'disabled'} aria-label="Play ${TC[selT.id].n}"><span>▶️</span>Play</button>` : '';
+  return `<div class="tc-acts">${playB}${atks}
     <button class="tc-btn retreat ${S.sel === 'retreat' ? 'sel' : ''}" data-act="retreat" ${mine ? '' : 'disabled'} aria-label="Swap, retreat costs ${C[a.id].r} Energy"><span>🔄</span>Swap<small>${'⭐'.repeat(C[a.id].r) || 'free'}</small></button>
     <button class="tc-btn end" data-act="end" ${mine ? '' : 'disabled'} aria-label="End turn"><span>✋</span>End turn</button></div>`;
 }
@@ -321,7 +443,7 @@ function paint() {
       ${step && step.next && !S.busy ? '<button class="tc-next" data-act="next" aria-label="Next">▶</button>' : ''}</div>
     <div class="tc-board" id="tcBoard">
       <div class="tc-side op ${S.whose === 'op' ? 'turn' : ''}">${sideHTML(S.op, 'op')}</div>
-      <div class="tc-vs"><span>${turnTxt}</span></div>
+      <div class="tc-vs"><span>${turnTxt}</span>${S.stadium ? `<button class="tc-stad" data-act="stadium" aria-label="Stadium ${TC[S.stadium.id].n}, tap to use"><i aria-hidden="true">${TC[S.stadium.id].em}</i>${TC[S.stadium.id].n}</button><span class="tc-zoom tc-stadz" data-zoom="${S.stadium.id}" role="button" aria-label="Look at ${TC[S.stadium.id].n}"></span>` : ''}</div>
       <div class="tc-side me ${S.whose === 'me' ? 'turn' : ''}">${sideHTML(S.me, 'me')}</div>
       ${actsHTML()}
     </div>
@@ -572,6 +694,12 @@ function playTap(a, el) {
     coach(`I choose you, ${n(m.id)}! Now tap your deck.`); return paint();
   }
   if (S.need === 'prize' && k !== 'prize') return nudge('Tap a Prize card first!');
+  const selT = S.drew ? me.hand.find(x => x.u === S.sel && isT(x.id)) : null;
+  if (selT && (k === 'mon' || k === 'opmon') && TC[selT.id].go) {                // 🎒 a Trainer card is waiting for its target
+    const tg = targets(me, S.op, selT.id), m = tg.find(x => x.u === u);
+    if (!m) return nudge(ASK[TC[selT.id].go]);
+    return playTrainer(selT, u);
+  }
   if (k === 'opmon' || k === 'mon') { const m = findMon(S.op, u) || findMon(me, u);
     if (m && !(k === 'mon' && S.sel != null)) { K().SFX.tap(); const c = C[m.id];
       coach(`That's ${c.n}. It has ${left(m)} HP.` + (c.ex ? ' It\'s a Pokémon ex, worth 2 Prize cards!' : '') + (k === 'opmon' && c.w ? ` Its Weakness is ${TY[c.w][1]}.` : ''));
@@ -587,6 +715,7 @@ function playTap(a, el) {
     case 'hand': {
       const c = me.hand.find(x => x.u === u); if (!c) return;
       if (S.sel === u) { S.sel = null; K().SFX.tap(); return paint(); }
+      if (isT(c.id)) return tapTrainer(c);
       if (isE(c.id)) {
         if (S.attached) return nudge('One Energy each turn. Try again next turn!');
         if (!me.active) return nudge('Send out a Pokémon first!');
@@ -613,6 +742,7 @@ function playTap(a, el) {
         const was = me.active; retreatTo(u); S.sel = null; K().SFX.flip(); coach(`Come back, ${n(was.id)}! Go, ${n(m.id)}!`); return paint();
       }
       const c = me.hand.find(x => x.u === S.sel); if (!c) return;
+      if (isT(c.id)) return nudge(`Tap Play to use ${TC[c.id].n}!`);
       if (isE(c.id)) { const r = rectOf('hand:' + c.u); attach(me, c.u, u); S.sel = null; K().SFX.match(); S.post.push(() => fly(r, monEl(m), en(eT(c.id)), 'orb'));
         coach(`${n(m.id)} got Energy!` + tip('cost')); return paint(); }
       if (C[c.id].from !== m.id) return nudge(`${n(c.id)} grows from ${n(C[c.id].from)}. Tap ${n(C[c.id].from)}!`);
@@ -648,7 +778,21 @@ function playTap(a, el) {
       coach(said, 'praise'); paint(); S.busy = true; K().later(() => { S.busy = false; endTurn(); }, talkMs(said)); return;
     }
     case 'end': if (!me.active) return nudge('Send out a Pokémon first!'); S.sel = null; K().SFX.tap(); return endTurn();
+    case 'play': { const c = me.hand.find(x => x.u === S.sel && isT(x.id)); if (!c) return; return playTrainer(c, null); }
+    case 'stadium': { const why = stadiumWhyNot(me); if (why) return nudge(why);
+      S.sel = null; K().SFX.flip(); coach(useStadium(me)); return paint(); }
   }
+}
+function tapTrainer(c) {                                         // tap a Trainer card: hear what it does, then Play (or tap its target)
+  const me = S.me, t = TC[c.id], why = trainerWhyNot(me, S.op, c.id), tp = tip(t.k);
+  if (why) { K().SFX.nope(); coach(`${t.n}: ${why}` + tp); return; }
+  S.sel = c.u; K().SFX.tap();
+  coach(`${t.n}! ${t.txt} ` + (t.go ? ASK[t.go] : 'Tap Play!') + tp); paint();
+}
+function playTrainer(c, mu) {
+  const id = c.id; S.sel = null; trFlash(id);
+  const said = doTrainer(S.me, S.op, c.u, mu); K().SFX.flip();
+  coach(said, 'result'); paint();
 }
 function doAttack(sd, os, i, done) {                             // lunge → hit (with Weakness), effects, then done(knockedOut)
   const at = sd.active, def = os.active, x = C[at.id].a[i], o = x[3] || {};
@@ -681,12 +825,12 @@ function koByMe() {
 }
 function endTurn() { if (duo()) passTurn(); else oppTurn(); }
 function passTurn() {
-  S.sel = null; [S.me, S.op] = [S.op, S.me]; S.turn++; S.drew = S.attached = S.retreated = false; S.whose = 'me'; S.busy = false; S.need = 'pass';
+  S.sel = null; [S.me, S.op] = [S.op, S.me]; S.turn++; S.drew = S.attached = S.retreated = S.supp = S.stUsed = S.stPlayed = false; S.whose = 'me'; S.busy = false; S.need = 'pass';
   paint(); coach(`Great turn! Pass the iPad to ${S.me.name}!`);
 }
 function startTurn() {                                           // a human's turn begins (Battle: after the friend; 2 Players: after "I'm ready")
   S.whose = 'me'; S.busy = false; S.sel = null;
-  if (!duo()) { S.turn++; S.drew = S.attached = S.retreated = false; }
+  if (!duo()) { S.turn++; S.drew = S.attached = S.retreated = S.supp = S.stUsed = S.stPlayed = false; }
   const me = S.me, who = duo() ? me.name + ', your' : 'Your';
   if (!me.active && me.bench.length) { S.need = 'promote'; paint(); coach(`${who} turn! Pick a Pokémon from your Bench to battle. Tap it!`); }
   else { S.need = null; paint(); coach(`Let's go! ${who} turn! Tap your deck.`); }
@@ -700,8 +844,10 @@ function bestAttack(sd, os) {                                    // the payable 
   return best;
 }
 function oppTurn() {                                              // the kind friend: plays fair, talks about what it does
-  const o = S.op, me = S.me; S.whose = 'op'; S.busy = true; S.sel = null; S.need = null; paint();
+  const o = S.op, me = S.me; S.whose = 'op'; S.busy = true; S.sel = null; S.need = null; S.supp = S.stUsed = S.stPlayed = false; paint();
   let exWait = 0;
+  const tr = late => { const x = aiTrainer(o, me, late); if (!x) return null; if (x.stadium) return `Your friend taps the Stadium. ${useStadium(o)}`;
+    trFlash(x.c.id); return `Your friend plays ${TC[x.c.id].n}! ` + doTrainer(o, me, x.c.u, x.m ? x.m.u : null) + tip(TC[x.c.id].k); };
   const steps = [
     () => { if (o.active) return "Your friend's turn!";
       const b = o.bench.slice().sort((p, q) => left(q) - left(p))[0]; promote(o, b.u); return `${n(b.id)} moves up to battle.`; },
@@ -710,21 +856,49 @@ function oppTurn() {                                              // the kind fr
         if (isEx(m.id)) { exEntrance(m.id); exWait = 1900; return `Whoa! Your friend plays ${n(m.id)}!` + tip('ex'); }
         return `Your friend plays ${n(m.id)}.`; }
       return null; },
-    () => { const ev = o.hand.find(c => !isE(c.id) && C[c.id].from && inPlay(o).some(m => m.id === C[c.id].from && m.turnIn < S.turn));
+    () => tr(false), () => tr(false), () => tr(false),
+    () => { const ev = o.hand.find(c => isP(c.id) && C[c.id].from && inPlay(o).some(m => m.id === C[c.id].from && m.turnIn < S.turn));
       if (!ev) return null; const m = inPlay(o).find(x => x.id === C[ev.id].from && x.turnIn < S.turn), was = m.id; evolve(o, ev.u, m.u); K().SFX.evo();
       return `What? ${n(was)} is evolving into ${n(m.id)}!`; },
     () => { const e = o.hand.find(c => isE(c.id)); if (!e) return null;
       const tgt = needsEnergy(o.active) ? o.active : (o.bench.find(m => isEx(m.id) && needsEnergy(m)) || o.bench.find(needsEnergy) || o.active);
-      attach(o, e.u, tgt.u); return `Your friend gives ${n(tgt.id)} Energy.`; }
+      attach(o, e.u, tgt.u); return `Your friend gives ${n(tgt.id)} Energy.`; },
+    () => tr(true)
   ];
   let i = 0;
   const tick = () => {
     let r = null; while (i < steps.length && !(r = steps[i++]())) {}
-    if (r) { paint(); coach(r, /Whoa|evolving/.test(r) ? 'result' : 'extra'); }
+    if (!o.active && o.bench.length) { const b = o.bench.slice().sort((p, q) => left(q) - left(p))[0]; promote(o, b.u); }
+    if (r) { paint(); coach(r, /Whoa|evolving|Boss|Iono|Rare Candy/.test(r) ? 'result' : 'extra'); }
     const wait = (r ? talkMs(r) : 600) + exWait; exWait = 0;
     if (i < steps.length) K().later(tick, wait); else K().later(oppAttack, wait);
   };
   K().later(tick, 700);
+}
+function aiTrainer(o, me, late) {                                // 😊 Easy friend: simple, helpful cards · 💪 Tricky friend: smart ones too
+  const tricky = S.level === 'tricky' || duo(), hand = o.hand.filter(c => isT(c.id)), a = o.active;
+  const ok = id => hand.find(c => c.id === id && !trainerWhyNot(o, me, id));
+  const canHit = (m, def) => C[m.id].a.some((x, i) => canPay(m, i) && calc(m, i, def, o).d >= left(def));
+  if (late) {                                                     // right before attacking
+    const boss = tricky && ok('T:boss');
+    if (boss && a && !resting(a)) { const t = me.bench.filter(m => canHit(a, m)).sort((p, q) => isEx(q.id) - isEx(p.id))[0];
+      if (t && !(me.active && canHit(a, me.active) && !isEx(t.id))) return {c: boss, m: t}; }
+    const sw = ok('T:switch');
+    if (sw && a && bestAttack(o, me) < 0) { const t = o.bench.find(m => me.active && C[m.id].a.some((x, i) => canPay(m, i))); if (t) return {c: sw, m: t}; }
+    return null;
+  }
+  let c;
+  if ((c = ok('T:candy'))) return {c, m: candyMons(o)[0]};
+  if ((c = ok('T:potion')) && a && a.dmg >= 30) return {c, m: a};
+  if ((c = ok('T:nest')) && o.bench.length < 2) return {c};
+  if ((c = ok('T:artazon')) && !S.stadium) return {c};
+  if (!stadiumWhyNot(o) && o.bench.length < 2) return {stadium: 1};
+  if ((c = ok('T:charm')) && a && targets(o, me, 'T:charm').includes(a)) return {c, m: a};
+  if ((c = ok('T:ultra')) && o.deck.some(x => isP(x.id) && inPlay(o).some(m => m.id === C[x.id].from))) return {c};
+  if ((c = ok('T:research')) && o.hand.length <= 3) return {c};
+  if (tricky && (c = ok('T:iono')) && (me.prizes.length <= 1 && me.hand.length >= 4 || o.hand.length <= 2)) return {c};
+  if (!tricky && (c = ok('T:iono')) && o.hand.length <= 1) return {c};
+  return null;
 }
 function oppAttack() {
   const o = S.op, me = S.me, i = bestAttack(o, me);
@@ -748,21 +922,39 @@ function hint() {
   if (!S.drew) return {a: 'deck', t: 'Tap your deck to get a card.'};
   if (S.sel === 'retreat') { const b = me.bench.slice().sort((p, q) => bestAttackFor(q) - bestAttackFor(p))[0]; return {a: 'mon:' + b.u, t: `Tap ${n(b.id)} to swap in!`}; }
   if (S.sel != null) { const c = hand.find(x => x.u === S.sel);
+    if (c && isT(c.id)) { const t = TC[c.id], tg = targets(me, S.op, c.id); if (!t.go) return {a: 'play', t: `Tap Play to use ${t.n}!`};
+      const m = c.id === 'T:potion' ? tg.sort((p, q) => q.dmg - p.dmg)[0] : c.id === 'T:boss' ? tg.find(x => a && bestAttackVs(a, x) >= left(x)) || tg[0]
+        : c.id === 'T:switch' ? tg.sort((p, q) => bestAttackFor(q) - bestAttackFor(p))[0] : c.id === 'T:charm' && tg.includes(a) ? a : tg[0];
+      if (m) return {a: (c.id === 'T:boss' ? 'opmon:' : 'mon:') + m.u, t: ASK[t.go]}; }
     if (c && isE(c.id)) { const tgt = a && needsEnergy(a) ? a : (me.bench.find(m => isEx(m.id) && needsEnergy(m)) || me.bench.find(needsEnergy) || a); return {a: 'mon:' + tgt.u, t: `Tap ${n(tgt.id)} to give it Energy.`}; }
     if (c) { const m = inPlay(me).find(x => x.id === C[c.id].from && x.turnIn < S.turn); if (m) return {a: 'mon:' + m.u, t: `Tap ${n(m.id)} to grow it!`}; } }
   const b = hand.filter(c => basic(c.id)).sort((p, q) => isEx(q.id) - isEx(p.id))[0];
   if (!a && b) return {a: 'hand:' + b.u, t: `Tap ${n(b.id)} to send it out!`};
-  const ev = hand.find(c => !isE(c.id) && C[c.id].from && inPlay(me).some(m => m.id === C[c.id].from && m.turnIn < S.turn));
+  const ev = hand.find(c => isP(c.id) && C[c.id].from && inPlay(me).some(m => m.id === C[c.id].from && m.turnIn < S.turn));
   if (ev) return {a: 'hand:' + ev.u, t: `Tap ${n(ev.id)} to grow ${n(C[ev.id].from)}!`};
+  const tc = id => hand.find(c => c.id === id && !trainerWhyNot(me, S.op, id));
+  const T = (id, t) => { const c = tc(id); return c ? {a: 'hand:' + c.u, t} : null; };
+  let h;
+  if ((h = T('T:candy', 'Tap Rare Candy to evolve 2 steps at once!'))) return h;
+  if (a && a.dmg >= 30 && (h = T('T:potion', 'Tap Potion to heal your Pokémon!'))) return h;
+  if (me.deck.some(c => isP(c.id) && inPlay(me).some(m => m.id === C[c.id].from)) && (h = T('T:ultra', 'Tap Ultra Ball to find a Pokémon!'))) return h;
   const e = hand.find(c => isE(c.id));
   if (e && !S.attached && inPlay(me).some(needsEnergy)) return {a: 'hand:' + e.u, t: 'Tap the Energy card.'};
   if (b && me.bench.length < 3) return {a: 'hand:' + b.u, t: `Tap ${n(b.id)}. It can be a helper!`};
+  if (me.bench.length < 2 && (h = T('T:nest', 'Tap Nest Ball to find a helper!'))) return h;
+  if (!S.stadium && (h = T('T:artazon', 'Tap Artazon to play a Stadium!'))) return h;
+  if (me.bench.length < 2 && !stadiumWhyNot(me)) return {a: 'stadium', t: 'Tap the Stadium to bring a helper!'};
+  if (a && targets(me, S.op, 'T:charm').includes(a) && (h = T('T:charm', 'Tap Bravery Charm to give 50 more HP!'))) return h;
+  if (hand.length <= 3 && (h = T('T:research', "Tap Professor's Research for new cards!"))) return h;
+  if (a && !resting(a) && S.op.bench.some(x => bestAttackVs(a, x) >= left(x)) && !(S.op.active && bestAttackVs(a, S.op.active) >= left(S.op.active)) && (h = T('T:boss', "Tap Boss's Orders to call out a Pokémon you can knock out!"))) return h;
+  if (a && bestAttack(me, S.op) < 0 && me.bench.some(m => bestAttackFor(m) > 0) && (h = T('T:switch', 'Tap Switch to send in a helper for free!'))) return h;
   const i = bestAttack(me, S.op);
   if (i >= 0) return {a: 'atk:' + i, t: `Tap ${C[a.id].a[i][0]} to attack!`};
   if (a && !S.retreated && me.bench.length && a.en.length >= C[a.id].r && me.bench.some(m => bestAttackFor(m) > 0))
     return {a: 'retreat', t: `${n(a.id)} can't attack now. Tap Swap to send in a helper!`};
   return {a: 'end', t: 'Your Pokémon needs more Energy. Tap End turn.'};
 }
+function bestAttackVs(m, def) { let bd = 0; C[m.id].a.forEach((x, i) => { if (canPay(m, i)) bd = Math.max(bd, calc(m, i, def, S.me).d); }); return bd; }
 function bestAttackFor(m) {                                      // how hard a Bench Pokémon could hit right now
   let bd = 0; C[m.id].a.forEach((x, i) => { if (canPay(m, i) && S.op.active) bd = Math.max(bd, calc(m, i, S.op.active, S.me).d); }); return bd;
 }
@@ -812,7 +1004,26 @@ function atkWords(x) {                                         // the attack's t
   if (o.rest) w.push("This Pokémon can't attack during your next turn.");
   return w.join(' ');
 }
+function zoomTrainer(id) {
+  const t = TC[id], k = TK[t.k];
+  const w = document.createElement('div');
+  w.className = 'fg-win tc-zoomwrap'; w.id = 'tcZoom'; w.setAttribute('role', 'dialog'); w.setAttribute('aria-modal', 'true'); w.setAttribute('aria-label', t.n);
+  w.innerHTML = `<div class="tc-zbox trz k-${t.k}">
+    <button class="tc-zclose" id="tcZClose" aria-label="Close">✕ Close</button>
+    <div class="tc-zgrid"><div class="tc-trbig k-${t.k}" aria-hidden="true"><span class="tc-trbk">${k.em}</span><span class="tc-trbem">${t.em}</span></div>
+    <div class="tc-ztext">
+      <div class="tc-zhead"><b class="tc-zname">${t.n}</b></div>
+      <p class="tc-zline"><span class="tc-trchip k-${t.k}">${k.em} ${k.name}</span> Trainer card</p>
+      <div class="tc-zatk"><p class="tc-trtxt">${t.txt}</p></div>
+      <p class="tc-zex">📏 <b>Rule:</b> ${k.rule}</p>
+    </div></div></div>`;
+  document.body.appendChild(w);
+  w.addEventListener('click', e => { if (e.target === w || e.target.closest('#tcZClose')) { K().SFX.tap(); closeZoom(); } });
+  const b = document.getElementById('tcZClose'); try { b.focus({preventScroll: true}); } catch (e) {}
+  K().SFX.tap(); K().say(forEar(`${t.n}! ${t.txt}`), 'line');
+}
 function zoomCard(id) {
+  if (TC[id]) { closeZoom(true); return zoomTrainer(id); }
   const c = C[id]; if (!c) return;
   closeZoom(true);
   const ty = t => `<i class="tc-e ${t}">${TY[t][0]}</i>`;
@@ -845,5 +1056,5 @@ window.addEventListener('hashchange', () => closeZoom());
 
 function render(app, data) { newGame('learn'); }
 // test hooks for headless checks
-return {render, FILES, TEAMS, _state: () => S, _hint: () => hint(), _force: f => { FORCE = f; }, _paint: () => paint(), _calc: calc, _cards: C, _zoom: zoomCard};
+return {render, FILES, TEAMS, _state: () => S, _hint: () => hint(), _force: f => { FORCE = f; }, _paint: () => paint(), _calc: calc, _cards: C, _zoom: zoomCard, _trainers: TC, _ai: () => aiTrainer(S.op, S.me, false), _aiLate: () => aiTrainer(S.op, S.me, true), _why: id => trainerWhyNot(S.me, S.op, id), _new: newGame};
 })();
