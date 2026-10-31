@@ -272,7 +272,7 @@ function musicNext() { const i = TRACK_IDS.indexOf(mus.track); const id = TRACK_
 function musicVol(v) { mus.vol = Math.min(1, Math.max(0, v)); store('musicVol', mus.vol.toFixed(2)); if (mus.bus && ac) { mus.bus.gain.cancelScheduledValues(ac.currentTime); mus.bus.gain.setTargetAtTime(busLevel(), ac.currentTime, .05); } }
 function duck(on) { if (mus.ducked === on) return; mus.ducked = on; if (mus.bus && ac) { mus.bus.gain.cancelScheduledValues(ac.currentTime); mus.bus.gain.setTargetAtTime(busLevel(), ac.currentTime, on ? .08 : .4); } }
 const music = {play: musicPlay, stop: () => musicStop(), next: musicNext, vol: musicVol, state: () => ({on: mus.on, track: mus.track, vol: mus.vol, ducked: mus.ducked}), tracks: TRACKS, onChange: f => mus.listeners.push(f)};
-const YT_THEME = 'https://www.youtube.com/watch?v=MpaHR-V_R-o';   // "Gotta Catch 'Em All!" on The Official Pokémon YouTube channel
+const YT_THEME = 'https://www.youtube.com/watch?v=R4GIyJxvk94';   // English only: "Pokémon: Indigo League | Opening Theme" (Jason Paige) on The Official Pokémon YouTube channel
 async function testMusic() {                       // render one loop of each song offline; same click test as testSounds
   const out = {};
   for (const [k, tr] of Object.entries(TRACKS)) {
@@ -348,8 +348,8 @@ function musicHTML() {
     <div class="fg-mctl"><button class="btn red fg-mbtn" data-m="play">${mus.on ? '⏸️ Pause' : '▶️ Play'}</button>
       <button class="btn white fg-mbtn" data-m="next">⏭️ Next</button></div>
     <label class="fg-vol"><span aria-hidden="true">🔈</span><input type="range" min="0" max="100" step="5" value="${Math.round(mus.vol * 100)}" aria-label="Music volume"><span aria-hidden="true">🔊</span></label>
-    <a class="btn blue fg-yt" href="${YT_THEME}" target="_blank" rel="noopener">📺 Pokémon theme on YouTube</a>
-    <p class="fg-mnote">Our own made-up songs. The real theme opens on YouTube.</p></div>`;
+    <a class="btn blue fg-yt" href="${YT_THEME}" target="_blank" rel="noopener">📺 Pokémon Theme (English)</a>
+    <p class="fg-mnote">Our own made-up songs. The real English theme opens on YouTube.</p></div>`;
 }
 function bindMusic(root) {
   const box = root.querySelector('.fg-music'); if (!box) return;
