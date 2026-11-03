@@ -69,7 +69,7 @@ def main():
                 where=[], row=i + 2)
         c = cards[cid]; q = r.get('owned_qty') or 0; c['qty'] += q
         if q and r.get('binder'):
-            w = r['binder'] + (f" · Page {r['page']} · Pocket {r['slot_num']}" if r.get('page') else '')
+            w = r['binder'] + (f" · Page {r['page']} · Pocket {r['slot_num']}" if r.get('page') and r.get('slot_num') else '')
             c['where'].append(w)
     cl = list(cards.values())
 
@@ -78,13 +78,24 @@ def main():
     for b in binders_cfg:
         brows = [r for r in rows if r.get('binder') == b['name']]
         pages = collections.defaultdict(lambda: [None] * 9)
-        if any(r.get('page') for r in brows):
+        # Grouped binders (e.g. 30th Bulk) are boxes, not pocket binders: their Page column is only the collector # (sort hint),
+        # so they always use the grouped layout. (Bug fixed Nov 2, 2026: Bulk rows with Page = collector # but no Slot made
+        # the whole Bulk view render 0 pages.)
+        paged = not b.get('group_copies') and any(r.get('page') and r.get('slot_num') for r in brows)
+        if paged:
+            spill = []   # rows of a pocket binder with no page/pocket (e.g. display-case cards): shown after the last page
             for r in brows:
-                if r.get('page') and r.get('slot_num'):
-                    pages[int(r['page'])][int(r['slot_num']) - 1] = dict(id=r['card_id'], have=bool(r.get('owned_qty')))
+                pg, sl = r.get('page'), r.get('slot_num')
+                if pg and sl and pages[int(pg)][int(sl) - 1] is None:
+                    pages[int(pg)][int(sl) - 1] = dict(id=r['card_id'], have=bool(r.get('owned_qty')))
+                else:
+                    if pg and sl: print(f"WARNING: {b['name']} page {pg} pocket {sl} used twice (row {rows.index(r) + 2})", file=sys.stderr)
+                    spill.append(dict(id=r['card_id'], have=bool(r.get('owned_qty'))))
             npages = max([b.get('pages') or 0] + list(pages))
             plist = [pages[p] if p in pages else [None] * 9 for p in range(1, npages + 1)]
-        else:   # no pages (loose pulls): lay them out 9 per page in list order
+            for k in range(0, len(spill), 9):
+                chunk = spill[k:k + 9]; plist.append(chunk + [None] * (9 - len(chunk)))
+        else:   # no pages (loose pulls / bulk box): lay them out 9 per page in list order
             plist = []
             if b.get('group_copies'):   # one tile per card, with a copy count (e.g. 30th Bulk)
                 grp = collections.OrderedDict()
@@ -101,7 +112,7 @@ def main():
                 chunk = items[k:k + 9]
                 plist.append(chunk + [None] * (9 - len(chunk)))
         owned = [r for r in brows if r.get('owned_qty')]
-        binders.append(dict(name=b['name'], emoji=b['emoji'], desc=b['desc'], loose=not any(r.get('page') for r in brows),
+        binders.append(dict(name=b['name'], emoji=b['emoji'], desc=b['desc'], loose=not paged,
             cards=sum(r['owned_qty'] for r in owned), missing=sum(1 for r in brows if not r.get('owned_qty')),
             value=round(sum((num(r['market_price']) or 0) * r['owned_qty'] for r in owned), 2), pages=plist,
             grouped=bool(b.get('group_copies')), distinct=len({r['card_id'] for r in owned})))
