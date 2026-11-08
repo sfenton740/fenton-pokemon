@@ -1,0 +1,30 @@
+/* Grading & value. Same ink, borders and type floor as the rest of the site. */
+.gv{font-size:18px;line-height:1.35}
+.gv h1{font-size:28px}
+.gv h2{font-size:22px}
+.gv h3{font-size:22px;margin:0 0 6px}
+.gv p,.gv li,.gv label,.gv summary{font-size:18px;font-weight:700;overflow-wrap:anywhere}
+.gv .box p,.gv .box li{margin:6px 0}
+.gv a{overflow-wrap:anywhere}
+.gv .gv-actions{display:flex;flex-direction:column;align-items:stretch;gap:8px;margin:8px 0 12px}
+.gv .gv-chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
+.gv button,.gv .gv-btn{font-size:22px;font-weight:900;line-height:1.2;min-height:54px;height:auto;max-width:100%;padding:8px 14px;border-radius:18px;border:4px solid var(--ink);background:#fff;box-shadow:0 3px 0 rgba(0,0,0,.15);text-align:center;white-space:normal}
+.gv .gv-actions .gv-btn,.gv .gv-actions button{width:100%}
+.gv .gv-chips button{max-width:100%}
+.gv button.on,.gv .gv-btn.on{background:var(--red);color:#fff}
+.gv .gv-btn{display:inline-flex;align-items:center;justify-content:center}
+.gv input,.gv select,.gv textarea{display:block;width:100%;max-width:100%;font:inherit;font-size:18px;font-weight:700;padding:10px 12px;border:4px solid var(--ink);border-radius:14px;background:#fff;margin:4px 0 10px}
+.gv input[type=search]{font-size:22px;border-radius:999px}
+.gv input[type=checkbox]{display:inline-block;width:auto;margin:0 8px 0 0;vertical-align:middle}
+.gv textarea{min-height:140px}
+.gv .row{align-items:flex-start}
+.gv .row .rt{white-space:normal}
+.gv .gv-flag{background:#fff3c4;border-radius:12px;padding:8px 10px}
+.gv .gv-hypo{background:#e8f0ff;border:4px dashed var(--blue)}
+.gv .gv-unknown{color:#333}
+.gv details{background:#fff;border:4px solid var(--ink);border-radius:18px;padding:10px 12px;margin:12px 0}
+.gv summary{font-size:22px;font-weight:900;cursor:pointer}
+.gv .gv-k{display:block;margin-top:8px}
+.gv .gv-err{background:#ffe0d9;border-radius:12px;padding:8px 10px}
+a.gv-jump{font-size:22px;margin-top:12px}
+.gv .gv-ok{background:#d9f7de;border-radius:12px;padding:8px 10px}

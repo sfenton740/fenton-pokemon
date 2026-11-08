@@ -277,7 +277,7 @@ function value() {
   <div class="tiles">
     <a class="tile" href="#/movers"><span class="em">📈</span>Up &amp; Down<span class="sub">last ${D.settings.window} days</span></a>
     <a class="tile" href="#/top"><span class="em">🏆</span>Top Cards<span class="sub">most valuable</span></a>
-    <a class="tile blue" href="#/grading"><span class="em">💎</span>Grading<span class="sub">PSA 10 check</span></a></div>
+    <a class="tile blue" href="#/grading"><span class="em">💎</span>Grading<span class="sub">grades and value</span></a></div>
   <h2>📒 Binders</h2><div class="list">${bins}</div>
   <h2>📚 Sets</h2><div class="list">${sets}</div>
   <div class="tiles"><div class="tile" style="cursor:default"><span class="em">🃏</span>${t.cards}<span class="sub">cards</span></div>
@@ -409,19 +409,10 @@ function movers(tab) {
   $app.querySelectorAll('.mv-sort button').forEach(b => b.onclick = () => { setMoveMode(b.dataset.m); movers(tab); });
 }
 
-function grading() {
-  setTitle('💎 Grading');
-  const S = D.settings;
-  const own = Object.values(D.cards).filter(c => c.qty > 0 && c.gain != null).sort((a, b) => b.gain - a.gain);
-  const others = Object.values(D.cards).filter(c => c.qty === 0 && c.gain != null).length;
-  $app.innerHTML = `<h1>Is it worth grading?</h1>
-  <div class="note">If a card came back a perfect <b>PSA 10</b>, how much more would it be worth?<br>
-   Gain = PSA 10 price − card price − PSA fee (from $${S.psa_tiers[0][1]}) − ~${money(S.ship)} shipping.<br>
-   💎 = gain ${money0(S.gem_gain)}+, PSA 10 is ${S.gem_mult}× the card, ${S.gem_sales}+ real sales · 🤔 = some gain · ❌ = no gain.
-   A PSA 10 is never guaranteed!<br>Cheaper option: TAG Grading Base, $39.95 a card (5-card minimum, ~60 business days).</div>
-  <div class="list">${own.map(c => row(c.id, `<span class="${c.gain > 0 ? 'up' : 'down'}">${c.gain > 0 ? '+' : ''}${money0(c.gain)}</span><div class="sm">${VERD[c.verdict].split(' ')[0]}</div>`,
-     `<div class="sm">Card ${money(c.price)} · PSA 10 ${money0(c.psa)}</div><div class="sm">${VERD[c.verdict]} · ${c.psa_sales} sale${c.psa_sales === 1 ? '' : 's'}</div>`)).join('')}</div>
-  <p class="foot">${own.length} of our cards have real PSA 10 sales (PriceCharting, ${esc(fmtDate(own[0]?.psa_asof))}). Others: no PSA 10 sales yet.</p>`;
+function grading(id) {
+  if (window.Grading) return window.Grading.render($app, D, id || '');
+  setTitle('Grading & value');
+  $app.innerHTML = '<div class="empty-msg">The grading view did not load. Refresh the page.</div>';
 }
 
 function opened() {
@@ -495,6 +486,7 @@ function openCard(id) {
       ${c.where.length ? `<div class="stat wide"><div class="k">📍 Where it is</div><div style="font-weight:800;font-size:16px">${c.where.map(esc).join('<br>')}</div></div>` : ''}
     </div>
     ${c.url ? `<a class="btn red block" href="${esc(c.url)}" target="_blank" rel="noopener">🛒 See on TCGplayer</a>` : ''}
+    <a class="btn blue block gv-jump" href="#/grading/${esc(id)}">Grading and value</a>
     <button class="btn white block close2" style="margin-top:12px">👍 Done</button></div>`;
   lockScroll(); $modal.hidden = false; $modal.scrollTop = 0;
   $modal.querySelectorAll('.close,.close2').forEach(b => b.onclick = closeCard);
@@ -535,7 +527,7 @@ function route() {
     case 'wish': return wish();
     case 'top': return topCards();
     case 'movers': return movers(p[1]);
-    case 'grading': return grading();
+    case 'grading': return grading(decodeURIComponent(p[1] || ''));
     case 'opened': return opened();
     case 'search': return search(decodeURIComponent(p[1] || ''));
     case 'card': home(); return openCard(decodeURIComponent(p[1] || ''));
