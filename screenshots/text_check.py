@@ -129,7 +129,12 @@ SCREENS = [
   ('pack welcome', '#/trainer/big', "const S=Trainer._test.S(), p=S.profiles.big; p.pending=[{k:'welcome',cards:Trainer.DEX.slice(140,151).map(d=>({no:d.no,n:d.n,r:d.r,sh:d.no%5==0?1:0,c:1,isNew:true}))}]; Trainer._test.reveal('big');setTimeout(()=>document.getElementById('trPack').click(),300);", 4600),
   ('collection mine', '#/collection/big', '', 1200), ('collection gen', '#/collection/little', "document.querySelector('[data-tab=\"0\"]').click()", 1200),
   ('binder', '#/binder/0/1', '', 900), ('sets', '#/sets', '', 600), ('set', '#/set/0/need', '', 900), ('wish', '#/wish', '', 900),
-  ('top', '#/top', '', 900), ('movers', '#/movers', '', 900), ('grading', '#/grading', '', 900), ('opened', '#/opened', '', 900),
+  ('top', '#/top', '', 900), ('movers', '#/movers', '', 900), ('grading', '#/grading', '', 1200),
+  ('grading detail', '#/grading/me55-154', '', 1200), ('grading thin', '#/grading/me55-158', '', 1200),
+  ('grading cached', '#/grading/tcg-716208', '', 1200), ('grading assumptions', '#/grading/assumptions', '', 900),
+  ('grading import', '#/grading/import', '', 900), ('grading policy', '#/grading/policy', '', 900),
+  ('grading sheet', '#/grading/sheet', '', 900),
+  ('opened', '#/opened', '', 900),
   ('search', '#/search/pika', '', 900),
 ]
 

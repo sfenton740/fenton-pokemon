@@ -1,0 +1,3803 @@
+{
+ "schema": {
+  "record": [
+   "inventory_id",
+   "card",
+   "grade_class",
+   "date",
+   "price_usd",
+   "title",
+   "marketplace",
+   "sale_id",
+   "original_url",
+   "price_basis",
+   "shipping",
+   "condition_claim",
+   "match_checks"
+  ]
+ },
+ "provenance": {
+  "collected": "2026-11-07 ~23:10 America/New_York",
+  "via": "PriceCharting public card pages (curl, no login); rows reproduce eBay/TCGplayer reported sales",
+  "not_independently_verified": true,
+  "window": "2026-10-31..2026-11-07 (PriceCharting dates are date-only, no documented timezone; 11-08 rows excluded)",
+  "filters": "exact name+number; Charizard needs Classic Collection/30th/2026 marker; excluded lots, candidate/contender, foreign/regional, LP/MP/damaged, second card number, unparsed graders; deduped by sale ID",
+  "variant_note": "Gengar ex 154/128: secondary sources (cardrake.com/cards/cel30-154) state it was printed only as the holofoil SIR and every SIR carries the large 30th stamp; \"stamp\" in titles describes the standard card, so rows are pooled. Not confirmed by an official Pokemon source."
+ },
+ "cards": {
+  "me55-154": {
+   "pricecharting_url": "https://www.pricecharting.com/game/pokemon-30th-celebration/gengar-ex-154",
+   "summary": {
+    "raw": {
+     "n": 12,
+     "median": 61.64,
+     "min": 47.68,
+     "max": 92.02
+    },
+    "PSA 8": {
+     "n": 0,
+     "median": null,
+     "min": null,
+     "max": null
+    },
+    "PSA 9": {
+     "n": 6,
+     "median": 141.5,
+     "min": 95.0,
+     "max": 165.0
+    },
+    "PSA 10": {
+     "n": 29,
+     "median": 628.88,
+     "min": 510.0,
+     "max": 810.0
+    },
+    "TAG 9": {
+     "n": 1,
+     "median": null,
+     "min": 150.0,
+     "max": 150.0
+    },
+    "TAG 10": {
+     "n": 7,
+     "median": 399.0,
+     "min": 369.56,
+     "max": 455.0
+    },
+    "TAG 10 Pristine": {
+     "n": 0,
+     "median": null,
+     "min": null,
+     "max": null
+    }
+   },
+   "drop_counts": {
+    "after 11-07": 5,
+    "excluded term": 1,
+    "number": 3,
+    "raw without NM claim": 10,
+    "second number": 1,
+    "before window": 78,
+    "other grader/unparsed": 28
+   },
+   "marketplaces": [
+    "eBay"
+   ],
+   "rows": [
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-01",
+     "price_usd": 787.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117484070668",
+     "original_url": "https://www.ebay.com/itm/117484070668",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-01",
+     "price_usd": 662.75,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307245836817",
+     "original_url": "https://www.ebay.com/itm/307245836817",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-02",
+     "price_usd": 710.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307247354255",
+     "original_url": "https://www.ebay.com/itm/307247354255",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-02",
+     "price_usd": 740.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117484891489",
+     "original_url": "https://www.ebay.com/itm/117484891489",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-02",
+     "price_usd": 799.99,
+     "title": "2026 Pokemon 30C EN-30TH Gengar ex Special Illustration Rare 154/128 PSA 10 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "227593011232",
+     "original_url": "https://www.ebay.com/itm/227593011232",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-02",
+     "price_usd": 810.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "336859306170",
+     "original_url": "https://www.ebay.com/itm/336859306170",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-02",
+     "price_usd": 740.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117483907165",
+     "original_url": "https://www.ebay.com/itm/117483907165",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-02",
+     "price_usd": 790.0,
+     "title": "Pokemon Gengar EX 30th Celebration 154 Special Illustration Rare PSA 10 Gem Mint #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "287671351751",
+     "original_url": "https://www.ebay.com/itm/287671351751",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-03",
+     "price_usd": 725.0,
+     "title": "2026 Pokemon Gengar EX 30th Celebration Holo #154 SIR PSA 10 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900061830353",
+     "original_url": "https://www.ebay.com/itm/900061830353",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-04",
+     "price_usd": 610.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117488588342",
+     "original_url": "https://www.ebay.com/itm/117488588342",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-04",
+     "price_usd": 707.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117488459116",
+     "original_url": "https://www.ebay.com/itm/117488459116",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-04",
+     "price_usd": 650.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117488588402",
+     "original_url": "https://www.ebay.com/itm/117488588402",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-04",
+     "price_usd": 630.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900042201988",
+     "original_url": "https://www.ebay.com/itm/900042201988",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-05",
+     "price_usd": 610.0,
+     "title": "Gengar Ex *PSA 10* Special Illustration Rare *30th Celebration* #154 * Pokemon 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "336870078930",
+     "original_url": "https://www.ebay.com/itm/336870078930",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-05",
+     "price_usd": 710.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307252756769",
+     "original_url": "https://www.ebay.com/itm/307252756769",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 570.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117491632885",
+     "original_url": "https://www.ebay.com/itm/117491632885",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 610.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307254291027",
+     "original_url": "https://www.ebay.com/itm/307254291027",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 628.88,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900046873345",
+     "original_url": "https://www.ebay.com/itm/900046873345",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 510.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307254657418",
+     "original_url": "https://www.ebay.com/itm/307254657418",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 533.0,
+     "title": "GENGAR EX 2026 POKEMON 30TH CELEBRATION SPECIAL ILLUSTRATION RARE PSA 10 Q6435 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "940053536791",
+     "original_url": "https://www.ebay.com/itm/940053536791",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 581.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307253566270",
+     "original_url": "https://www.ebay.com/itm/307253566270",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 630.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117491230463",
+     "original_url": "https://www.ebay.com/itm/117491230463",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 610.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307253016702",
+     "original_url": "https://www.ebay.com/itm/307253016702",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-07",
+     "price_usd": 600.0,
+     "title": "2026 POKEMON EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "227600510309",
+     "original_url": "https://www.ebay.com/itm/227600510309",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-07",
+     "price_usd": 565.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900048004429",
+     "original_url": "https://www.ebay.com/itm/900048004429",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-07",
+     "price_usd": 564.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117484892651",
+     "original_url": "https://www.ebay.com/itm/117484892651",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-07",
+     "price_usd": 528.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117493622969",
+     "original_url": "https://www.ebay.com/itm/117493622969",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-07",
+     "price_usd": 570.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117493162132",
+     "original_url": "https://www.ebay.com/itm/117493162132",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-07",
+     "price_usd": 550.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 10 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "198773404973",
+     "original_url": "https://www.ebay.com/itm/198773404973",
+     "price_basis": "PriceCharting shows lower price plus higher crossed price (likely Best Offer or discount); whether lower is the accepted amount is not verified",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 9",
+     "date": "2026-11-02",
+     "price_usd": 165.0,
+     "title": "Pokemon TCG 30C EN Gengar ex 154/128 Special Illustration Rare Holo PSA 9 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "206647159716",
+     "original_url": "https://www.ebay.com/itm/206647159716",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 9",
+     "date": "2026-11-02",
+     "price_usd": 150.5,
+     "title": "2026 POKEMON 30TH CELEBRATION GENGAR EX SPECIAL ILLUSTRATION RARE #154 PSA 9 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "336865682547",
+     "original_url": "https://www.ebay.com/itm/336865682547",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 9",
+     "date": "2026-11-04",
+     "price_usd": 162.5,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 9 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307250255901",
+     "original_url": "https://www.ebay.com/itm/307250255901",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 9",
+     "date": "2026-11-07",
+     "price_usd": 95.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 9 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307256345273",
+     "original_url": "https://www.ebay.com/itm/307256345273",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 9",
+     "date": "2026-11-07",
+     "price_usd": 127.5,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 9 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307256359202",
+     "original_url": "https://www.ebay.com/itm/307256359202",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "PSA 9",
+     "date": "2026-11-07",
+     "price_usd": 132.5,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE GENGAR EX PSA 9 #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900050257961",
+     "original_url": "https://www.ebay.com/itm/900050257961",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "TAG 10",
+     "date": "2026-11-01",
+     "price_usd": 455.0,
+     "title": "Gengar ex TAG 10 Gem Mint 154/128 SIR 30th Celebration Pokemon 2026 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "940046202221",
+     "original_url": "https://www.ebay.com/itm/940046202221",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "TAG 10",
+     "date": "2026-11-04",
+     "price_usd": 450.0,
+     "title": "Pokemon Gengar ex 154/128 Special Illustration Rare 30th Celebration TAG 10 974 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "227593201242",
+     "original_url": "https://www.ebay.com/itm/227593201242",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "TAG 10",
+     "date": "2026-11-05",
+     "price_usd": 399.0,
+     "title": "2026 Pokemon Gengar ex 154/128 SIR 30th Anniversary TAG 10 Gem Mint 971 Score 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117492014672",
+     "original_url": "https://www.ebay.com/itm/117492014672",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "TAG 10",
+     "date": "2026-11-06",
+     "price_usd": 440.0,
+     "title": "Pokemon Gengar ex 154/128 Special Illustration Rare Holo 30th Celebration TAG 10 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "820298409059",
+     "original_url": "https://www.ebay.com/itm/820298409059",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "TAG 10",
+     "date": "2026-11-07",
+     "price_usd": 390.0,
+     "title": "Pokemon Gengar ex 154/128 SIR 30th Celebration TAG 10 (976) 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "377603047579",
+     "original_url": "https://www.ebay.com/itm/377603047579",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "TAG 10",
+     "date": "2026-11-07",
+     "price_usd": 369.56,
+     "title": "Pokemon Gengar ex 154/128 Special Illustration Rare 30th Celebration TAG 10 974 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900068814557",
+     "original_url": "https://www.ebay.com/itm/900068814557",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "TAG 10",
+     "date": "2026-11-07",
+     "price_usd": 370.0,
+     "title": "Gengar ex TAG 10 Gem Mint 154/128 SIR 30th Celebration Pokemon 2026 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "227592227295",
+     "original_url": "https://www.ebay.com/itm/227592227295",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "TAG 9",
+     "date": "2026-11-06",
+     "price_usd": 150.0,
+     "title": "Pokemon Gengar EX 154/128 | SIR | 30th Celebration | TAG 9 | MINT 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "880084219633",
+     "original_url": "https://www.ebay.com/itm/880084219633",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 55.0,
+     "title": "Gengar ex 154/128 SIR ME: 30th Celebration Pokemon Holofoil NM 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307268967324",
+     "original_url": "https://www.ebay.com/itm/307268967324",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 63.28,
+     "title": "Gengar ex - 154/128 - 30th Celebration - Pok\u00e9mon TCG - NM 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "860122224504",
+     "original_url": "https://www.ebay.com/itm/860122224504",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 65.0,
+     "title": "Gengar ex ME: 30th Celebration 154/128 Pokemon SIR Holofoil NM 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "860100810612",
+     "original_url": "https://www.ebay.com/itm/860100810612",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 60.0,
+     "title": "Pokemon Card TCG Gengar ex 154/128 SIR - 30th Anniversary Celebration NM/M 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "407315029824",
+     "original_url": "https://www.ebay.com/itm/407315029824",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 92.02,
+     "title": "Pok\u00e9mon - Gengar EX 154 | 30th Anniversary Celebrations SIR | Near Mint #154 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "287691317655",
+     "original_url": "https://www.ebay.com/itm/287691317655",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 49.99,
+     "title": "GENGAR EX 154/128 HOLO SIR ME: 30TH CELEBRATION POKEMON NM 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307217819588",
+     "original_url": "https://www.ebay.com/itm/307217819588",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 65.42,
+     "title": "Gengar ex 154/128 SIR Pokemon 30th Anniversary Celebration NM Pack Fresh 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "257839130769",
+     "original_url": "https://www.ebay.com/itm/257839130769",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 68.15,
+     "title": "Pokemon Gengar ex 154/128 30th Celebration NM TCG 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "880078238422",
+     "original_url": "https://www.ebay.com/itm/880078238422",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 55.99,
+     "title": "Pok\u00e9mon TCG - Gengar ex 154/128 30th Celebration - SIR - NEAR MINT 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "366791271712",
+     "original_url": "https://www.ebay.com/itm/366791271712",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 47.68,
+     "title": "Gengar ex 154/128 Holo Special Illustration Rare 30th Celebration Pokemon NM 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "820326399612",
+     "original_url": "https://www.ebay.com/itm/820326399612",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 76.0,
+     "title": "Pokemon TCG 30th Anniversary Gengar Ex 154/128 Special Illustration Rare Mint 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "366772003101",
+     "original_url": "https://www.ebay.com/itm/366772003101",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-154",
+     "card": "Gengar ex 154/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 55.0,
+     "title": "Pokemon TCG: Gengar ex SIR 154/128 30th Celebration NM 154/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "377624893962",
+     "original_url": "https://www.ebay.com/itm/377624893962",
+     "price_basis": "PriceCharting shows lower price plus higher crossed price (likely Best Offer or discount); whether lower is the accepted amount is not verified",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    }
+   ]
+  },
+  "me55-158": {
+   "pricecharting_url": "https://www.pricecharting.com/game/pokemon-30th-celebration/mew-ex-158",
+   "summary": {
+    "raw": {
+     "n": 9,
+     "median": 40.0,
+     "min": 29.99,
+     "max": 49.0
+    },
+    "PSA 8": {
+     "n": 0,
+     "median": null,
+     "min": null,
+     "max": null
+    },
+    "PSA 9": {
+     "n": 2,
+     "median": null,
+     "min": 137.5,
+     "max": 224.5
+    },
+    "PSA 10": {
+     "n": 29,
+     "median": 405.0,
+     "min": 265.0,
+     "max": 510.0
+    },
+    "TAG 9": {
+     "n": 2,
+     "median": null,
+     "min": 119.99,
+     "max": 120.0
+    },
+    "TAG 10": {
+     "n": 3,
+     "median": null,
+     "min": 201.5,
+     "max": 349.99
+    },
+    "TAG 10 Pristine": {
+     "n": 0,
+     "median": null,
+     "min": null,
+     "max": null
+    }
+   },
+   "drop_counts": {
+    "after 11-07": 10,
+    "raw without NM claim": 14,
+    "before window": 85,
+    "other grader/unparsed": 13,
+    "number": 1
+   },
+   "marketplaces": [
+    "TCGplayer",
+    "eBay"
+   ],
+   "rows": [
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-10-31",
+     "price_usd": 430.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "860093317530",
+     "original_url": "https://www.ebay.com/itm/860093317530",
+     "price_basis": "PriceCharting shows lower price plus higher crossed price (likely Best Offer or discount); whether lower is the accepted amount is not verified",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-01",
+     "price_usd": 415.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307246536673",
+     "original_url": "https://www.ebay.com/itm/307246536673",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-01",
+     "price_usd": 510.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900036209275",
+     "original_url": "https://www.ebay.com/itm/900036209275",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-01",
+     "price_usd": 440.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900035226122",
+     "original_url": "https://www.ebay.com/itm/900035226122",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-01",
+     "price_usd": 429.37,
+     "title": "2026 POKEMON 30TH CELEBRATION 30C EN #158/128 MEW EX FUTURISTIC RARE PSA 10 158/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "206655987786",
+     "original_url": "https://www.ebay.com/itm/206655987786",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-01",
+     "price_usd": 436.52,
+     "title": "2026 POKEMON 30TH CELEBRATION 30C EN #158/128 MEW EX FUTURISTIC RARE PSA 10 158/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "206655987777",
+     "original_url": "https://www.ebay.com/itm/206655987777",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-02",
+     "price_usd": 405.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117484891460",
+     "original_url": "https://www.ebay.com/itm/117484891460",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-02",
+     "price_usd": 474.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307247372872",
+     "original_url": "https://www.ebay.com/itm/307247372872",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-02",
+     "price_usd": 455.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117484891494",
+     "original_url": "https://www.ebay.com/itm/117484891494",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-02",
+     "price_usd": 360.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117484891453",
+     "original_url": "https://www.ebay.com/itm/117484891453",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-02",
+     "price_usd": 415.0,
+     "title": "Pokemon Mew EX 30th Celebration 158 Futuristic Rare PSA 10 Gem Mint #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "287671351753",
+     "original_url": "https://www.ebay.com/itm/287671351753",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-04",
+     "price_usd": 410.09,
+     "title": "Pokemon PSA 10 Mew ex 158 30th Anniversary Celebration EN 2026 Futuristic Holo 158/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "377606427992",
+     "original_url": "https://www.ebay.com/itm/377606427992",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-04",
+     "price_usd": 392.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307250255862",
+     "original_url": "https://www.ebay.com/itm/307250255862",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-04",
+     "price_usd": 370.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117488372024",
+     "original_url": "https://www.ebay.com/itm/117488372024",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-04",
+     "price_usd": 370.01,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117488632255",
+     "original_url": "https://www.ebay.com/itm/117488632255",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-05",
+     "price_usd": 450.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900066005638",
+     "original_url": "https://www.ebay.com/itm/900066005638",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-05",
+     "price_usd": 365.0,
+     "title": "Mew Ex *PSA 10* Futuristic Rare *30th Celebration* #158 * Pokemon 158/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "336870078927",
+     "original_url": "https://www.ebay.com/itm/336870078927",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-05",
+     "price_usd": 312.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900046101689",
+     "original_url": "https://www.ebay.com/itm/900046101689",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-05",
+     "price_usd": 363.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307252756155",
+     "original_url": "https://www.ebay.com/itm/307252756155",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 380.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900068886292",
+     "original_url": "https://www.ebay.com/itm/900068886292",
+     "price_basis": "PriceCharting shows lower price plus higher crossed price (likely Best Offer or discount); whether lower is the accepted amount is not verified",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 405.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307253744277",
+     "original_url": "https://www.ebay.com/itm/307253744277",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 400.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307254657510",
+     "original_url": "https://www.ebay.com/itm/307254657510",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-07",
+     "price_usd": 450.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900069196650",
+     "original_url": "https://www.ebay.com/itm/900069196650",
+     "price_basis": "PriceCharting shows lower price plus higher crossed price (likely Best Offer or discount); whether lower is the accepted amount is not verified",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-07",
+     "price_usd": 479.99,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307260623075",
+     "original_url": "https://www.ebay.com/itm/307260623075",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-07",
+     "price_usd": 265.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117483906302",
+     "original_url": "https://www.ebay.com/itm/117483906302",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-07",
+     "price_usd": 366.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307255797797",
+     "original_url": "https://www.ebay.com/itm/307255797797",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-07",
+     "price_usd": 285.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117492368090",
+     "original_url": "https://www.ebay.com/itm/117492368090",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-07",
+     "price_usd": 330.51,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117491223539",
+     "original_url": "https://www.ebay.com/itm/117491223539",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-07",
+     "price_usd": 295.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 10 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900049432315",
+     "original_url": "https://www.ebay.com/itm/900049432315",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 9",
+     "date": "2026-11-02",
+     "price_usd": 224.5,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 9 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "336859676069",
+     "original_url": "https://www.ebay.com/itm/336859676069",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "PSA 9",
+     "date": "2026-11-07",
+     "price_usd": 137.5,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION FUTURISTIC RARE #158 MEW EX PSA 9 #158 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307256359155",
+     "original_url": "https://www.ebay.com/itm/307256359155",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "TAG 10",
+     "date": "2026-11-02",
+     "price_usd": 201.5,
+     "title": "2026 Pokemon 30th Celebration Mew ex 158/128 Futuristic Rare TAG 10 Gem Mint 158/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "407309943957",
+     "original_url": "https://www.ebay.com/itm/407309943957",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "TAG 10",
+     "date": "2026-11-04",
+     "price_usd": 349.99,
+     "title": "High 983 Score TAG 10 Mew EX Futuristic Rare 30th Celebration 158/128 Pokemon 158/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "198752342866",
+     "original_url": "https://www.ebay.com/itm/198752342866",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "TAG 10",
+     "date": "2026-11-06",
+     "price_usd": 280.0,
+     "title": "2026 Pokemon 30th Celebration Mew ex 158/128 Futuristic Rare TAG 10 (957) 158/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "237159853784",
+     "original_url": "https://www.ebay.com/itm/237159853784",
+     "price_basis": "PriceCharting shows lower price plus higher crossed price (likely Best Offer or discount); whether lower is the accepted amount is not verified",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "TAG 9",
+     "date": "2026-11-02",
+     "price_usd": 119.99,
+     "title": "Mew EX 158/128 Futuristic Rare 30th Celebration Pokemon TAG 9 Mint 158/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307254583469",
+     "original_url": "https://www.ebay.com/itm/307254583469",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "TAG 9",
+     "date": "2026-11-03",
+     "price_usd": 120.0,
+     "title": "Mew EX 158/128 Futuristic Rare 30th Celebration Pokemon TAG 9 Mint 158/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "336877654817",
+     "original_url": "https://www.ebay.com/itm/336877654817",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "raw",
+     "date": "2026-11-04",
+     "price_usd": 41.49,
+     "title": "Mew ex - 158/128 #158 Near Mint English [TCGPlayer]",
+     "marketplace": "TCGplayer",
+     "sale_id": "1vxaXuHbJZaW",
+     "original_url": null,
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 29.99,
+     "title": "Mew Ex 158/128 30th Celebration Futuristic Rare Pok\u00e9mon Near Mint 158/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "820329109434",
+     "original_url": "https://www.ebay.com/itm/820329109434",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 31.0,
+     "title": "Mew Ex 158/128 30th Celebration Futuristic Rare Pok\u00e9mon Near Mint 158/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "287712642206",
+     "original_url": "https://www.ebay.com/itm/287712642206",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 40.0,
+     "title": "Mew ex 158/128 Futuristic Rare 30th Celebration Pokemon Holo Near Mint 158/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "227599974237",
+     "original_url": "https://www.ebay.com/itm/227599974237",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 49.0,
+     "title": "Mew ex 158/128 Me: 30th Celebration Holo Pokemon English NM 158/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "287710784080",
+     "original_url": "https://www.ebay.com/itm/287710784080",
+     "price_basis": "PriceCharting shows lower price plus higher crossed price (likely Best Offer or discount); whether lower is the accepted amount is not verified",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 40.3,
+     "title": "Mew EX FUTURISTIC RARE 158/128 English Pok\u00e9mon TCG 30th Celebrations MINT 158/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "880082363156",
+     "original_url": "https://www.ebay.com/itm/880082363156",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 35.0,
+     "title": "Mew ex 158/128 Futuristic Rare ME: 30th Celebration Pokemon Holo Near Mint 158/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "880084226435",
+     "original_url": "https://www.ebay.com/itm/880084226435",
+     "price_basis": "PriceCharting shows lower price plus higher crossed price (likely Best Offer or discount); whether lower is the accepted amount is not verified",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 41.76,
+     "title": "POKEMON 158/128 MEW EX 30TH CELEBRATION HOLO FUTURISTIC RARE NEAR MINT 158/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "198778598681",
+     "original_url": "https://www.ebay.com/itm/198778598681",
+     "price_basis": "PriceCharting shows lower price plus higher crossed price (likely Best Offer or discount); whether lower is the accepted amount is not verified",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-158",
+     "card": "Mew ex 158/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 36.0,
+     "title": "Mew ex 158/128 Futuristic Rare ME: 30th Celebration Pok\u00e9mon TCG Card NM 158/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "860121657715",
+     "original_url": "https://www.ebay.com/itm/860121657715",
+     "price_basis": "PriceCharting shows lower price plus higher crossed price (likely Best Offer or discount); whether lower is the accepted amount is not verified",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    }
+   ]
+  },
+  "tcg-714372": {
+   "pricecharting_url": "https://www.pricecharting.com/game/pokemon-30th-celebration/charizard-4",
+   "summary": {
+    "raw": {
+     "n": 19,
+     "median": 169.99,
+     "min": 125.0,
+     "max": 202.5
+    },
+    "PSA 8": {
+     "n": 0,
+     "median": null,
+     "min": null,
+     "max": null
+    },
+    "PSA 9": {
+     "n": 0,
+     "median": null,
+     "min": null,
+     "max": null
+    },
+    "PSA 10": {
+     "n": 23,
+     "median": 980.0,
+     "min": 760.0,
+     "max": 1600.0
+    },
+    "TAG 9": {
+     "n": 0,
+     "median": null,
+     "min": null,
+     "max": null
+    },
+    "TAG 10": {
+     "n": 2,
+     "median": null,
+     "min": 615.0,
+     "max": 629.99
+    },
+    "TAG 10 Pristine": {
+     "n": 0,
+     "median": null,
+     "min": null,
+     "max": null
+    }
+   },
+   "drop_counts": {
+    "excluded term": 2,
+    "raw without NM claim": 9,
+    "not reprint": 2,
+    "before window": 46,
+    "other grader/unparsed": 8
+   },
+   "marketplaces": [
+    "eBay"
+   ],
+   "rows": [
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-10-31",
+     "price_usd": 1349.99,
+     "title": "2026 Pokemon Charizard #4 30th Celebration Classic Collection PSA 10 English #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900052068159",
+     "original_url": "https://www.ebay.com/itm/900052068159",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-10-31",
+     "price_usd": 1600.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION CLASSIC COLLECTION #4 CHARIZARD PSA 10 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117480990351",
+     "original_url": "https://www.ebay.com/itm/117480990351",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-11-02",
+     "price_usd": 1450.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION CLASSIC COL #4 CHARIZARD PSA 10 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307252747002",
+     "original_url": "https://www.ebay.com/itm/307252747002",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-11-02",
+     "price_usd": 1500.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION CLASSIC COLLECTION #4 CHARIZARD PSA 10 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117484963768",
+     "original_url": "https://www.ebay.com/itm/117484963768",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-11-03",
+     "price_usd": 1575.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION CLASSIC COLLECTION #4 CHARIZARD PSA 10 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900042372545",
+     "original_url": "https://www.ebay.com/itm/900042372545",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-11-04",
+     "price_usd": 1450.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION CLASSIC COLLECTION #4 CHARIZARD PSA 10 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117488369019",
+     "original_url": "https://www.ebay.com/itm/117488369019",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-11-05",
+     "price_usd": 1048.99,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION CLASSIC COLLECTION #4 CHARIZARD PSA 10 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900066730360",
+     "original_url": "https://www.ebay.com/itm/900066730360",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-11-05",
+     "price_usd": 1075.01,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION CLASSIC COLLECTION #4 CHARIZARD PSA 10 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307252756628",
+     "original_url": "https://www.ebay.com/itm/307252756628",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 850.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION CLASSIC COLLECTION #4 CHARIZARD PSA 10 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117507227151",
+     "original_url": "https://www.ebay.com/itm/117507227151",
+     "price_basis": "PriceCharting shows lower price plus higher crossed price (likely Best Offer or discount); whether lower is the accepted amount is not verified",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 899.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION CLASSIC COLLECTION #4 CHARIZARD PSA 10 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "257835033212",
+     "original_url": "https://www.ebay.com/itm/257835033212",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 900.0,
+     "title": "2026 CHARIZARD PSA 10 POKEMON 30TH CELEBRATION #4 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "128175080663",
+     "original_url": "https://www.ebay.com/itm/128175080663",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 820.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION CLASSIC COLLECTION #4 CHARIZARD PSA 10 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117492294954",
+     "original_url": "https://www.ebay.com/itm/117492294954",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 1050.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION CLASSIC COLLECTION #4 CHARIZARD PSA 10 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307253578246",
+     "original_url": "https://www.ebay.com/itm/307253578246",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 870.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION CLASSIC COLLECTION #4 CHARIZARD PSA 10 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117491647492",
+     "original_url": "https://www.ebay.com/itm/117491647492",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 980.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION CLASSIC COLLECTION #4 CHARIZARD PSA 10 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307253575679",
+     "original_url": "https://www.ebay.com/itm/307253575679",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 1035.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION CLASSIC COLLECTION #4 CHARIZARD PSA 10 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900046819272",
+     "original_url": "https://www.ebay.com/itm/900046819272",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-11-07",
+     "price_usd": 810.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION CLASSIC COLLECTION #4 CHARIZARD PSA 10 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307254773307",
+     "original_url": "https://www.ebay.com/itm/307254773307",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-11-07",
+     "price_usd": 760.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION CLASSIC COLLECTION #4 CHARIZARD PSA 10 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900050417131",
+     "original_url": "https://www.ebay.com/itm/900050417131",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-11-07",
+     "price_usd": 905.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION CLASSIC COLLECTION #4 CHARIZARD PSA 10 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117493104072",
+     "original_url": "https://www.ebay.com/itm/117493104072",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-11-07",
+     "price_usd": 860.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION CLASSIC COLLECTION #4 CHARIZARD PSA 10 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900050092010",
+     "original_url": "https://www.ebay.com/itm/900050092010",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-11-07",
+     "price_usd": 927.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION CLASSIC COLLECTION #4 CHARIZARD PSA 10 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307246536486",
+     "original_url": "https://www.ebay.com/itm/307246536486",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-11-07",
+     "price_usd": 910.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION CLASSIC COLLECTION #4 CHARIZARD PSA 10 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900048015258",
+     "original_url": "https://www.ebay.com/itm/900048015258",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "PSA 10",
+     "date": "2026-11-07",
+     "price_usd": 1025.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION CLASSIC COLLECTION #4 CHARIZARD PSA 10 #4 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117492612261",
+     "original_url": "https://www.ebay.com/itm/117492612261",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "TAG 10",
+     "date": "2026-10-31",
+     "price_usd": 615.0,
+     "title": "2026 POKEMON CHARIZARD 30TH CELEBRATION CLASSIC COLLECTION #4/102 TAG 10 (962) 4/102 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "377602794192",
+     "original_url": "https://www.ebay.com/itm/377602794192",
+     "price_basis": "PriceCharting shows lower price plus higher crossed price (likely Best Offer or discount); whether lower is the accepted amount is not verified",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "TAG 10",
+     "date": "2026-11-04",
+     "price_usd": 629.99,
+     "title": "2026 POKEMON CHARIZARD 30TH CELEBRATION CLASSIC COLLECTION #4/102 TAG 10 (962) 4/102 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "237159823632",
+     "original_url": "https://www.ebay.com/itm/237159823632",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "raw",
+     "date": "2026-11-04",
+     "price_usd": 165.0,
+     "title": "Pokemon 30th Anniversary Celebration Charizard Classic Collection 4/102 NM 4/102 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "287705137215",
+     "original_url": "https://www.ebay.com/itm/287705137215",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "raw",
+     "date": "2026-11-05",
+     "price_usd": 170.0,
+     "title": "Pok\u00e9mon TCG - Charizard 4/102 30th Celebration Classic Collection Holo M/NM Eng 4/102 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307268412377",
+     "original_url": "https://www.ebay.com/itm/307268412377",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "raw",
+     "date": "2026-11-05",
+     "price_usd": 158.0,
+     "title": "Pokemon CHARIZARD 4/102 - 30th Celebration - HOLO - MINT - Card B [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "198775359946",
+     "original_url": "https://www.ebay.com/itm/198775359946",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "raw",
+     "date": "2026-11-05",
+     "price_usd": 170.0,
+     "title": "Pok\u00e9mon TCG 30th Anniversary Celebration CHARIZARD 4/102 Classic Collection NM 4/102 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "820317986793",
+     "original_url": "https://www.ebay.com/itm/820317986793",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "raw",
+     "date": "2026-11-05",
+     "price_usd": 202.5,
+     "title": "Pokemon Charizard 4/102 30th Anniversary Celebration Classic Collection Card NM 4/102 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "227594315686",
+     "original_url": "https://www.ebay.com/itm/227594315686",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "raw",
+     "date": "2026-11-05",
+     "price_usd": 178.5,
+     "title": "2026 Pokemon Charizard 4/102 30th Celebration Classic Collection CENTERED & MINT 4/102 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "820307012001",
+     "original_url": "https://www.ebay.com/itm/820307012001",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "raw",
+     "date": "2026-11-05",
+     "price_usd": 160.0,
+     "title": "Charizard 30th Celebration Classic Collection 4/102 NM Pokemon TCG 4/102 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "860113330864",
+     "original_url": "https://www.ebay.com/itm/860113330864",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "raw",
+     "date": "2026-11-05",
+     "price_usd": 169.99,
+     "title": "Pokemon 30th Anniversary Celebration Charizard Classic Collection 4/102 NM 4/102 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "227598024348",
+     "original_url": "https://www.ebay.com/itm/227598024348",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "raw",
+     "date": "2026-11-05",
+     "price_usd": 158.0,
+     "title": "Pokemon 30th Celebration Charizard 4/102 Classic Collection Near Mint English 4/102 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "377621817179",
+     "original_url": "https://www.ebay.com/itm/377621817179",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "raw",
+     "date": "2026-11-05",
+     "price_usd": 188.0,
+     "title": "Charizard 4/102 Pok\u00e9mon 30th Anniversary Celebration Classic Collection MINT 4/102 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "278384640922",
+     "original_url": "https://www.ebay.com/itm/278384640922",
+     "price_basis": "PriceCharting shows lower price plus higher crossed price (likely Best Offer or discount); whether lower is the accepted amount is not verified",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "raw",
+     "date": "2026-11-06",
+     "price_usd": 157.5,
+     "title": "Pokemon TCG: 30th Celebration, Charizard, Classic Collectio, NM++!! 4/102 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "840082902153",
+     "original_url": "https://www.ebay.com/itm/840082902153",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "raw",
+     "date": "2026-11-06",
+     "price_usd": 195.5,
+     "title": "Charizard 4/102 Pokemon 30th Anniversary Celebration Classic Collection MINT 4/102 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "147658305049",
+     "original_url": "https://www.ebay.com/itm/147658305049",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "raw",
+     "date": "2026-11-06",
+     "price_usd": 175.0,
+     "title": "Charizard 4/102 Pok\u00e9mon 30th Anniversary Celebration Classic Collection NM 4/102 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "257837598972",
+     "original_url": "https://www.ebay.com/itm/257837598972",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "raw",
+     "date": "2026-11-06",
+     "price_usd": 125.0,
+     "title": "Pokemon 30th Celebration Charizard- MINT! 4/102 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "840096456629",
+     "original_url": "https://www.ebay.com/itm/840096456629",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "raw",
+     "date": "2026-11-06",
+     "price_usd": 190.5,
+     "title": "Pokemon Charizard 4/102 30th Anniversary Celebration (Classic Collection) NM 4/102 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "198756124456",
+     "original_url": "https://www.ebay.com/itm/198756124456",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "raw",
+     "date": "2026-11-06",
+     "price_usd": 199.5,
+     "title": "Pokemon Charizard 4/102 30th Anniversary Celebration Classic Collection Card NM 4/102 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "820293882883",
+     "original_url": "https://www.ebay.com/itm/820293882883",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "raw",
+     "date": "2026-11-06",
+     "price_usd": 162.5,
+     "title": "2026 Pokemon Charizard 4/102 Holo 30th Celebration Classic Collection NM STRONG 4/102 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "227588923545",
+     "original_url": "https://www.ebay.com/itm/227588923545",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "raw",
+     "date": "2026-11-06",
+     "price_usd": 159.95,
+     "title": "FRESH NM+ Charizard 4/102 Pok\u00e9mon 30th Anniversary Celebration Classic 4/102 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "840098431700",
+     "original_url": "https://www.ebay.com/itm/840098431700",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "tcg-714372",
+     "card": "Charizard (Classic Collection) 4/102",
+     "grade_class": "raw",
+     "date": "2026-11-06",
+     "price_usd": 158.0,
+     "title": "Pokemon CHARIZARD 4/102 - 30th Celebration - HOLO - MINT - Card A [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "198772666827",
+     "original_url": "https://www.ebay.com/itm/198772666827",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    }
+   ]
+  },
+  "me55-151": {
+   "pricecharting_url": "https://www.pricecharting.com/game/pokemon-30th-celebration/mewtwo-ex-151",
+   "summary": {
+    "raw": {
+     "n": 11,
+     "median": 38.0,
+     "min": 32.0,
+     "max": 49.99
+    },
+    "PSA 8": {
+     "n": 0,
+     "median": null,
+     "min": null,
+     "max": null
+    },
+    "PSA 9": {
+     "n": 2,
+     "median": null,
+     "min": 130.38,
+     "max": 250.0
+    },
+    "PSA 10": {
+     "n": 14,
+     "median": 387.5,
+     "min": 330.0,
+     "max": 500.0
+    },
+    "TAG 9": {
+     "n": 0,
+     "median": null,
+     "min": null,
+     "max": null
+    },
+    "TAG 10": {
+     "n": 5,
+     "median": 275.0,
+     "min": 245.5,
+     "max": 399.0
+    },
+    "TAG 10 Pristine": {
+     "n": 0,
+     "median": null,
+     "min": null,
+     "max": null
+    }
+   },
+   "drop_counts": {
+    "after 11-07": 4,
+    "raw without NM claim": 15,
+    "second number": 1,
+    "excluded term": 1,
+    "before window": 70,
+    "other grader/unparsed": 13
+   },
+   "marketplaces": [
+    "TCGplayer",
+    "eBay"
+   ],
+   "rows": [
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "PSA 10",
+     "date": "2026-10-31",
+     "price_usd": 485.0,
+     "title": "Pok\u00e9mon Mewtwo ex 151/128 30th Celebration SIR Holo English PSA 10 151/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "227591841730",
+     "original_url": "https://www.ebay.com/itm/227591841730",
+     "price_basis": "PriceCharting shows lower price plus higher crossed price (likely Best Offer or discount); whether lower is the accepted amount is not verified",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "PSA 10",
+     "date": "2026-10-31",
+     "price_usd": 495.0,
+     "title": "Pok\u00e9mon TCG Mewtwo ex 151/128 30th Celebration Full Art SIR Holo EN PSA 10 GEM 151/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "227590434382",
+     "original_url": "https://www.ebay.com/itm/227590434382",
+     "price_basis": "PriceCharting shows lower price plus higher crossed price (likely Best Offer or discount); whether lower is the accepted amount is not verified",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-01",
+     "price_usd": 378.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE MEWTWO EX PSA 10 #151 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117483907054",
+     "original_url": "https://www.ebay.com/itm/117483907054",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-01",
+     "price_usd": 445.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE MEWTWO EX PSA 10 #151 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900036177420",
+     "original_url": "https://www.ebay.com/itm/900036177420",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-01",
+     "price_usd": 474.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE MEWTWO EX PSA 10 #151 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307245836740",
+     "original_url": "https://www.ebay.com/itm/307245836740",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-02",
+     "price_usd": 500.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE MEWTWO EX PSA 10 #151 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "336859267742",
+     "original_url": "https://www.ebay.com/itm/336859267742",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-02",
+     "price_usd": 450.0,
+     "title": "PSA 10 2026 POKEMON 30TH CELEBRATION SPECIAL ILLUSTRATION RARE MEWTWO EX LOW POP 151/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "237144013716",
+     "original_url": "https://www.ebay.com/itm/237144013716",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-04",
+     "price_usd": 360.0,
+     "title": "MEWTWO EX 30th Celebration Special Illustration Rare #151 PSA 10 Pokemon [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "336880248948",
+     "original_url": "https://www.ebay.com/itm/336880248948",
+     "price_basis": "PriceCharting shows lower price plus higher crossed price (likely Best Offer or discount); whether lower is the accepted amount is not verified",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-04",
+     "price_usd": 330.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE MEWTWO EX PSA 10 #151 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900042202003",
+     "original_url": "https://www.ebay.com/itm/900042202003",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-04",
+     "price_usd": 390.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE MEWTWO EX PSA 10 #151 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307250479123",
+     "original_url": "https://www.ebay.com/itm/307250479123",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-04",
+     "price_usd": 385.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE MEWTWO EX PSA 10 #151 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117488383551",
+     "original_url": "https://www.ebay.com/itm/117488383551",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 355.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE MEWTWO EX PSA 10 #151 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117491659859",
+     "original_url": "https://www.ebay.com/itm/117491659859",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 335.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE MEWTWO EX PSA 10 #151 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117491658190",
+     "original_url": "https://www.ebay.com/itm/117491658190",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "PSA 10",
+     "date": "2026-11-06",
+     "price_usd": 360.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE MEWTWO EX PSA 10 #151 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "900067356063",
+     "original_url": "https://www.ebay.com/itm/900067356063",
+     "price_basis": "PriceCharting shows lower price plus higher crossed price (likely Best Offer or discount); whether lower is the accepted amount is not verified",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "PSA 9",
+     "date": "2026-11-02",
+     "price_usd": 250.0,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE MEWTWO EX PSA 9 #151 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "117484919260",
+     "original_url": "https://www.ebay.com/itm/117484919260",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "PSA 9",
+     "date": "2026-11-04",
+     "price_usd": 130.38,
+     "title": "2026 POKEMON 30C EN-30TH CELEBRATION SPECIAL ILLUSTRATION RARE MEWTWO EX PSA 9 #151 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "307250503253",
+     "original_url": "https://www.ebay.com/itm/307250503253",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "TAG 10",
+     "date": "2026-10-31",
+     "price_usd": 399.0,
+     "title": "Pokemon 2026 Mewtwo ex 151/128 SIR 30th Celebration GEM MINT TAG 10 151/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "407325829489",
+     "original_url": "https://www.ebay.com/itm/407325829489",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "TAG 10",
+     "date": "2026-11-01",
+     "price_usd": 295.0,
+     "title": "TAG 10 Mewtwo Ex 151/128 Pokemon 30th Celebration 2026 ENG TCG Gem Mint 10 (982) 151/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "366767888403",
+     "original_url": "https://www.ebay.com/itm/366767888403",
+     "price_basis": "PriceCharting shows lower price plus higher crossed price (likely Best Offer or discount); whether lower is the accepted amount is not verified",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "TAG 10",
+     "date": "2026-11-02",
+     "price_usd": 275.0,
+     "title": "TAG 10 Mewtwo Ex 151/128 Pokemon 30th Celebration 2026 ENG TCG Gem Mint 10 (966) 151/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "377604787890",
+     "original_url": "https://www.ebay.com/itm/377604787890",
+     "price_basis": "PriceCharting shows lower price plus higher crossed price (likely Best Offer or discount); whether lower is the accepted amount is not verified",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "TAG 10",
+     "date": "2026-11-07",
+     "price_usd": 250.0,
+     "title": "TAG 10 Mewtwo Ex 151/128 Pokemon 30th Celebration 2026 ENG TCG Gem Mint 10 151/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "168829065661",
+     "original_url": "https://www.ebay.com/itm/168829065661",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "TAG 10",
+     "date": "2026-11-07",
+     "price_usd": 245.5,
+     "title": "TAG 10 Mewtwo Ex 151/128 Pokemon 30th Celebration 2026 ENG TCG Gem Mint 10 (970) 151/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "227592218886",
+     "original_url": "https://www.ebay.com/itm/227592218886",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "graded label per title",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "raw",
+     "date": "2026-11-01",
+     "price_usd": 42.32,
+     "title": "Mewtwo ex - 151/128 #151 Near Mint English [TCGPlayer]",
+     "marketplace": "TCGplayer",
+     "sale_id": "LcBTxX3GcCeE",
+     "original_url": null,
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "raw",
+     "date": "2026-11-06",
+     "price_usd": 35.5,
+     "title": "Mewtwo ex - 151/128 #151 Near Mint English [TCGPlayer]",
+     "marketplace": "TCGplayer",
+     "sale_id": "irOX3DUitg1Z",
+     "original_url": null,
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 32.99,
+     "title": "Mewtwo ex 151/128 Me: Pokemon 30th Celebration Holo NM 151/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "327444767495",
+     "original_url": "https://www.ebay.com/itm/327444767495",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 32.0,
+     "title": "Mewtwo ex 151/128 Me: Pokemon 30th Celebration Holo NM 151/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "920116164377",
+     "original_url": "https://www.ebay.com/itm/920116164377",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 37.99,
+     "title": "MEWTWO EX 151/128 HOLO SIR 30TH CELEBRATION POKEMON NEAR MINT 151/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "198779786430",
+     "original_url": "https://www.ebay.com/itm/198779786430",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 49.99,
+     "title": "Mewtwo ex 151/128 Holo Special Illustration Rare 30th Celebration Pokemon NM 151/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "800886024608",
+     "original_url": "https://www.ebay.com/itm/800886024608",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 40.0,
+     "title": "MINTY PACK FRESH Mewtwo ex 151/128 SIR 30th Celebration Pokemon Card Full Art 151/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "860120865637",
+     "original_url": "https://www.ebay.com/itm/860120865637",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 37.99,
+     "title": "Pokemon Mewtwo EX: 30th Celebration 151/128 SIR NM 151/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "366779306899",
+     "original_url": "https://www.ebay.com/itm/366779306899",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 39.99,
+     "title": "Pokemon 30th Celebration Mewtwo EX Special Illustration Rare 151/128 MINT [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "860104276243",
+     "original_url": "https://www.ebay.com/itm/860104276243",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 38.0,
+     "title": "Pok\u00e9mon Mewtwo ex 151/128 30th Celebration NM 151/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "198778602987",
+     "original_url": "https://www.ebay.com/itm/198778602987",
+     "price_basis": "single displayed price",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    },
+    {
+     "inventory_id": "me55-151",
+     "card": "Mewtwo ex 151/128",
+     "grade_class": "raw",
+     "date": "2026-11-07",
+     "price_usd": 42.0,
+     "title": "2026 Pokemon Mewtwo ex 151/128 SIR 30th Celebration Special Illustration Rare NM 151/128 [eBay]",
+     "marketplace": "eBay",
+     "sale_id": "800876994424",
+     "original_url": "https://www.ebay.com/itm/800876994424",
+     "price_basis": "PriceCharting shows lower price plus higher crossed price (likely Best Offer or discount); whether lower is the accepted amount is not verified",
+     "shipping": "unknown",
+     "condition_claim": "seller title claim",
+     "match_checks": [
+      "name",
+      "number",
+      "English-by-exclusion",
+      "window"
+     ]
+    }
+   ]
+  }
+ },
+ "evidence_quality": {
+  "level": "C: single aggregator reproducing marketplace rows with sale IDs; no independent second source",
+  "independent_sources_attempted": {
+   "PSA APR": "https://www.psacard.com/auctionprices -> card search is JavaScript/500 from fetch; not obtained",
+   "TCGplayer recent sales": "product pages render sales by JavaScript; not obtained (internal API not used)",
+   "other aggregators (pokeinvest, vaultedmarket, tcgfish, gradevalue)": "derive from eBay; duplicates, not independent"
+  },
+  "gaps": [
+   "PSA 8: no matching rows for any pilot card",
+   "TAG Pristine: none",
+   "shipping and Best Offer acceptance unknown per row"
+  ]
+ }
+}
