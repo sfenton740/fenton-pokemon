@@ -1,25 +1,25 @@
 [
   {
     "name": "30th Binder 1",
-    "emoji": "📕",
+    "emoji": "\ud83d\udcd5",
     "desc": "Our main 30th Celebration binder",
     "pages": 23
   },
   {
     "name": "30th Extras Binder",
-    "emoji": "📗",
+    "emoji": "\ud83d\udcd7",
     "desc": "Our 2nd 30th binder: extra copies, same pocket order as Binder 1",
     "pages": 23
   },
   {
     "name": "Other Sets",
-    "emoji": "🎴",
-    "desc": "Pulls from other sets, by set (Perfect Order, Chaos Rising, Pitch Black, promos, older sets), plus display-case cards",
+    "emoji": "\ud83c\udfb4",
+    "desc": "Pulls from other sets, by set (Perfect Order, Chaos Rising, Pitch Black, MEP promos, older sets, Prismatic Evolutions), plus display-case cards",
     "pages": null
   },
   {
     "name": "30th Bulk",
-    "emoji": "📒",
+    "emoji": "\ud83d\udcd2",
     "desc": "Top-loaded 30th Celebration extras / bulk (sorted by card number)",
     "pages": null,
     "group_copies": true,
