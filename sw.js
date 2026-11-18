@@ -1,5 +1,5 @@
 // Offline support: app shell cached, data.json network-first, card pictures cache-first.
-const VERSION = 'v49-pull21-2026-11-15';
+const VERSION = 'v50-pull22-2026-11-17';
 const SHELL = 'shell-' + VERSION, DATA = 'data-' + VERSION, IMGS = 'imgs-v1', GAMES = 'games-v5';
 const FILES = ['./', 'index.html', 'style.css', 'app.js', 'games.js', 'tcg.js', 'trivia.js', 'trainer-dex.js', 'trainer.js', 'math.js', 'games.css', 'math.css', 'manifest.webmanifest',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png', 'icons/favicon.png'];
