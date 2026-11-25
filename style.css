@@ -278,7 +278,7 @@ body.pre-mode main{max-width:1100px}
 .pre-modal-var.pokeball{background:#ffd0d0}
 .pre-modal-var.master{background:#d4e4ff}
 @media (min-width:800px){
-  .pre-vars{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .pre-vars:has(> :nth-child(3)){grid-template-columns:repeat(4,minmax(0,1fr))}
   .pre-binder{padding:16px}
   .pre-binder .grid{gap:12px}
 }

@@ -32,6 +32,7 @@ def numkey(n):
 
 
 PRE_MASTER = os.path.join(SITE, 'prismatic_master.json')
+DLR_MASTER = os.path.join(SITE, 'delta_reign_master.json')
 
 def pre_variant_of(row):
     """Which Prismatic variant a collection row is. Prefer the card name;
@@ -49,10 +50,17 @@ def pre_variant_of(row):
     if re.search(r'Master Ball Pattern', note, re.I): return 'master'
     return None
 
-def build_pre_master(rows):
-    if not os.path.exists(PRE_MASTER):
+def row_in_master_set(row, codes, name_needles):
+    code = (row.get('set_code') or '').upper()
+    setn = (row.get('set_name') or row.get('set') or '').lower()
+    if code in codes:
+        return True
+    return any(n in setn for n in name_needles)
+
+def build_set_master(rows, catalog_path, codes, name_needles, defaults):
+    if not os.path.exists(catalog_path):
         return None
-    cat = json.load(open(PRE_MASTER))
+    cat = json.load(open(catalog_path))
     by_key = {(p['pid'], p['variant']): p for p in cat['pockets']}
     by_pid = collections.defaultdict(list)
     for p in cat['pockets']:
@@ -64,7 +72,7 @@ def build_pre_master(rows):
     for r in rows:
         if not r.get('owned_qty'):
             continue
-        if (r.get('set_code') or '') != 'PRE' and 'prismatic' not in (r.get('set_name') or '').lower():
+        if not row_in_master_set(r, codes, name_needles):
             continue
         try:
             pid = int(r.get('tcgplayer_product_id') or 0)
@@ -122,8 +130,11 @@ def build_pre_master(rows):
         if (p0['pid'], p0['variant']) in have_keys:
             shave[p0.get('section') or ''] += 1
     sections = [dict(s, have=shave[s['id']]) for s in (cat.get('sections') or [])]
-    return dict(name='Prismatic Evolutions', emoji='🌈',
-                desc='Our new 3×3 master binder — main cards in number order, then Reverse Holo, Poke Ball, and Master Ball at the back.',
+    return dict(name=cat.get('name') or defaults['name'],
+                emoji=cat.get('emoji') or defaults['emoji'],
+                slug=cat.get('slug') or defaults['slug'],
+                code=cat.get('code') or defaults.get('code') or '',
+                desc=defaults.get('desc') or cat.get('rule') or '',
                 rule=cat['rule'], have=len(have_keys), total=cat['totals']['pockets'],
                 pages_n=n_pages, empty=cat['totals']['empty_pockets'],
                 variants=variants, sections=sections, pages=pages, owned=owned, doubtful=doubtful)
@@ -273,7 +284,12 @@ def main():
         parts=[dict(name=s['name'], short='Main set' if s['name'] == '30th Celebration' else 'Classic Collection',
                     have=s['have'], size=s['size'], to_finish=s['to_finish'], index=sets.index(s)) for s in mparts])
 
-    pre_master = build_pre_master(rows)
+    pre_master = build_set_master(rows, PRE_MASTER, {'PRE'}, ('prismatic',),
+        dict(name='Prismatic Evolutions', emoji='🌈', slug='prismatic',
+             desc='Our 3×3 master binder — main cards in number order, then Reverse Holo, Poke Ball, and Master Ball at the back.'))
+    dlr_master = build_set_master(rows, DLR_MASTER, {'DLR', 'ME06'}, ('delta reign',),
+        dict(name='Delta Reign', emoji='⚔️', slug='delta-reign',
+             desc='Our 3×3 master binder — main cards in number order, then Reverse Holos at the back.'))
 
     wish_sets = {s['name'] for s in sets_cfg if s['wishlist']}
     wishlist = sorted([c['id'] for c in cl if c['qty'] == 0 and c['set'] in wish_sets], key=lambda k: cards[k]['price'] or 0)
@@ -293,7 +309,7 @@ def main():
         settings=dict(trend_pct=S['trend_pct'], trend_min=S['trend_min_dollars'], window=S['trend_window_days'],
             psa_tiers=S['psa_tiers'], ship=round(S['return_ship_per_card'], 2), gem_gain=S['gem_min_gain'],
             gem_mult=S['gem_min_multiple'], gem_sales=S['gem_min_sales']),
-        dates=dates, history=history, ph=ph, master=master, pre_master=pre_master, binders=binders, sets=sets, wishlist=wishlist,
+        dates=dates, history=history, ph=ph, master=master, pre_master=pre_master, dlr_master=dlr_master, binders=binders, sets=sets, wishlist=wishlist,
         opened=[dict(o, img=img(o.get('url'))) for o in opened],
         cards={c['id']: c for c in cl})
     with open(os.path.join(SITE, 'data.json'), 'w') as fh:
@@ -304,12 +320,13 @@ def main():
           f"wishlist {t['wish_count']} ${t['wish_cost']:,.2f}, packs {t['packs']}, prices {out['prices_asof']}")
     for s in sets: print(f"  {s['name']}: {s['have']}/{s['size']}")
     print(f"  {master['name']}: {master['have']}/{master['size']} ({master['have']/master['size']:.0%}), ${master['to_finish']:,.2f} to finish")
-    if pre_master:
-        print(f"  Prismatic master binder: {pre_master['have']}/{pre_master['total']} pockets, {pre_master['pages_n']} pages")
-        for s in pre_master.get('sections') or []:
+    for label, M in (('Prismatic master binder', pre_master), ('Delta Reign master binder', dlr_master)):
+        if not M: continue
+        print(f"  {label}: {M['have']}/{M['total']} pockets, {M['pages_n']} pages")
+        for s in M.get('sections') or []:
             print(f"    {s['label']}: pages {s['start_page']}–{s['end_page']} · {s.get('have', 0)}/{s['size']}")
-        if pre_master.get('doubtful'):
-            print(f"  WARNING: {len(pre_master['doubtful'])} Prismatic cards could not be placed in the master binder")
+        if M.get('doubtful'):
+            print(f"  WARNING: {len(M['doubtful'])} {M['name']} cards could not be placed in the master binder")
 
     print(f"  history: {len(dates)} days ({dates[0]} → {dates[-1]}), {sum(1 for a in ph.values() if any(x is not None for x in a))} cards with prices")
     if '--check' in sys.argv:
