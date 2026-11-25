@@ -128,7 +128,7 @@ SCREENS = [
   ('pack secret', '#/trainer/big', "const S=Trainer._test.S(), p=S.profiles.little; p.pending=[{k:'secret',s:'rainbow',cards:[{no:1008,n:'Fletchinder',r:'C',sh:0,c:1,isNew:true}]}]; Trainer._test.reveal('little');setTimeout(()=>document.getElementById('trPack').click(),300);", 3200),
   ('pack welcome', '#/trainer/big', "const S=Trainer._test.S(), p=S.profiles.big; p.pending=[{k:'welcome',cards:Trainer.DEX.slice(140,151).map(d=>({no:d.no,n:d.n,r:d.r,sh:d.no%5==0?1:0,c:1,isNew:true}))}]; Trainer._test.reveal('big');setTimeout(()=>document.getElementById('trPack').click(),300);", 4600),
   ('collection mine', '#/collection/big', '', 1200), ('collection gen', '#/collection/little', "document.querySelector('[data-tab=\"0\"]').click()", 1200),
-  ('binder', '#/binder/0/1', '', 900), ('sets', '#/sets', '', 600), ('set', '#/set/0/need', '', 900), ('wish', '#/wish', '', 900),
+  ('binder', '#/binder/0/1', '', 900), ('prismatic', '#/prismatic/1', '', 900), ('prismatic owned', '#/prismatic/3', '', 900), ('prismatic late', '#/prismatic/53', '', 900), ('sets', '#/sets', '', 600), ('set', '#/set/0/need', '', 900), ('wish', '#/wish', '', 900),
   ('top', '#/top', '', 900), ('movers', '#/movers', '', 900), ('grading', '#/grading', '', 900), ('opened', '#/opened', '', 900),
   ('search', '#/search/pika', '', 900),
 ]

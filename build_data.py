@@ -30,6 +30,98 @@ def numkey(n):
     m = re.match(r'(\d+)', str(n or ''))
     return (0, int(m.group(1)), str(n)) if m else (1, 0, str(n))
 
+
+PRE_MASTER = os.path.join(SITE, 'prismatic_master.json')
+
+def pre_variant_of(row):
+    """Which Prismatic variant a collection row is. Prefer the card name;
+    the note is only used for a clear 'Reverse Holofoil (' style ID (the
+    notes also mention other patterns they ruled out, so we don't scan them loosely)."""
+    name = row.get('name') or ''
+    nl = name.lower()
+    if 'master ball' in nl: return 'master'
+    if 'poke ball' in nl or 'poké ball' in nl: return 'pokeball'
+    if re.search(r'reverse\s*holo', nl): return 'reverse'
+    note = row.get('note') or ''
+    if re.search(r'Reverse Holo(?:foil)?\s*\(', note, re.I): return 'reverse'
+    if re.search(r'Poke Ball Pattern', note, re.I) and 'not a ball-pattern' not in note.lower():
+        return 'pokeball'
+    if re.search(r'Master Ball Pattern', note, re.I): return 'master'
+    return None
+
+def build_pre_master(rows):
+    if not os.path.exists(PRE_MASTER):
+        return None
+    cat = json.load(open(PRE_MASTER))
+    by_key = {(p['pid'], p['variant']): p for p in cat['pockets']}
+    by_pid = collections.defaultdict(list)
+    for p in cat['pockets']:
+        by_pid[p['pid']].append(p['variant'])
+    have_keys = set()
+    where = {}
+    cid_of = {}
+    doubtful = []
+    for r in rows:
+        if not r.get('owned_qty'):
+            continue
+        if (r.get('set_code') or '') != 'PRE' and 'prismatic' not in (r.get('set_name') or '').lower():
+            continue
+        try:
+            pid = int(r.get('tcgplayer_product_id') or 0)
+        except (TypeError, ValueError):
+            pid = 0
+        if not pid:
+            doubtful.append(dict(name=r.get('name'), num=r.get('number'), reason='no tcgplayer product id'))
+            continue
+        var = pre_variant_of(r)
+        if var is None:
+            opts = by_pid.get(pid) or []
+            if len(opts) == 1:
+                var = opts[0]
+            else:
+                doubtful.append(dict(name=r.get('name'), num=r.get('number'), pid=pid,
+                                     reason='could not tell which variant', options=opts,
+                                     where=r.get('binder'), page=r.get('page'), pocket=r.get('slot_num')))
+                continue
+        key = (pid, var)
+        if key not in by_key:
+            doubtful.append(dict(name=r.get('name'), num=r.get('number'), pid=pid, variant=var,
+                                 reason='no matching master-set pocket', options=by_pid.get(pid)))
+            continue
+        have_keys.add(key)
+        w = (r.get('binder') or '')
+        if r.get('page') and r.get('slot_num'):
+            w = f"{w} · Page {r['page']} · Pocket {r['slot_num']}"
+        where[key] = w
+        cid_of[key] = r.get('card_id')
+    # rebuild pages with have/where
+    n_pages = cat['totals']['pages']
+    pages = [[None] * 9 for _ in range(n_pages)]
+    owned = []
+    vhave = collections.Counter()
+    for p0 in cat['pockets']:
+        key = (p0['pid'], p0['variant'])
+        have = key in have_keys
+        slot = dict(pid=p0['pid'], name=p0['name'], num=p0['num'], n=p0['n'],
+                    variant=p0['variant'], variant_label=p0['variant_label'],
+                    rarity=p0['rarity'], img=p0['img'], big=p0['big'], url=p0['url'],
+                    page=p0['page'], pocket=p0['pocket'], have=have)
+        if have:
+            slot['where'] = where.get(key) or ''
+            slot['cid'] = cid_of.get(key) or ''
+            vhave[p0['variant']] += 1
+            owned.append(dict(name=p0['name'], num=p0['num'], variant=p0['variant'],
+                              variant_label=p0['variant_label'], page=p0['page'],
+                              pocket=p0['pocket'], img=p0['img'], cid=slot.get('cid') or '',
+                              where=slot.get('where') or ''))
+        pages[p0['page'] - 1][p0['pocket'] - 1] = slot
+    variants = [dict(id=v['id'], label=v['label'], size=v['size'], have=vhave[v['id']]) for v in cat['variants']]
+    return dict(name='Prismatic Evolutions', emoji='🌈',
+                desc='Our new 3×3 master binder — every card in set order, with every version that exists.',
+                rule=cat['rule'], have=len(have_keys), total=cat['totals']['pockets'],
+                pages_n=n_pages, empty=cat['totals']['empty_pockets'],
+                variants=variants, pages=pages, owned=owned, doubtful=doubtful)
+
 def main():
     data = json.load(open(COLL)); rows = data['cards']
     S = load('settings'); sets_cfg = load('sets'); binders_cfg = load('binders'); opened = load('opened_products')
@@ -175,6 +267,8 @@ def main():
         parts=[dict(name=s['name'], short='Main set' if s['name'] == '30th Celebration' else 'Classic Collection',
                     have=s['have'], size=s['size'], to_finish=s['to_finish'], index=sets.index(s)) for s in mparts])
 
+    pre_master = build_pre_master(rows)
+
     wish_sets = {s['name'] for s in sets_cfg if s['wishlist']}
     wishlist = sorted([c['id'] for c in cl if c['qty'] == 0 and c['set'] in wish_sets], key=lambda k: cards[k]['price'] or 0)
 
@@ -193,7 +287,7 @@ def main():
         settings=dict(trend_pct=S['trend_pct'], trend_min=S['trend_min_dollars'], window=S['trend_window_days'],
             psa_tiers=S['psa_tiers'], ship=round(S['return_ship_per_card'], 2), gem_gain=S['gem_min_gain'],
             gem_mult=S['gem_min_multiple'], gem_sales=S['gem_min_sales']),
-        dates=dates, history=history, ph=ph, master=master, binders=binders, sets=sets, wishlist=wishlist,
+        dates=dates, history=history, ph=ph, master=master, pre_master=pre_master, binders=binders, sets=sets, wishlist=wishlist,
         opened=[dict(o, img=img(o.get('url'))) for o in opened],
         cards={c['id']: c for c in cl})
     with open(os.path.join(SITE, 'data.json'), 'w') as fh:
@@ -204,6 +298,11 @@ def main():
           f"wishlist {t['wish_count']} ${t['wish_cost']:,.2f}, packs {t['packs']}, prices {out['prices_asof']}")
     for s in sets: print(f"  {s['name']}: {s['have']}/{s['size']}")
     print(f"  {master['name']}: {master['have']}/{master['size']} ({master['have']/master['size']:.0%}), ${master['to_finish']:,.2f} to finish")
+    if pre_master:
+        print(f"  Prismatic master binder: {pre_master['have']}/{pre_master['total']} pockets, {pre_master['pages_n']} pages")
+        if pre_master.get('doubtful'):
+            print(f"  WARNING: {len(pre_master['doubtful'])} Prismatic cards could not be placed in the master binder")
+
     print(f"  history: {len(dates)} days ({dates[0]} → {dates[-1]}), {sum(1 for a in ph.values() if any(x is not None for x in a))} cards with prices")
     if '--check' in sys.argv:
         assert t['cards'] == sum(r.get('owned_qty') or 0 for r in rows)
