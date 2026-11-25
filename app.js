@@ -295,17 +295,8 @@ function value() {
 }
 
 
-function preVariantStats(M) {
-  const groups = [
-    {label: 'Regular / Holo', ids: ['regular', 'holo']},
-    {label: 'Reverse Holo', ids: ['reverse']},
-    {label: 'Poke Ball', ids: ['pokeball']},
-    {label: 'Master Ball', ids: ['master']}
-  ];
-  return groups.map(g => {
-    const parts = M.variants.filter(v => g.ids.includes(v.id));
-    return {label: g.label, have: parts.reduce((a, v) => a + v.have, 0), size: parts.reduce((a, v) => a + v.size, 0)};
-  });
+function preSectionOf(M, page) {
+  return (M.sections || []).find(s => page >= s.start_page && page <= s.end_page) || null;
 }
 function preCell(s) {
   if (!s) return `<div class="cell empty pre-empty"><div class="pre-skip">Leave empty</div></div>`;
@@ -329,35 +320,46 @@ function prismatic(page) {
   setTitle('Prismatic Binder');
   const n = M.pages.length; page = Math.min(Math.max(1, page || 1), Math.max(1, n));
   const slots = M.pages[page - 1] || Array(9).fill(null);
-  const dots = M.pages.map((p, i) => {
+  const sec = preSectionOf(M, page);
+  const secs = M.sections || [];
+  const dotFor = (i) => {
+    const p = M.pages[i];
     const filled = p.filter(Boolean);
     const full = filled.length && filled.every(s => s.have);
     const some = filled.some(s => s.have);
     return `<a href="#/prismatic/${i + 1}" class="${i + 1 === page ? 'on' : ''} ${full ? 'full' : some ? 'some' : ''}">${i + 1}</a>`;
-  }).join('');
+  };
+  const nav = secs.length
+    ? secs.map(s => `<div class="pre-nav-sec">
+        <a class="pre-nav-lbl ${esc(s.id)}" href="#/prismatic/${s.start_page}">${esc(s.label)} · ${s.have}/${s.size}</a>
+        <div class="dots">${Array.from({length: s.end_page - s.start_page + 1}, (_, k) => dotFor(s.start_page - 1 + k)).join('')}</div>
+      </div>`).join('')
+    : `<div class="dots">${M.pages.map((_, i) => dotFor(i)).join('')}</div>`;
   const haveP = slots.filter(s => s && s.have).length, missP = slots.filter(s => s && !s.have).length;
-  const vhtml = preVariantStats(M).map(v => `<div class="pre-v"><b>${v.have}/${v.size}</b><span>${esc(v.label)}</span></div>`).join('');
+  const vhtml = (secs.length ? secs : []).map(s => `<a class="pre-v ${esc(s.id)}" href="#/prismatic/${s.start_page}"><b>${s.have}/${s.size}</b><span>${esc(s.label)}</span></a>`).join('');
   const pc = M.total ? Math.round(100 * M.have / M.total) : 0;
   const ownedList = (M.owned || []).map(o => `<a class="row" href="#/prismatic/${o.page}">${o.img ? `<img src="${esc(o.img)}" alt="" referrerpolicy="no-referrer" loading="lazy">` : `<div class="noimg">🃏</div>`}
     <div class="mid"><div class="nm">${esc(o.name)}</div><div class="sm">${esc(o.variant_label)} · #${esc(o.num)}</div></div>
     <div class="rt">Page ${o.page}<div class="sm">Pocket ${o.pocket}</div></div></a>`).join('');
+  const secBanner = sec ? `<div class="pre-sec ${esc(sec.id)}"><span class="pre-sec-name">${esc(sec.label)}</span><span class="pre-sec-range">Pages ${sec.start_page}–${sec.end_page} · ${sec.have} of ${sec.size}</span></div>` : '';
   $app.innerHTML = `
   <div class="pre-hero">
     <div class="pre-hero-top"><span>🌈 Prismatic Evolutions</span><b>${M.have} of ${M.total}</b></div>
     <div class="bar big"><div style="width:${Math.max(2, pc)}%"></div><span>${pc}%</span></div>
-    <p class="pre-sub">We are just starting this master binder. Bright pictures with a check are cards we already have. Grey pictures are still to find. Each pocket shows the exact page and pocket to put the card in.</p>
+    <p class="pre-sub">We are just starting this master binder. Bright pictures with a check are cards we already have. Grey pictures are still to find. Main cards come first, in number order. Reverse holos, Poke Balls, and Master Balls are at the back.</p>
     <div class="pre-vars">${vhtml}</div>
   </div>
+  ${secBanner}
   <div class="pager"><a class="btn white" ${page > 1 ? `href="#/prismatic/${page - 1}"` : 'disabled'} aria-label="Previous page">◀</a>
-    <div class="pg">Page ${page}<div class="muted">of ${n}</div></div>
+    <div class="pg">Page ${page} of ${n}<div class="muted">${sec ? esc(sec.label) : ''}</div></div>
     <a class="btn white" ${page < n ? `href="#/prismatic/${page + 1}"` : 'disabled'} aria-label="Next page">▶</a></div>
   <div class="binder pre-binder" id="binderPage"><div class="grid">${slots.map(preCell).join('')}</div></div>
-  <p class="pre-page-sum">✅ ${haveP} on this page${missP ? ` · ❔ ${missP} still needed` : ''}${slots.filter(s => !s).length ? ' · some pockets stay empty' : ''}</p>
+  <p class="pre-page-sum">✅ ${haveP} on this page${missP ? ` · ❔ ${missP} still needed` : ''}${slots.filter(s => !s).length ? ' · leftover pockets stay empty' : ''}</p>
   <h2 style="text-align:center">📖 Pages</h2>
-  <div class="dots">${dots}</div>
+  ${nav}
   ${ownedList ? `<h2>✅ Cards we already have</h2><p class="muted">They still live in the Other Sets binder for now. These pages are where they will go in the new master binder.</p><div class="list">${ownedList}</div>` : ''}
   <div class="note">${esc(M.rule)}</div>
-  <p class="foot">Swipe left or right to turn pages. Empty pockets stay empty on purpose so a card’s versions all fit on one page.</p>`;
+  <p class="foot">Swipe left or right to turn pages. Empty pockets at the end of a section stay empty on purpose.</p>`;
   swipe(document.getElementById('binderPage'), dir => { const np = page + dir; if (np >= 1 && np <= n) location.hash = `#/prismatic/${np}`; });
 }
 function openPreCard(page, pocket) {

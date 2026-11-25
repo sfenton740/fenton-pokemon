@@ -105,7 +105,8 @@ def build_pre_master(rows):
         slot = dict(pid=p0['pid'], name=p0['name'], num=p0['num'], n=p0['n'],
                     variant=p0['variant'], variant_label=p0['variant_label'],
                     rarity=p0['rarity'], img=p0['img'], big=p0['big'], url=p0['url'],
-                    page=p0['page'], pocket=p0['pocket'], have=have)
+                    page=p0['page'], pocket=p0['pocket'], have=have,
+                    section=p0.get('section') or '', section_label=p0.get('section_label') or '')
         if have:
             slot['where'] = where.get(key) or ''
             slot['cid'] = cid_of.get(key) or ''
@@ -116,11 +117,16 @@ def build_pre_master(rows):
                               where=slot.get('where') or ''))
         pages[p0['page'] - 1][p0['pocket'] - 1] = slot
     variants = [dict(id=v['id'], label=v['label'], size=v['size'], have=vhave[v['id']]) for v in cat['variants']]
+    shave = collections.Counter()
+    for p0 in cat['pockets']:
+        if (p0['pid'], p0['variant']) in have_keys:
+            shave[p0.get('section') or ''] += 1
+    sections = [dict(s, have=shave[s['id']]) for s in (cat.get('sections') or [])]
     return dict(name='Prismatic Evolutions', emoji='🌈',
-                desc='Our new 3×3 master binder — every card in set order, with every version that exists.',
+                desc='Our new 3×3 master binder — main cards in number order, then Reverse Holo, Poke Ball, and Master Ball at the back.',
                 rule=cat['rule'], have=len(have_keys), total=cat['totals']['pockets'],
                 pages_n=n_pages, empty=cat['totals']['empty_pockets'],
-                variants=variants, pages=pages, owned=owned, doubtful=doubtful)
+                variants=variants, sections=sections, pages=pages, owned=owned, doubtful=doubtful)
 
 def main():
     data = json.load(open(COLL)); rows = data['cards']
@@ -300,6 +306,8 @@ def main():
     print(f"  {master['name']}: {master['have']}/{master['size']} ({master['have']/master['size']:.0%}), ${master['to_finish']:,.2f} to finish")
     if pre_master:
         print(f"  Prismatic master binder: {pre_master['have']}/{pre_master['total']} pockets, {pre_master['pages_n']} pages")
+        for s in pre_master.get('sections') or []:
+            print(f"    {s['label']}: pages {s['start_page']}–{s['end_page']} · {s.get('have', 0)}/{s['size']}")
         if pre_master.get('doubtful'):
             print(f"  WARNING: {len(pre_master['doubtful'])} Prismatic cards could not be placed in the master binder")
 

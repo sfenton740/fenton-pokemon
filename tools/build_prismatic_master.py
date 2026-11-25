@@ -7,10 +7,11 @@ Does not need the network. Run from the site folder:
 
   python3 tools/build_prismatic_master.py /path/to/products.json /path/to/prices.json
 
-Layout rule: set order by collector number. A card's versions stay together
-in this order: Regular (or Holo), Reverse Holo, Poke Ball, Master Ball.
-If the whole group would not fit on the rest of a 9-pocket page, the leftover
-pockets on that page stay empty and the group starts on the next page.
+Layout rule: the 180 base cards (Regular or Holo) come first, in collector
+number order 001–180, filling every pocket with no gaps. Reverse Holos,
+Poke Ball versions, and Master Ball versions follow at the end of the binder,
+each in number order, each starting on a fresh page. Leftover empty pockets
+appear only at the end of a section.
 """
 import json, re, sys, collections, os, datetime
 
@@ -109,36 +110,33 @@ def main():
 
     items.sort(key=lambda x: (x[0], x[1], x[2]['pid']))
 
-    # Group by collector number (all versions of one card stay together)
-    groups = []
-    cur_n, cur = None, []
-    for n, rank, pocket in items:
-        if cur_n is None:
-            cur_n, cur = n, [pocket]
-        elif n == cur_n:
-            cur.append(pocket)
-        else:
-            groups.append(cur)
-            cur_n, cur = n, [pocket]
-    if cur:
-        groups.append(cur)
-
-    # Paginate: 9 pockets, don't split a group if it fits on a fresh page
-    pages, current = [], []
-    empty_kept = 0
-    for group in groups:
-        if len(group) <= 9 and len(current) + len(group) > 9:
-            empty_kept += 9 - len(current)
-            pages.append(current + [None] * (9 - len(current)))
-            current = []
-        for pocket in group:
+    # Four binder sections. Main cards fill consecutively with no gaps;
+    # each later section starts on a fresh page.
+    SECTION_DEFS = [
+        ('main', 'Main cards', ('regular', 'holo')),
+        ('reverse', 'Reverse Holo', ('reverse',)),
+        ('pokeball', 'Poke Ball', ('pokeball',)),
+        ('master', 'Master Ball', ('master',)),
+    ]
+    pages, empty_kept, sections = [], 0, []
+    for sid, label, variants in SECTION_DEFS:
+        sec_items = [dict(p, section=sid, section_label=label)
+                     for n, rank, p in items if p['variant'] in variants]
+        sec_items.sort(key=lambda p: (p['n'], p['pid']))
+        if not sec_items:
+            continue
+        start = len(pages) + 1
+        current = []
+        for pocket in sec_items:
             current.append(pocket)
             if len(current) == 9:
                 pages.append(current)
                 current = []
-    if current:
-        empty_kept += 9 - len(current)
-        pages.append(current + [None] * (9 - len(current)))
+        if current:
+            empty_kept += 9 - len(current)
+            pages.append(current + [None] * (9 - len(current)))
+        sections.append(dict(id=sid, label=label, start_page=start,
+                             end_page=len(pages), size=len(sec_items)))
 
     # Stamp page / pocket numbers (1-based)
     pockets = []
@@ -164,7 +162,7 @@ def main():
             prices=os.path.abspath(price_path),
             built=datetime.datetime.now().strftime('%Y-%m-%d %H:%M ET'),
             note='Variants come from tcgcsv.com product/sku data: Reverse Holofoil is a SKU (subTypeName) of the base product; Poke Ball and Master Ball are separate products.'),
-        rule='Set order by collector number 001–180. Each card’s versions stay together in this order: Regular or Holo, Reverse Holo, Poke Ball, Master Ball (only versions that exist). If a card’s whole group will not fit in the pockets left on a page, those leftover pockets stay empty and the group starts on the next page.',
+        rule='The first pages are the main cards, in number order from 001 to 180, with no gaps. After that come the other versions, each in their own section: Reverse Holo, then Poke Ball, then Master Ball, all in number order. Each section starts on a new page, so a few pockets at the end of a section stay empty.',
         totals=dict(
             pockets=len(pockets),
             pages=len(pages),
@@ -174,6 +172,7 @@ def main():
             by_variant={k: vcounts[k] for k in VARIANT_ORDER if vcounts[k]},
         ),
         variants=[{'id': k, 'label': VARIANT_LABEL[k], 'size': vcounts[k]} for k in VARIANT_ORDER if vcounts[k]],
+        sections=sections,
         pockets=pockets,
         skipped_unnumbered=len(skipped),
     )
@@ -185,6 +184,9 @@ def main():
     print(f"  {len(pockets)} pockets on {len(pages)} pages ({empty_kept} empty pockets left on purpose)")
     print(f"  numbers {min(numbers)}-{max(numbers)} unique={len(numbers)} missing={missing_nums}")
     print(f"  by variant: {dict(vcounts)}")
+    print('  sections:')
+    for s in sections:
+        print(f"    {s['label']}: pages {s['start_page']}–{s['end_page']} ({s['size']} cards)")
     # show leftover empties by page
     print('  pages with empty leftover pockets:')
     for i, page in enumerate(pages, 1):
