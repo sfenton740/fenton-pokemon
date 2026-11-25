@@ -68,8 +68,9 @@ function cardsPage() {
   setTitle('📒 Our Cards');
   const t = D.totals, mi = D.sets.findIndex(s => s.name === '30th Celebration'), main = D.sets[mi], cc = D.sets.find(s => s.name === 'Classic Collection');
   const cls = ['red', 'blue', 'yellow', 'green'];
-  const masters = [D.pre_master, D.dlr_master].filter(Boolean);
-  const masterTiles = masters.map((m, i) => `<a class="tile ${i === 0 ? 'yellow' : 'blue'}" href="#/${esc(m.slug)}/1"><span class="em">${m.emoji || '📒'}</span>${esc(m.name)}<span class="sub">Master set · ${m.have} of ${m.total} · see where each card goes</span></a>`).join('');
+  const masters = allMasters();
+  const tileCls = ['yellow', 'blue', 'red', 'green'];
+  const masterTiles = masters.map((m, i) => `<a class="tile ${tileCls[i % 4]}" href="#/${esc(m.slug)}/1"><span class="em">${m.emoji || '📒'}</span>${esc(m.name)}<span class="sub">Master set · ${m.have} of ${m.total} · see where each card goes</span></a>`).join('');
   $app.innerHTML = `${masters.length ? `<h2>🌈 New binders</h2><div class="tiles big">${masterTiles}</div>` : ''}
   <h2>📚 Binders</h2>
   <div class="tiles big">${D.binders.map((b, i) => `<a class="tile ${cls[i % 4]}" href="#/binder/${i}/1"><span class="em">${b.emoji}</span>${esc(b.name.replace(' (new pulls)', ''))}<span class="sub">${b.cards} cards</span></a>`).join('')}</div>
@@ -298,8 +299,11 @@ function value() {
 function preSectionOf(M, page) {
   return (M.sections || []).find(s => page >= s.start_page && page <= s.end_page) || null;
 }
+function allMasters() {
+  return [D.pre_master, D.dlr_master, D.pbl_master].filter(Boolean);
+}
 function masterBySlug(slug) {
-  return [D.pre_master, D.dlr_master].find(m => m && m.slug === slug) || null;
+  return allMasters().find(m => m && m.slug === slug) || null;
 }
 function preCell(s, slug) {
   if (!s) return `<div class="cell empty pre-empty"><div class="pre-skip">Leave empty</div></div>`;
@@ -310,12 +314,14 @@ function preCell(s, slug) {
     ? `<img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="${esc(src)}" alt="${esc(alt)}" onerror="this.outerHTML='<div class=&quot;noimg&quot;>🃏</div>'">`
     : `<div class="noimg">🃏</div>`;
   const check = s.have ? `<span class="pre-ok" aria-hidden="true">✅</span>` : '';
-  return `<button class="cell pre-cell${miss ? ' miss' : ' have'}" data-master="${esc(slug)}" data-pre="${s.page}-${s.pocket}" aria-label="${esc(alt)}${s.have ? ', we have this' : ', we still need this'}">
+  const extra = s.extras ? `<div class="pre-place">plus ${s.extras} extra${s.extras === 1 ? '' : 's'}</div>` : '';
+  return `<button class="cell pre-cell${miss ? ' miss' : ' have'}" data-master="${esc(slug)}" data-pre="${s.page}-${s.pocket}" aria-label="${esc(alt)}${s.have ? ', we have this' : ', we still need this'}${s.extras ? `, plus ${s.extras} extras` : ''}">
     <div class="pre-pic">${pic}${check}</div>
     <div class="cap">${esc(s.name)}</div>
     <div class="pre-num">#${esc(s.num)}</div>
     <div class="pre-var ${esc(s.variant)}">${esc(s.variant_label)}</div>
     <div class="pre-place"><span>Page ${s.page}</span><span>Pocket ${s.pocket}</span></div>
+    ${extra}
   </button>`;
 }
 function masterBinder(M, page) {
@@ -344,7 +350,7 @@ function masterBinder(M, page) {
   const vhtml = (secs.length ? secs : []).map(s => `<a class="pre-v ${esc(s.id)}" href="${href(s.start_page)}"><b>${s.have}/${s.size}</b><span>${esc(s.label)}</span></a>`).join('');
   const pc = M.total ? Math.round(100 * M.have / M.total) : 0;
   const ownedList = (M.owned || []).map(o => `<a class="row" href="${href(o.page)}">${o.img ? `<img src="${esc(o.img)}" alt="" referrerpolicy="no-referrer" loading="lazy">` : `<div class="noimg">🃏</div>`}
-    <div class="mid"><div class="nm">${esc(o.name)}</div><div class="sm">${esc(o.variant_label)} · #${esc(o.num)}</div></div>
+    <div class="mid"><div class="nm">${esc(o.name)}</div><div class="sm">${esc(o.variant_label)} · #${esc(o.num)}${o.extras ? ` · plus ${o.extras} extra${o.extras === 1 ? '' : 's'}` : ''}</div></div>
     <div class="rt">Page ${o.page}<div class="sm">Pocket ${o.pocket}</div></div></a>`).join('');
   const secBanner = sec ? `<div class="pre-sec ${esc(sec.id)}"><span class="pre-sec-name">${esc(sec.label)}</span><span class="pre-sec-range">Pages ${sec.start_page}–${sec.end_page} · ${sec.have} of ${sec.size}</span></div>` : '';
   const moreSecs = secs.filter(s => s.id !== 'main').map(s => s.label);
@@ -385,7 +391,7 @@ function openPreCard(slug, page, pocket) {
     <div class="stats">
       <div class="stat"><div class="k">📖 Page</div><div class="v">${s.page}</div></div>
       <div class="stat"><div class="k">🃏 Pocket</div><div class="v">${s.pocket}</div></div>
-      <div class="stat wide"><div class="k">✅ Do we have it?</div><div class="v">${s.have ? 'Yes, we have this one' : '❔ We still need this one'}</div></div>
+      <div class="stat wide"><div class="k">✅ Do we have it?</div><div class="v">${s.have ? (s.extras ? `Yes, we have this one, plus ${s.extras} extra${s.extras === 1 ? '' : 's'}` : 'Yes, we have this one') : '❔ We still need this one'}</div></div>
       ${now}
     </div>
     <p class="note">${s.have ? `When we move it to the new binder, it goes on page ${s.page}, pocket ${s.pocket}.` : `This card goes on page ${s.page}, pocket ${s.pocket}.`}</p>
@@ -444,7 +450,7 @@ function setPage(si, filt) {
   filt = filt || 'all';
   const ids = s.cards.filter(id => filt === 'all' || (filt === 'have' ? card(id).qty > 0 : card(id).qty === 0));
   const p = s.checklist ? s.have / s.size : 1;
-  const setMaster = [D.pre_master, D.dlr_master].find(m => m && m.name === s.name);
+  const setMaster = allMasters().find(m => m && m.name === s.name);
   const preLink = setMaster
     ? `<a class="tile yellow pre-tile" href="#/${esc(setMaster.slug)}/1"><span class="em">${setMaster.emoji || '📒'}</span>Open the master binder<span class="sub">${setMaster.have} of ${setMaster.total} · see where each card goes</span></a>` : '';
   $app.innerHTML = `
@@ -635,7 +641,7 @@ function route() {
   const p = location.hash.replace(/^#\/?/, '').split('/');
   window.scrollTo(0, 0);
   document.body.classList.toggle('game-mode', p[0] === 'games');
-  document.body.classList.toggle('pre-mode', p[0] === 'prismatic' || p[0] === 'delta-reign');
+  document.body.classList.toggle('pre-mode', !!masterBySlug(p[0]));
   if (window.FentonGames) window.FentonGames.stop();
   switch (p[0]) {
     case 'games': setTitle(p[1] === 'memory' ? 'Memory Match' : p[1] === 'who' ? "Who's That Pokémon?" : p[1] === 'tcg' ? 'Card Battle School' : p[1] === 'trivia' ? 'Pokémon Trivia' : p[1] === 'math' ? 'Pokémon Math' : 'Game Time'); return window.FentonGames ? window.FentonGames.render($app, D, p[1]) : home();
@@ -646,8 +652,10 @@ function route() {
     case 'collection': setTitle('📚 Collection'); return window.Trainer && window.Trainer.collectionPage ? window.Trainer.collectionPage($app, p[1], p[2]) : home();
     case 'leaderboard': setTitle('🏆 Leaderboard'); return window.Trainer ? window.Trainer.leaderboardPage($app) : home();
     case 'binder': return binder(+p[1] || 0, +p[2] || 1);
-    case 'prismatic': return masterBinder(D.pre_master, +p[1] || 1);
-    case 'delta-reign': return masterBinder(D.dlr_master, +p[1] || 1);
+    case 'prismatic':
+    case 'delta-reign':
+    case 'pitch-black':
+      return masterBinder(masterBySlug(p[0]), +p[1] || 1);
     case 'sets': return sets();
     case 'set': return setPage(+p[1] || 0, p[2]);
     case 'wish': return wish();

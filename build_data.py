@@ -33,6 +33,7 @@ def numkey(n):
 
 PRE_MASTER = os.path.join(SITE, 'prismatic_master.json')
 DLR_MASTER = os.path.join(SITE, 'delta_reign_master.json')
+PBL_MASTER = os.path.join(SITE, 'pitch_black_master.json')
 
 def pre_variant_of(row):
     """Which Prismatic variant a collection row is. Prefer the card name;
@@ -69,6 +70,7 @@ def build_set_master(rows, catalog_path, codes, name_needles, defaults):
     where = {}
     cid_of = {}
     doubtful = []
+    extras = collections.Counter()
     for r in rows:
         if not r.get('owned_qty'):
             continue
@@ -96,7 +98,13 @@ def build_set_master(rows, catalog_path, codes, name_needles, defaults):
             doubtful.append(dict(name=r.get('name'), num=r.get('number'), pid=pid, variant=var,
                                  reason='no matching master-set pocket', options=by_pid.get(pid)))
             continue
+        qty = r.get('owned_qty') or 0
+        if key in have_keys:
+            extras[key] += qty
+            continue
         have_keys.add(key)
+        if qty > 1:
+            extras[key] += qty - 1
         w = (r.get('binder') or '')
         if r.get('page') and r.get('slot_num'):
             w = f"{w} · Page {r['page']} · Pocket {r['slot_num']}"
@@ -118,11 +126,14 @@ def build_set_master(rows, catalog_path, codes, name_needles, defaults):
         if have:
             slot['where'] = where.get(key) or ''
             slot['cid'] = cid_of.get(key) or ''
+            extra_n = extras.get(key, 0)
+            if extra_n:
+                slot['extras'] = extra_n
             vhave[p0['variant']] += 1
             owned.append(dict(name=p0['name'], num=p0['num'], variant=p0['variant'],
                               variant_label=p0['variant_label'], page=p0['page'],
                               pocket=p0['pocket'], img=p0['img'], cid=slot.get('cid') or '',
-                              where=slot.get('where') or ''))
+                              where=slot.get('where') or '', extras=extra_n))
         pages[p0['page'] - 1][p0['pocket'] - 1] = slot
     variants = [dict(id=v['id'], label=v['label'], size=v['size'], have=vhave[v['id']]) for v in cat['variants']]
     shave = collections.Counter()
@@ -290,6 +301,9 @@ def main():
     dlr_master = build_set_master(rows, DLR_MASTER, {'DLR', 'ME06'}, ('delta reign',),
         dict(name='Delta Reign', emoji='⚔️', slug='delta-reign',
              desc='Our 3×3 master binder — main cards in number order, then Reverse Holos at the back.'))
+    pbl_master = build_set_master(rows, PBL_MASTER, {'PBL', 'ME05'}, ('pitch black',),
+        dict(name='Pitch Black', emoji='🌑', slug='pitch-black',
+             desc='Our 3×3 master binder — main cards in number order, then Reverse Holos at the back.'))
 
     wish_sets = {s['name'] for s in sets_cfg if s['wishlist']}
     wishlist = sorted([c['id'] for c in cl if c['qty'] == 0 and c['set'] in wish_sets], key=lambda k: cards[k]['price'] or 0)
@@ -309,7 +323,7 @@ def main():
         settings=dict(trend_pct=S['trend_pct'], trend_min=S['trend_min_dollars'], window=S['trend_window_days'],
             psa_tiers=S['psa_tiers'], ship=round(S['return_ship_per_card'], 2), gem_gain=S['gem_min_gain'],
             gem_mult=S['gem_min_multiple'], gem_sales=S['gem_min_sales']),
-        dates=dates, history=history, ph=ph, master=master, pre_master=pre_master, dlr_master=dlr_master, binders=binders, sets=sets, wishlist=wishlist,
+        dates=dates, history=history, ph=ph, master=master, pre_master=pre_master, dlr_master=dlr_master, pbl_master=pbl_master, binders=binders, sets=sets, wishlist=wishlist,
         opened=[dict(o, img=img(o.get('url'))) for o in opened],
         cards={c['id']: c for c in cl})
     with open(os.path.join(SITE, 'data.json'), 'w') as fh:
@@ -320,13 +334,27 @@ def main():
           f"wishlist {t['wish_count']} ${t['wish_cost']:,.2f}, packs {t['packs']}, prices {out['prices_asof']}")
     for s in sets: print(f"  {s['name']}: {s['have']}/{s['size']}")
     print(f"  {master['name']}: {master['have']}/{master['size']} ({master['have']/master['size']:.0%}), ${master['to_finish']:,.2f} to finish")
-    for label, M in (('Prismatic master binder', pre_master), ('Delta Reign master binder', dlr_master)):
+    for label, M in (('Prismatic master binder', pre_master), ('Delta Reign master binder', dlr_master),
+                     ('Pitch Black master binder', pbl_master)):
         if not M: continue
         print(f"  {label}: {M['have']}/{M['total']} pockets, {M['pages_n']} pages")
         for s in M.get('sections') or []:
             print(f"    {s['label']}: pages {s['start_page']}–{s['end_page']} · {s.get('have', 0)}/{s['size']}")
+        extra_owned = [o for o in (M.get('owned') or []) if o.get('extras')]
+        if extra_owned:
+            print(f"    extras: " + ', '.join(f"{o['name']} {o['num']} +{o['extras']}" for o in extra_owned))
+        if M.get('owned'):
+            for o in M['owned']:
+                extra = f" (+{o['extras']} extra)" if o.get('extras') else ''
+                print(f"    have: {o['name']} {o['num']} {o['variant_label']} → P{o['page']} Pk{o['pocket']}{extra}")
         if M.get('doubtful'):
             print(f"  WARNING: {len(M['doubtful'])} {M['name']} cards could not be placed in the master binder")
+            for d in M['doubtful']:
+                opts = d.get('options') or []
+                loc = d.get('where') or ''
+                if d.get('page') and d.get('pocket'):
+                    loc = f"{loc} P{d['page']} Pk{d['pocket']}".strip()
+                print(f"    doubtful: {d.get('name')} {d.get('num')} pid={d.get('pid')} {d.get('reason')} options={opts} {loc}".rstrip())
 
     print(f"  history: {len(dates)} days ({dates[0]} → {dates[-1]}), {sum(1 for a in ph.values() if any(x is not None for x in a))} cards with prices")
     if '--check' in sys.argv:
