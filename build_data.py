@@ -36,16 +36,21 @@ DLR_MASTER = os.path.join(SITE, 'delta_reign_master.json')
 PBL_MASTER = os.path.join(SITE, 'pitch_black_master.json')
 
 def pre_variant_of(row):
-    """Which Prismatic variant a collection row is. Prefer the card name;
-    the note is only used for a clear 'Reverse Holofoil (' style ID (the
-    notes also mention other patterns they ruled out, so we don't scan them loosely)."""
+    """Which master-binder variant a collection row is. Prefer the card name;
+    the note is only used for a clear ID ('Reverse Holofoil (', 'Variant: Holofoil (',
+    'Variant: Normal ('). Notes also mention patterns they ruled out, so we don't
+    scan them loosely."""
     name = row.get('name') or ''
     nl = name.lower()
     if 'master ball' in nl: return 'master'
     if 'poke ball' in nl or 'poké ball' in nl: return 'pokeball'
     if re.search(r'reverse\s*holo', nl): return 'reverse'
+    if re.search(r'\(holofoil\)', nl): return 'holo'
+    if re.search(r'\((?:normal|regular)\)', nl): return 'regular'
     note = row.get('note') or ''
     if re.search(r'Reverse Holo(?:foil)?\s*\(', note, re.I): return 'reverse'
+    if re.search(r'Variant:\s*Holofoil\s*\(', note, re.I): return 'holo'
+    if re.search(r'Variant:\s*Normal\s*\(', note, re.I): return 'regular'
     if re.search(r'Poke Ball Pattern', note, re.I) and 'not a ball-pattern' not in note.lower():
         return 'pokeball'
     if re.search(r'Master Ball Pattern', note, re.I): return 'master'
