@@ -78,6 +78,7 @@ function cardsPage() {
     <a class="tile green" href="#/set/${mi}/have"><span class="em">✅</span>We have<span class="sub">${main.have} cards</span></a>
     <a class="tile" href="#/set/${mi}/need"><span class="em">❔</span>We need<span class="sub">${main.size - main.have} to find</span></a></div>` : ''}
   <h2>🔎 More</h2><div class="tiles">
+    <a class="tile green" href="#/guides"><span class="em">📖</span>Set Guides<span class="sub">what to look for</span></a>
     <a class="tile" href="#/sets"><span class="em">✅</span>Checklists<span class="sub">${main ? `${main.have}/${main.size}` : ''}${cc ? ` · ${cc.have}/${cc.size}` : ''}</span></a>
     <a class="tile yellow" href="#/wish"><span class="em">🛒</span>Wishlist<span class="sub">${t.wish_count} to find</span></a>
     <a class="tile blue" href="#/search"><span class="em">🔍</span>Find a card<span class="sub">search by name</span></a>
@@ -363,6 +364,9 @@ function masterBinder(M, page) {
     <div class="bar big"><div style="width:${Math.max(2, pc)}%"></div><span>${pc}%</span></div>
     <p class="pre-sub">We are just starting this master binder. Bright pictures with a check are cards we already have. Grey pictures are still to find. ${introTail}</p>
     <div class="pre-vars">${vhtml}</div>
+    <div class="guide-actions" style="margin-top:12px">
+      <a class="btn white block" href="#/guide/${esc(slug)}">📖 Set Guide</a>
+    </div>
   </div>
   ${secBanner}
   <div class="pager"><a class="btn white" ${page > 1 ? `href="${href(page - 1)}"` : 'disabled'} aria-label="Previous page">◀</a>
@@ -442,7 +446,9 @@ function sets() {
       ${s.checklist ? `<div class="bar"><div style="width:${Math.round(p * 100)}%"></div></div><div class="muted">${p >= 1 ? '🎉 Complete!' : `${s.size - s.have} to go · ${money(s.to_finish)} to finish`}</div>`
         : `<div class="muted">Singles we pulled</div>`}</a>`;
   }).join('');
-  $app.innerHTML = `<h1>Pick a set</h1>${html}`;
+  $app.innerHTML = `<h1>Pick a set</h1>
+  <div class="tiles big" style="margin-bottom:14px"><a class="tile green pre-tile" href="#/guides"><span class="em">📖</span>Set Guides<span class="sub">What makes each set special, and what to look for</span></a></div>
+  ${html}`;
 }
 function setPage(si, filt) {
   const s = D.sets[si]; if (!s) return sets();
@@ -453,10 +459,13 @@ function setPage(si, filt) {
   const setMaster = allMasters().find(m => m && m.name === s.name);
   const preLink = setMaster
     ? `<a class="tile yellow pre-tile" href="#/${esc(setMaster.slug)}/1"><span class="em">${setMaster.emoji || '📒'}</span>Open the master binder<span class="sub">${setMaster.have} of ${setMaster.total} · see where each card goes</span></a>` : '';
+  const guideSlug = window.SetGuides && window.SetGuides.slugForSet(s.name);
+  const guideLink = guideSlug
+    ? `<a class="tile green pre-tile" href="#/guide/${esc(guideSlug)}"><span class="em">📖</span>Set Guide<span class="sub">What makes this set special, and what to look for</span></a>` : '';
   $app.innerHTML = `
   <div class="box"><div class="setcard"><div class="top"><span>${esc(s.name)}</span><span>${s.checklist ? `${s.have}/${s.size}` : `${s.have} 🃏`}</span></div>
   ${s.checklist ? `<div class="bar"><div style="width:${Math.round(p * 100)}%"></div></div>` : ''}<div class="muted">Worth ${money(s.value)}</div></div></div>
-  ${preLink ? `<div class="tiles big" style="margin-bottom:14px">${preLink}</div>` : ''}
+  ${preLink || guideLink ? `<div class="tiles big" style="margin-bottom:14px">${preLink}${guideLink}</div>` : ''}
   <div class="seg"><button data-f="all" class="${filt === 'all' ? 'on' : ''}">All</button><button data-f="have" class="${filt === 'have' ? 'on' : ''}">✅ Have</button><button data-f="need" class="${filt === 'need' ? 'on' : ''}">❔ Need</button></div>
   ${ids.length ? `<div class="grid">${ids.map(id => cell(id, {showQty: true, trend: true})).join('')}</div>` : `<div class="empty-msg">${filt === 'need' ? '🎉 We have them all!' : 'Nothing here yet'}</div>`}`;
   $app.querySelectorAll('.seg button').forEach(b => b.onclick = () => { location.hash = `#/set/${si}/${b.dataset.f}`; });
@@ -634,6 +643,77 @@ document.addEventListener('click', e => {
 });
 $back.onclick = () => { if (history.length > 1) history.back(); else location.hash = '#/'; };
 
+function guidesIndex() {
+  setTitle('📖 Set Guides');
+  const G = window.SetGuides && window.SetGuides.all;
+  if (!G) return home();
+  const featured = G.filter(g => g.slug === 'prismatic' || g.slug === 'delta-reign' || g.slug === 'pitch-black');
+  const rest = G.filter(g => !featured.includes(g));
+  const tile = g => {
+    const M = allMasters().find(m => m && m.name === g.setName);
+    const sub = M ? `${M.have} of ${M.total} in the master binder` : (g.short || '');
+    return `<a class="box setcard" href="#/guide/${esc(g.slug)}"><div class="top"><span>${g.emoji || '📖'} ${esc(g.name)}</span><span>${esc(g.code || '')}</span></div>
+      <div class="muted">${esc(sub)}</div></a>`;
+  };
+  $app.innerHTML = `<div class="guide-page guide-index">
+    <h1>📖 Set Guides</h1>
+    <p class="guide-intro">What makes each set special, how to tell the different versions apart, and what to look for on a card.</p>
+    <p class="guide-team">⭐ Star Trainer Harper can hunt for the pictures and patterns. 🔥 Ace Trainer Carter can check set codes and numbers. Both trainers can use these pages together.</p>
+    <h2>🌈 Master binder sets</h2>
+    ${featured.map(tile).join('')}
+    <h2>📚 Other sets we have</h2>
+    ${rest.map(tile).join('')}
+  </div>`;
+}
+function setGuide(slug) {
+  const G = window.SetGuides && window.SetGuides.bySlug[slug];
+  if (!G) return guidesIndex();
+  setTitle((G.emoji ? G.emoji + ' ' : '') + G.name);
+  const M = allMasters().find(m => m && m.name === G.setName);
+  const set = (D.sets || []).find(s => s.name === G.setName);
+  const si = set ? D.sets.indexOf(set) : -1;
+  const pills = [
+    G.code ? `<span class="guide-pill">Code ${esc(G.code)}</span>` : '',
+    G.series ? `<span class="guide-pill">${esc(G.series)}</span>` : '',
+    G.released ? `<span class="guide-pill">Released ${esc(G.released)}</span>` : ''
+  ].filter(Boolean).join('');
+  const progress = M
+    ? `<p class="guide-p">In our master binder we have <b>${M.have} of ${M.total}</b> pockets filled.</p>`
+    : (set ? `<p class="guide-p">In our collection we have <b>${set.have}</b> card${set.have === 1 ? '' : 's'} from this set.</p>` : '');
+  const actions = [
+    M ? `<a class="btn red block" href="#/${esc(M.slug)}/1">${M.emoji || '📒'} Open the master binder</a>` : '',
+    si >= 0 ? `<a class="btn white block" href="#/set/${si}/all">✅ Open the checklist</a>` : '',
+    `<a class="btn white block" href="#/guides">📖 All set guides</a>`
+  ].filter(Boolean).join('');
+  const unique = (G.unique || []).map(x => `<li>${esc(x)}</li>`).join('');
+  const variants = (G.variants || []).map(v => `<div class="guide-var"><div class="guide-ico" aria-hidden="true">${v.ico || '✨'}</div><div><h3>${esc(v.name)}</h3><p>${esc(v.text)}</p></div></div>`).join('');
+  const examples = (G.examples || []).map(ex => {
+    const src = window.SetGuides.img(ex.pid, 400);
+    return `<figure><img loading="lazy" decoding="async" referrerpolicy="no-referrer" src="${esc(src)}" alt="${esc(ex.cap)}"><figcaption>${esc(ex.cap)}</figcaption></figure>`;
+  }).join('');
+  const rarity = (G.rarity || []).map(x => `<li>${esc(x)}</li>`).join('');
+  const chase = (G.chase || []).map(x => `<li>${esc(x)}</li>`).join('');
+  const look = (G.look || []).map(v => `<div class="guide-look"><div class="guide-ico" aria-hidden="true">${v.ico || '👀'}</div><div><h3>${esc(v.title)}</h3><p>${esc(v.text)}</p></div></div>`).join('');
+  $app.innerHTML = `<div class="guide-page">
+    <div class="guide-hero">
+      <p class="guide-kicker">Set Guide</p>
+      <h1>${G.emoji || '📖'} ${esc(G.name)}</h1>
+      <div class="guide-meta">${pills}</div>
+      <p class="guide-intro">${esc(G.intro)}</p>
+      ${progress}
+      <div class="guide-actions">${actions}</div>
+    </div>
+    ${unique ? `<section class="guide-sec"><h2>⭐ What makes it special</h2><ul class="guide-bullets">${unique}</ul></section>` : ''}
+    ${variants ? `<section class="guide-sec"><h2>🔍 How to tell the versions apart</h2><div class="guide-vars">${variants}</div>${G.variantNote ? `<p class="guide-note">${esc(G.variantNote)}</p>` : ''}</section>` : ''}
+    ${examples ? `<section class="guide-sec"><h2>🖼️ Look at these pictures</h2><div class="guide-ex">${examples}</div></section>` : ''}
+    ${rarity ? `<section class="guide-sec"><h2>🏷️ Rarity and numbers</h2><ul class="guide-bullets">${rarity}</ul></section>` : ''}
+    ${chase ? `<section class="guide-sec"><h2>💎 Cards worth spotting</h2><ul class="guide-bullets">${chase}</ul></section>` : ''}
+    ${look ? `<section class="guide-sec"><h2>👀 What to look at on a card</h2><div class="guide-looks">${look}</div></section>` : ''}
+    ${G.team ? `<p class="guide-team">${esc(G.team)}</p>` : ''}
+    <div class="guide-actions">${actions}</div>
+  </div>`;
+}
+
 /* ---------- router ---------- */
 function route() {
   if (!D) return;
@@ -642,6 +722,7 @@ function route() {
   window.scrollTo(0, 0);
   document.body.classList.toggle('game-mode', p[0] === 'games');
   document.body.classList.toggle('pre-mode', !!masterBySlug(p[0]));
+  document.body.classList.toggle('guide-mode', p[0] === 'guide' || p[0] === 'guides');
   if (window.FentonGames) window.FentonGames.stop();
   switch (p[0]) {
     case 'games': setTitle(p[1] === 'memory' ? 'Memory Match' : p[1] === 'who' ? "Who's That Pokémon?" : p[1] === 'tcg' ? 'Card Battle School' : p[1] === 'trivia' ? 'Pokémon Trivia' : p[1] === 'math' ? 'Pokémon Math' : 'Game Time'); return window.FentonGames ? window.FentonGames.render($app, D, p[1]) : home();
@@ -656,6 +737,8 @@ function route() {
     case 'delta-reign':
     case 'pitch-black':
       return masterBinder(masterBySlug(p[0]), +p[1] || 1);
+    case 'guides': return guidesIndex();
+    case 'guide': return p[1] ? setGuide(p[1]) : guidesIndex();
     case 'sets': return sets();
     case 'set': return setPage(+p[1] || 0, p[2]);
     case 'wish': return wish();
