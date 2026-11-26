@@ -71,7 +71,7 @@ function cardsPage() {
   const masters = allMasters();
   const tileCls = ['yellow', 'blue', 'red', 'green'];
   const masterTiles = masters.map((m, i) => `<a class="tile ${tileCls[i % 4]}" href="#/${esc(m.slug)}/1"><span class="em">${m.emoji || '📒'}</span>${esc(m.name)}<span class="sub">Master set · ${m.have} of ${m.total} · see where each card goes</span></a>`).join('');
-  $app.innerHTML = `${masters.length ? `<h2>🌈 New binders</h2><div class="tiles big">${masterTiles}</div>` : ''}
+  $app.innerHTML = `${masters.length ? `<h2>🌈 Official master binders</h2><div class="tiles big">${masterTiles}</div>` : ''}
   <h2>📚 Binders</h2>
   <div class="tiles big">${D.binders.map((b, i) => `<a class="tile ${cls[i % 4]}" href="#/binder/${i}/1"><span class="em">${b.emoji}</span>${esc(b.name.replace(' (new pulls)', ''))}<span class="sub">${b.cards} cards</span></a>`).join('')}</div>
   ${mi >= 0 ? `<h2>✅ 30th Celebration</h2><div class="tiles">
@@ -301,10 +301,10 @@ function preSectionOf(M, page) {
   return (M.sections || []).find(s => page >= s.start_page && page <= s.end_page) || null;
 }
 function allMasters() {
-  return [D.pre_master, D.dlr_master, D.pbl_master].filter(Boolean);
+  return [D.c30_master, D.pre_master, D.dlr_master, D.pbl_master].filter(Boolean);
 }
 function masterBySlug(slug) {
-  return allMasters().find(m => m && m.slug === slug) || null;
+  return allMasters().find(m => m && (m.slug === slug || m.guide === slug)) || null;
 }
 function preCell(s, slug) {
   if (!s) return `<div class="cell empty pre-empty"><div class="pre-skip">Leave empty</div></div>`;
@@ -358,14 +358,22 @@ function masterBinder(M, page) {
   const introTail = moreSecs.length
     ? `Main cards come first, in number order. ${esc(moreSecs.join(', '))} ${moreSecs.length === 1 ? 'is' : 'are'} at the back.`
     : 'Cards come in number order.';
+  const startLine = pc >= 100
+    ? 'We finished this official master binder! Bright pictures with a check are cards we have.'
+    : pc >= 90
+    ? 'We are so close to finishing this official master binder. Bright pictures with a check are cards we already have. Grey pictures are still to find.'
+    : pc >= 30
+    ? 'We are filling this official master binder. Bright pictures with a check are cards we already have. Grey pictures are still to find.'
+    : 'We are just starting this master binder. Bright pictures with a check are cards we already have. Grey pictures are still to find.';
+  const guideHref = M.guide || slug;
   $app.innerHTML = `
   <div class="pre-hero">
     <div class="pre-hero-top"><span>${M.emoji || '📒'} ${esc(M.name)}</span><b>${M.have} of ${M.total}</b></div>
     <div class="bar big"><div style="width:${Math.max(2, pc)}%"></div><span>${pc}%</span></div>
-    <p class="pre-sub">We are just starting this master binder. Bright pictures with a check are cards we already have. Grey pictures are still to find. ${introTail}</p>
+    <p class="pre-sub">${startLine} ${introTail}</p>
     <div class="pre-vars">${vhtml}</div>
     <div class="guide-actions" style="margin-top:12px">
-      <a class="btn white block" href="#/guide/${esc(slug)}">📖 Set Guide</a>
+      <a class="btn white block" href="#/guide/${esc(guideHref)}">📖 Set Guide</a>
     </div>
   </div>
   ${secBanner}
@@ -376,7 +384,7 @@ function masterBinder(M, page) {
   <p class="pre-page-sum">✅ ${haveP} on this page${missP ? ` · ❔ ${missP} still needed` : ''}${slots.filter(s => !s).length ? ' · leftover pockets stay empty' : ''}</p>
   <h2 style="text-align:center">📖 Pages</h2>
   ${nav}
-  ${ownedList ? `<h2>✅ Cards we already have</h2><p class="muted">They still live in the Other Sets binder for now. These pages are where they will go in the new master binder.</p><div class="list">${ownedList}</div>` : ''}
+  ${ownedList ? `<h2>✅ Cards we already have</h2><p class="muted">These pages show where each card goes in the official master binder. Cards we already have stay in the binders listed on each card until we move them.</p><div class="list">${ownedList}</div>` : ''}
   <div class="note">${esc(M.rule)}</div>
   <p class="foot">Swipe left or right to turn pages. Empty pockets at the end of a section stay empty on purpose.</p>`;
   swipe(document.getElementById('binderPage'), dir => { const np = page + dir; if (np >= 1 && np <= n) location.hash = href(np); });
@@ -398,7 +406,7 @@ function openPreCard(slug, page, pocket) {
       <div class="stat wide"><div class="k">✅ Do we have it?</div><div class="v">${s.have ? (s.extras ? `Yes, we have this one, plus ${s.extras} extra${s.extras === 1 ? '' : 's'}` : 'Yes, we have this one') : '❔ We still need this one'}</div></div>
       ${now}
     </div>
-    <p class="note">${s.have ? `When we move it to the new binder, it goes on page ${s.page}, pocket ${s.pocket}.` : `This card goes on page ${s.page}, pocket ${s.pocket}.`}</p>
+    <p class="note">In the official master binder, this card goes on page ${s.page}, pocket ${s.pocket}.</p>
     ${s.url ? `<a class="btn red block" href="${esc(s.url)}" target="_blank" rel="noopener">🛒 See on TCGplayer</a>` : ''}
     <button class="btn white block close2" style="margin-top:12px">👍 Done</button></div>`;
   lockScroll(); $modal.hidden = false; $modal.scrollTop = 0;
@@ -417,7 +425,13 @@ function binder(bi, page) {
   }).join('');
   const have = slots.filter(s => s && s.have).length, miss = slots.filter(s => s && !s.have).length;
   const copies = slots.reduce((t, s) => t + (s ? (s.n || 0) : 0), 0), pageVal = slots.reduce((t, s) => t + (s ? (s.n || 0) * card(s.id).price : 0), 0);
+  const official = (b.name === '30th Binder 1') ? allMasters().find(m => m && m.slug === '30th-celebration') : null;
+  const officialTiles = official ? `<div class="tiles big" style="margin-bottom:14px">
+    <a class="tile yellow pre-tile" href="#/${esc(official.slug)}/1"><span class="em">${official.emoji || '🎉'}</span>Open the official master binder<span class="sub">${official.have} of ${official.total} · full pictures of every official card</span></a>
+    <a class="tile green pre-tile" href="#/guide/${esc(official.guide || '30c')}"><span class="em">📖</span>Set Guide<span class="sub">What makes 30th Celebration special, and what to look for</span></a>
+  </div>` : '';
   $app.innerHTML = `
+  ${officialTiles}
   <div class="pager"><a class="btn white" ${page > 1 ? `href="#/binder/${bi}/${page - 1}"` : 'disabled'} aria-label="Previous page">◀</a>
     <div class="pg">${b.loose ? 'Group' : 'Page'} ${page}<div class="muted">of ${n}</div></div>
     <a class="btn white" ${page < n ? `href="#/binder/${bi}/${page + 1}"` : 'disabled'} aria-label="Next page">▶</a></div>

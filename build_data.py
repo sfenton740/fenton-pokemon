@@ -34,6 +34,7 @@ def numkey(n):
 PRE_MASTER = os.path.join(SITE, 'prismatic_master.json')
 DLR_MASTER = os.path.join(SITE, 'delta_reign_master.json')
 PBL_MASTER = os.path.join(SITE, 'pitch_black_master.json')
+C30_MASTER = os.path.join(SITE, '30th_celebration_master.json')
 
 def pre_variant_of(row):
     """Which master-binder variant a collection row is. Prefer the card name;
@@ -149,6 +150,7 @@ def build_set_master(rows, catalog_path, codes, name_needles, defaults):
     return dict(name=cat.get('name') or defaults['name'],
                 emoji=cat.get('emoji') or defaults['emoji'],
                 slug=cat.get('slug') or defaults['slug'],
+                guide=cat.get('guide') or defaults.get('guide') or cat.get('slug') or defaults.get('slug') or '',
                 code=cat.get('code') or defaults.get('code') or '',
                 desc=defaults.get('desc') or cat.get('rule') or '',
                 rule=cat['rule'], have=len(have_keys), total=cat['totals']['pockets'],
@@ -309,6 +311,9 @@ def main():
     pbl_master = build_set_master(rows, PBL_MASTER, {'PBL', 'ME05'}, ('pitch black',),
         dict(name='Pitch Black', emoji='🌑', slug='pitch-black',
              desc='Our 3×3 master binder — main cards in number order, then Reverse Holos at the back.'))
+    c30_master = build_set_master(rows, C30_MASTER, {'30C', '30C-RGB'}, ('30th celebration',),
+        dict(name='30th Celebration', emoji='🎉', slug='30th-celebration', guide='30c', code='30C',
+             desc='Our official 3×3 master binder — main cards in number order, then RGB Rares at the back.'))
 
     wish_sets = {s['name'] for s in sets_cfg if s['wishlist']}
     wishlist = sorted([c['id'] for c in cl if c['qty'] == 0 and c['set'] in wish_sets], key=lambda k: cards[k]['price'] or 0)
@@ -328,7 +333,7 @@ def main():
         settings=dict(trend_pct=S['trend_pct'], trend_min=S['trend_min_dollars'], window=S['trend_window_days'],
             psa_tiers=S['psa_tiers'], ship=round(S['return_ship_per_card'], 2), gem_gain=S['gem_min_gain'],
             gem_mult=S['gem_min_multiple'], gem_sales=S['gem_min_sales']),
-        dates=dates, history=history, ph=ph, master=master, pre_master=pre_master, dlr_master=dlr_master, pbl_master=pbl_master, binders=binders, sets=sets, wishlist=wishlist,
+        dates=dates, history=history, ph=ph, master=master, pre_master=pre_master, dlr_master=dlr_master, pbl_master=pbl_master, c30_master=c30_master, binders=binders, sets=sets, wishlist=wishlist,
         opened=[dict(o, img=img(o.get('url'))) for o in opened],
         cards={c['id']: c for c in cl})
     with open(os.path.join(SITE, 'data.json'), 'w') as fh:
@@ -339,8 +344,8 @@ def main():
           f"wishlist {t['wish_count']} ${t['wish_cost']:,.2f}, packs {t['packs']}, prices {out['prices_asof']}")
     for s in sets: print(f"  {s['name']}: {s['have']}/{s['size']}")
     print(f"  {master['name']}: {master['have']}/{master['size']} ({master['have']/master['size']:.0%}), ${master['to_finish']:,.2f} to finish")
-    for label, M in (('Prismatic master binder', pre_master), ('Delta Reign master binder', dlr_master),
-                     ('Pitch Black master binder', pbl_master)):
+    for label, M in (('30th Celebration master binder', c30_master), ('Prismatic master binder', pre_master),
+                     ('Delta Reign master binder', dlr_master), ('Pitch Black master binder', pbl_master)):
         if not M: continue
         print(f"  {label}: {M['have']}/{M['total']} pockets, {M['pages_n']} pages")
         for s in M.get('sections') or []:

@@ -137,7 +137,7 @@
       short: 'A 30-year party set, with 30 Pikachu rares and all-foil cards.',
       intro: 'This set celebrates 30 years of Pokémon. It is full of favorite Pokémon from three decades, and every card is foil.',
       unique: [
-        'Official pages say it has over 150 cards. The family checklist has 158 cards in the main 30th Celebration set.',
+        'Official pages say it has over 150 cards. The family checklist has 158 cards in the main 30th Celebration set. The official master binder also has a last page for the 3 RGB Rare Mew cards.',
         'Each booster pack includes one of 30 unique Pikachu rare cards.',
         'The set introduces a new rarity called Futuristic rare, with art by YOSHIROTTEN.',
         'It also comes with a 30-card Classic Collection of famous older cards, kept as their own checklist in our binder.'

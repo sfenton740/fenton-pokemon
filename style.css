@@ -261,6 +261,7 @@ body.pre-mode main{max-width:1100px}
 .pre-var.regular{background:#f0f0f0}
 .pre-var.holo{background:#ffe566}
 .pre-var.reverse{background:#e4d4ff}
+.pre-var.rgb{background:#ffd6ea}
 .pre-var.pokeball{background:#ffd0d0}
 .pre-var.master{background:#d4e4ff}
 .pre-place{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;background:var(--yellow);border:3px solid var(--ink);border-radius:10px;padding:4px 4px;margin-top:6px;font-weight:900;font-size:18px;line-height:1.2;overflow-wrap:anywhere}
@@ -275,6 +276,7 @@ body.pre-mode main{max-width:1100px}
 .pre-modal-var.regular{background:#f0f0f0}
 .pre-modal-var.holo{background:#ffe566}
 .pre-modal-var.reverse{background:#e4d4ff}
+.pre-modal-var.rgb{background:#ffd6ea}
 .pre-modal-var.pokeball{background:#ffd0d0}
 .pre-modal-var.master{background:#d4e4ff}
 @media (min-width:800px){
@@ -290,9 +292,11 @@ body.pre-mode main{max-width:1100px}
 .pre-sec.reverse{background:#ead9ff}
 .pre-sec.pokeball{background:#ffd6d6}
 .pre-sec.master{background:#d6e6ff}
+.pre-sec.rgb{background:#ffd6ea}
 .pre-v{text-decoration:none;color:inherit}
 .pre-v.main{background:#fff8d0}
 .pre-v.reverse{background:#ead9ff}
+.pre-v.rgb{background:#ffd6ea}
 .pre-v.pokeball{background:#ffd6d6}
 .pre-v.master{background:#d6e6ff}
 .pre-nav-sec{margin:8px 0 14px}
@@ -301,6 +305,7 @@ body.pre-mode main{max-width:1100px}
 .pre-nav-lbl.reverse{background:#ead9ff}
 .pre-nav-lbl.pokeball{background:#ffd6d6}
 .pre-nav-lbl.master{background:#d6e6ff}
+.pre-nav-lbl.rgb{background:#ffd6ea}
 .pre-nav-lbl.on,a.pre-nav-lbl:active{transform:none}
 
 /* ===== Set Guides ===== */
